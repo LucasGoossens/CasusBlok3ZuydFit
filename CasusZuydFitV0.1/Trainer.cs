@@ -10,9 +10,9 @@ namespace CasusZuydFitV0._1
     {
         public List<Activity> ActivityList { get; set; }
 
-        public Trainer(int userId, string userName, string userEmail, string userPassword, List<Activity> activity) : base(userId, userName, userEmail, userPassword)
+        public Trainer(int userId, string userName, string userEmail, string userPassword, List<Activity> activitylist) : base(userId, userName, userEmail, userPassword)
         {
-            ActivityList = activity;
+            ActivityList = activitylist;
         }
     }
 }
