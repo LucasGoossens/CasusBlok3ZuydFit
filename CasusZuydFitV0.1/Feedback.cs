@@ -22,5 +22,26 @@ namespace CasusZuydFitV0._1
             Activity = activity;
             FeedbackInfo = feedbackInfo;
         }
+        
+        public void AddTrainer(Trainer trainer)
+        {
+            this.Trainer = trainer;
+        }
+
+        public void AddRecipient(Athlete user) // dit klopt niet in class diagram
+        {
+            this.Athlete = user;
+        }
+
+        public void AddActivity(Activity activity)
+        {
+            this.Activity = activity;
+
+        }
+
+        public void ShowFeedback()
+        {
+
+        }
     }
 }
