@@ -3,3 +3,13 @@
 /Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.AssemblyInfo.cs
 /Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.csproj.CoreCompileInputs.cache
 /Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.sourcelink.json
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/bin/Debug/net8.0/CasusZuydFitV0.1
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/bin/Debug/net8.0/CasusZuydFitV0.1.deps.json
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/bin/Debug/net8.0/CasusZuydFitV0.1.runtimeconfig.json
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/bin/Debug/net8.0/CasusZuydFitV0.1.dll
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/bin/Debug/net8.0/CasusZuydFitV0.1.pdb
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.dll
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/refint/CasusZuydFitV0.1.dll
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.pdb
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.genruntimeconfig.cache
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/ref/CasusZuydFitV0.1.dll
