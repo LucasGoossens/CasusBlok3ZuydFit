@@ -1,0 +1,5 @@
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.GeneratedMSBuildEditorConfig.editorconfig
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.AssemblyInfoInputs.cache
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.AssemblyInfo.cs
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.csproj.CoreCompileInputs.cache
+/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/Debug/net8.0/CasusZuydFitV0.1.sourcelink.json

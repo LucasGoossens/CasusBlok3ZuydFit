@@ -15,4 +15,8 @@ namespace CasusZuydFitV0._1
             Events = events;
         }
     }
+
+    public class Event
+    {
+    }
 }
