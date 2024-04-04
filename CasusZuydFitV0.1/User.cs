@@ -9,9 +9,12 @@ namespace CasusZuydFitV0._1
     class User
     {
         public string UserName { get; set; }
-        public User(string userName)
+        public string Test { get; set; }
+        public User(string userName, string test)
         {
             UserName = userName;
+            Test = test;
+
         }
     }
 }
