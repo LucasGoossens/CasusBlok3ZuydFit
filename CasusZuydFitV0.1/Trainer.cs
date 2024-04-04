@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CasusZuydFitV0._1
 {
-    internal class Trainer : User
+    public class Trainer : User
     {
         public List<Activity> ActivityList { get; set; }
 

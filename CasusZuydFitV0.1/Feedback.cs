@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CasusZuydFitV0._1
 {
-    internal class Feedback
+    public class Feedback
     {
         public int FeedbackId { get; set; }
         public Trainer Trainer { get; set; }

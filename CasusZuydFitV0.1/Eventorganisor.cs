@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CasusZuydFitV0._1
 {
-    internal class Eventorganisor : User
+    public class Eventorganisor : User
     {
         public List<Event> Events { get; set; }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CasusZuydFitV0._1
 {
-    internal class Exercise : Activity
+    public class Exercise : Activity
     {
         public Dictionary<string, string> ExerciseLog { get; set; }
         public Athlete ExerciseParticipant { get; set; }

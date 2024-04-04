@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CasusZuydFitV0._1
 {
-    internal class Event : Activity
+    public class Event : Activity
     {
         public List<Athlete> EventParticipants { get; set; }
         public string EventLocation { get; set; }
