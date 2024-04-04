@@ -14,7 +14,7 @@ namespace CasusZuydFitV0._1
         public Activity Activity { get; set; }
         public string FeedbackInfo { get; set; }
 
-        Feedback(int feedbackId, Trainer trainer, Athlete athlete, Activity activity, string feedbackInfo)
+        public Feedback(int feedbackId, Trainer trainer, Athlete athlete, Activity activity, string feedbackInfo)
         {
             FeedbackId = feedbackId;
             Trainer = trainer;
