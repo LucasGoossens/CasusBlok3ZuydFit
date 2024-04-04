@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CasusZuydFitV0._1
 {
-    internal class Activity
+    public class Activity
     {
         public int ActivityId { get; set; }
         public string ActivityName { get; set; }
@@ -14,9 +14,9 @@ namespace CasusZuydFitV0._1
         public string StartingTime { get; set; }
         public Trainer Trainer { get; set; }
         public string ActivityDescription { get; set; }
-        public List<Equipment> Equipents { get; set; }
+        public List<Equipment> Equipments { get; set; }
 
-        public Activity(int activityId, string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, List<Equipment> equipents)
+        public Activity(int activityId, string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, List<Equipment> equipments)
         {
             ActivityId = activityId;
             ActivityName = activityName;
@@ -24,7 +24,7 @@ namespace CasusZuydFitV0._1
             StartingTime = startingTime;
             Trainer = trainer;
             ActivityDescription = activityDescription;
-            Equipents = equipents;
+            Equipments = equipments;
         }
     }
 }

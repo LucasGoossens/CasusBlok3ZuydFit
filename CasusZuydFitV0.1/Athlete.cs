@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CasusZuydFitV0._1
 {
-    internal class Athlete : User
+    public class Athlete : User
     {
         public List<Activity> ActivityList { get; set; }
 
@@ -14,5 +14,29 @@ namespace CasusZuydFitV0._1
         {
             ActivityList = activity;
         }
+
+        public void EventRegisterAthlete()
+        { 
+
+        }
+
+        public void EventRemoveRegistration()
+        {
+
+        }
+
+        public void CreateExercise()
+        {
+
+        }
+
+        public void DeleteExercise()
+        {
+
+        }
+
+
+
+    
     }
 }

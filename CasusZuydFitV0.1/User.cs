@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CasusZuydFitV0._1
 {
-    internal abstract class User
+    public abstract class User
     {
         public int UserId { get; set; }
         public string UserName { get; set; }
