@@ -5,7 +5,8 @@
         static void Main(string[] args)
         {
             Console.WriteLine("Welkom bij de ZuydFit Apllicatie");
-
+            Console.WriteLine("Kies een UserId om in te loggen");
+            int gebruikerKeuze = int.Parse(Console.ReadLine() ?? string.Empty);
 
         }
     }
