@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("CasusZuydFitV0.1")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d5096282996664ae02cebc168b10a662bb8991d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+875f2e30b0843d45fcf9e6e66eff04586bd0e6e8")]
 [assembly: System.Reflection.AssemblyProductAttribute("CasusZuydFitV0.1")]
 [assembly: System.Reflection.AssemblyTitleAttribute("CasusZuydFitV0.1")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -4,9 +4,27 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Welkom bij de ZuydFit Apllicatie");
-            Console.WriteLine("Kies een UserId om in te loggen");
-            int gebruikerKeuze = int.Parse(Console.ReadLine() ?? string.Empty);
+            // Console.WriteLine("Welkom bij de ZuydFit Apllicatie");
+            // Console.WriteLine("Kies een UserId om in te loggen");
+            // int gebruikerKeuze = int.Parse(Console.ReadLine() ?? string.Empty);
+
+            // Instantiate DAL to access user data
+            DAL dal = new DAL();
+
+            // Instantiate UserDAL to access user data
+            DAL.UserDAL userDAL = new DAL.UserDAL();
+
+            // Get all users from the database
+            userDAL.GetUsers();
+
+            Console.WriteLine (userDAL.users.Count());
+
+            // Display user information
+            Console.WriteLine("List of Users:");
+            foreach (var user in userDAL.users)
+            {
+                Console.WriteLine($"User ID: {user.UserId}, Name: {user.UserName}, Email: {user.UserEmail}");
+            }
 
         }
     }

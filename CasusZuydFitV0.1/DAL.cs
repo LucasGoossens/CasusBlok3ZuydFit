@@ -9,7 +9,7 @@ namespace CasusZuydFitV0._1
 
         public class UserDAL
         {
-            List<User> users = new List<User>();
+            public List<User> users = new List<User>();
             public void GetUsers()
             {
                 try
@@ -17,7 +17,7 @@ namespace CasusZuydFitV0._1
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "Select * from [User] ";
+                        string query = "Select * from [Users]";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             using (SqlDataReader reader = command.ExecuteReader())
