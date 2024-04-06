@@ -1,6 +1,7 @@
 using System.Data;
 using System.Data.SqlClient;
-using Microsoft.Data.SqlClient;
+using Microsoft.Data;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace CasusZuydFitV0._1
 {
     public class DAL
@@ -17,7 +18,7 @@ namespace CasusZuydFitV0._1
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "Select * from [Users]";
+                        string query = "Select * from [User]";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             using (SqlDataReader reader = command.ExecuteReader())
@@ -33,7 +34,7 @@ namespace CasusZuydFitV0._1
 
                                     if (userType == 1) // User is sporter
                                     {
-                                        Athlete user = new Athlete(userId, userName, userEmail, userPassword, new List<Activity>());
+                                        Athlete user = new Athlete(userId, userName, userEmail, userPassword, new List<Activity>()); 
                                         users.Add(user);
                                     }
                                     else if (userType == 2) // User is trainer
@@ -55,6 +56,47 @@ namespace CasusZuydFitV0._1
                 { 
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
+            }           
+            
+            // nu gebruiken we UserDAL om alle soorten Users aan te maken in SQL,
+            // mogelijk dit dan opsplitsen zodat alle subclass-specific dingen apart worden uitgevoerd bij het aanmaken
+            public void CreateNewUser(User user)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+
+                        string query = "INSERT INTO [User](UserName, UserEmail, UserPassword, UserType) VALUES(@UserName, @UserEmail, @UserPassword, @UserType);";
+
+                        SqlCommand dbCommand = new SqlCommand(query, connection);
+
+                        dbCommand.Parameters.AddWithValue("@UserName", user.UserName);
+                        dbCommand.Parameters.AddWithValue("@UserEmail", user.UserEmail);
+                        dbCommand.Parameters.AddWithValue("@UserPassword", user.UserPassword);
+                                                 
+                        if (user is Athlete)
+                        {
+                            dbCommand.Parameters.AddWithValue("@UserType", 1);
+                        }
+                        else if(user is Trainer)
+                        {
+                            dbCommand.Parameters.AddWithValue("@UserType", 2);
+                        }
+                        else if(user is Eventorganisor)
+                        {
+                            dbCommand.Parameters.AddWithValue("@UserType", 3);
+                        }
+
+                        dbCommand.ExecuteNonQuery();
+                    }
+                        
+                }catch(Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+                
             }
         }
 

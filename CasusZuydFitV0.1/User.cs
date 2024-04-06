@@ -23,10 +23,24 @@ namespace CasusZuydFitV0._1
             UserPassword = userPassword;
         }
 
+        public User(string userName, string userEmail, string userPassword)
+        {
+            UserName = userName;
+            UserEmail = userEmail;
+            UserPassword = userPassword;
+        }
+
+        // dit misschien weg dan aangezien t al in DAL gebeurd?
         static void GetUsers()
         {
             UserDAL Dal = new UserDAL();
             Dal.GetUsers();
+        }
+
+        public void CreateNewUser()
+        {
+            UserDAL Dal = new UserDAL();
+            Dal.CreateNewUser(this);
         }
     }
 }
