@@ -1,34 +1,139 @@
-﻿namespace CasusZuydFitV0._1
+﻿using Microsoft.Identity.Client;
+using System.ComponentModel.DataAnnotations;
+using static CasusZuydFitV0._1.DAL;
+
+namespace CasusZuydFitV0._1
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            // Console.WriteLine("Welkom bij de ZuydFit Apllicatie");
-            // Console.WriteLine("Kies een UserId om in te loggen");
-            // int gebruikerKeuze = int.Parse(Console.ReadLine() ?? string.Empty);
-
-            // Instantiate DAL to access user data
-            DAL dal = new DAL();
-
-            // Instantiate UserDAL to access user data
-            DAL.UserDAL userDAL = new DAL.UserDAL();
-
-            // Get all users from the database
-            userDAL.GetUsers();
-
-            Console.WriteLine (userDAL.users.Count());
-
-            // Display user information
-            Console.WriteLine("List of Users:");
-            foreach (var user in userDAL.users)
+            while (true)
             {
-                Console.WriteLine($"User ID: {user.UserId}, Name: {user.UserName}, Email: {user.UserEmail}");
+                Console.WriteLine("=======================");
+                Console.WriteLine("Kies optie:");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("1: Display all users");
+                Console.WriteLine("2: Create new user");
+
+                int option;
+
+                try
+                {
+                    option = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Invalid option.");
+                    continue;
+                }
+
+
+                switch (option)
+                {
+                    case 1:
+                        DisplayAllUsers();
+                        break;
+                    case 2:
+                        CreateNewUser();
+                        break;
+                }
             }
 
+            void DisplayAllUsers()
+            {
+                Console.Clear();
+
+                UserDAL userDAL = new UserDAL();
+
+                userDAL.GetUsers();
+
+                Console.WriteLine("Total Users: ");
+                Console.WriteLine(userDAL.users.Count());
+
+
+                Console.WriteLine("List of Users:");
+                foreach (var user in userDAL.users)
+                {
+                    Console.WriteLine($"User ID: {user.UserId}, Name: {user.UserName}, Email: {user.UserEmail}");
+                }
+
+            }
+
+            void CreateNewUser()
+            {
+                Console.Clear();
+                Console.WriteLine("Enter user name:");
+                string UserName = Console.ReadLine();
+                Console.WriteLine("Enter user email:");
+                string UserEmail = Console.ReadLine();
+                Console.WriteLine("Enter user password:");
+                string UserPassword = Console.ReadLine();
+
+                int UserType = 0;
+
+                // uiteindelijk zijn er andere schermen voor verschillende gebruikers aanmaken,
+                // dit is om te testen
+                do
+                {
+                    Console.WriteLine("Enter user type:");
+                    Console.WriteLine("1. Athlete");
+                    Console.WriteLine("2. Trainer");
+                    Console.WriteLine("3. Eventorganiser");
+                    UserType = Convert.ToInt32(Console.ReadLine());
+                    Console.Clear();
+                } while (UserType < 1 || UserType > 3);
+
+                User user;
+
+                switch (UserType)
+                {
+                    case 1:
+                        user = new Athlete(UserName, UserEmail, UserPassword, new List<Activity>());
+                        user.CreateNewUser();
+                        break;
+                    case 2:
+                        user = new Trainer(UserName, UserEmail, UserPassword, new List<Activity>());
+                        user.CreateNewUser();
+                        break;
+                    case 3:
+                        user = new Eventorganisor(UserName, UserEmail, UserPassword, new List<Event>());
+                        user.CreateNewUser();
+                        break;
+                }
+
+                Console.WriteLine("New user " + UserName + "succesfully created.");
+            }
         }
     }
 }
+
+
+// Om users uit db te printen te testen.
+
+//// Console.WriteLine("Welkom bij de ZuydFit Apllicatie");
+//// Console.WriteLine("Kies een UserId om in te loggen");
+//// int gebruikerKeuze = int.Parse(Console.ReadLine() ?? string.Empty);
+
+//// Instantiate DAL to access user data
+//DAL dal = new DAL();
+
+//// Instantiate UserDAL to access user data
+//DAL.UserDAL userDAL = new DAL.UserDAL();
+
+//// Get all users from the database
+//userDAL.GetUsers();
+
+//Console.WriteLine (userDAL.users.Count());
+
+//// Display user information
+//Console.WriteLine("List of Users:");
+//foreach (var user in userDAL.users)
+//{
+//    Console.WriteLine($"User ID: {user.UserId}, Name: {user.UserName}, Email: {user.UserEmail}");
+//}
+
 
 /*
             // Inlog systeem begoonnen niet af

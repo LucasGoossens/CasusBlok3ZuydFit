@@ -14,5 +14,9 @@ namespace CasusZuydFitV0._1
         {
             ActivityList = activitylist;
         }
+        public Trainer(string userName, string userEmail, string userPassword, List<Activity> activitylist) : base(userName, userEmail, userPassword)
+        {
+            ActivityList = activitylist;
+        }
     }
 }

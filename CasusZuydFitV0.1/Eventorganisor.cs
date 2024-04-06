@@ -14,5 +14,9 @@ namespace CasusZuydFitV0._1
         {
             Events = events;
         }
+        public Eventorganisor(string userName, string userEmail, string userPassword, List<Event> events) : base(userName, userEmail, userPassword)
+        {
+            Events = events;
+        }
     }
 }
