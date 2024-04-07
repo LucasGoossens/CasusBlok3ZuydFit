@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CasusZuydFitV0._1.DAL;
 
 namespace CasusZuydFitV0._1
 {
@@ -25,23 +26,29 @@ namespace CasusZuydFitV0._1
         
         public void AddTrainer(Trainer trainer)
         {
-            this.Trainer = trainer;
+            Trainer = trainer;
         }
 
         public void AddRecipient(Athlete user) // dit klopt niet in class diagram
         {
-            this.Athlete = user;
+            Athlete = user;
         }
 
         public void AddActivity(Activity activity)
         {
-            this.Activity = activity;
+            Activity = activity;
 
         }
 
         public void ShowFeedback()
         {
 
+        }
+
+        public void CreateFeedback() 
+        {
+            FeedbackDAL Dal = new FeedbackDAL();
+            Dal.CreateFeedback(this);
         }
     }
 }
