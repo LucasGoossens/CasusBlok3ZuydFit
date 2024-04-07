@@ -120,6 +120,35 @@ namespace CasusZuydFitV0._1
 
         public class FeedbackDAL
         {
+            public void GetFeedback()
+            {
+                // kan pas gedaan worden wanneer get activty's werkt?
+            }
+
+            public void CreateFeedback(Feedback feedback)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "INSERT INTO [Feedback](TrainerId, AthleteId, ActivityId, FeedbackInfo) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo);";
+
+                        SqlCommand dbCommand = new SqlCommand(query, connection);
+
+                        dbCommand.Parameters.AddWithValue("@TrainerId", feedback.Trainer.UserId);
+                        dbCommand.Parameters.AddWithValue("@AthleteId", feedback.Athlete.UserId);
+                        dbCommand.Parameters.AddWithValue("@ActivityId", feedback.Activity.ActivityId);
+                        dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo);
+
+                        dbCommand.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+            }
         }
 
         public class TrainerDAL
