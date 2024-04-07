@@ -31,10 +31,11 @@ namespace CasusZuydFitV0._1
         }
 
         // dit misschien weg dan aangezien t al in DAL gebeurd?
-        static void GetUsers()
+        static public List<User> GetUsers()
         {
             UserDAL Dal = new UserDAL();
             Dal.GetUsers();
+            return Dal.users;
         }
 
         public void CreateNewUser()

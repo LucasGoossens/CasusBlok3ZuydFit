@@ -12,7 +12,9 @@ namespace CasusZuydFitV0._1
         {
             public List<User> users = new List<User>();
             public void GetUsers()
+                //User wordt opgehaald maar lijsten worden nog niet gevuld
             {
+                users.Clear();
                 try
                 {
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
