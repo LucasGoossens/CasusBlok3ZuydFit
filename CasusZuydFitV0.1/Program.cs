@@ -45,16 +45,13 @@ namespace CasusZuydFitV0._1
             {
                 Console.Clear();
 
-                UserDAL userDAL = new UserDAL();
-
-                userDAL.GetUsers();
 
                 Console.WriteLine("Total Users: ");
-                Console.WriteLine(userDAL.users.Count());
+                Console.WriteLine(User.GetUsers().Count());
 
 
                 Console.WriteLine("List of Users:");
-                foreach (var user in userDAL.users)
+                foreach (var user in User.GetUsers())
                 {
                     Console.WriteLine($"User ID: {user.UserId}, Name: {user.UserName}, Email: {user.UserEmail}");
                 }
