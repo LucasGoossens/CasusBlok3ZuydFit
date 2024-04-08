@@ -112,7 +112,7 @@ namespace CasusZuydFitV0._1
 
         public class EquipmentDAL
         {
-            List<Equipment> equipments = new List<Equipment>();
+            public List<Equipment> equipments = new List<Equipment>();
             public void GetEquipment()
             {
                 equipments.Clear();
