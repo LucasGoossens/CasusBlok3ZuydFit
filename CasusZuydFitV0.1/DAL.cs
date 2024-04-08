@@ -112,10 +112,46 @@ namespace CasusZuydFitV0._1
 
         public class EquipmentDAL
         {
+            List<Equipment> equipments = new List<Equipment>();
+            public void GetEquipment()
+            {
+                equipments.Clear();
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "Select * from Equipment";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    // Users ophalen uit database
+                                    int equipmentId = reader.GetInt32(0);
+                                    string equipmentName = reader.GetString(1);
+                                    string equipmentDescription = reader.GetString(2);
+                                    bool equipmentAvailability = reader.GetBoolean(3);
+
+                                    Equipment equipment = new Equipment(equipmentId, equipmentName, equipmentDescription, equipmentAvailability);
+                                    equipments.Add(equipment);
+
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+            }
         }
 
         public class EventDAL
         {
+
         }
 
         public class FeedbackDAL
