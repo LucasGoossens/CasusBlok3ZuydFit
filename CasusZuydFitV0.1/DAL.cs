@@ -44,11 +44,6 @@ namespace CasusZuydFitV0._1
                                         Trainer user = new Trainer(userId, userName, userEmail, userPassword, new List<Activity>());
                                         users.Add(user);
                                     }
-                                    else if (userType == 3) // user is Eventorganisator
-                                    {
-                                        Eventorganisor user = new Eventorganisor(userId, userName, userEmail, userPassword, new List<Event>());
-                                        users.Add(user);
-                                    }
                                 } 
                             }
                         }
@@ -108,6 +103,41 @@ namespace CasusZuydFitV0._1
 
         public class AthleteDAL
         {
+            public List<Athlete> athlets = new List<Athlete>();
+            public void GetAthlets()
+            //User wordt opgehaald maar lijsten worden nog niet gevuld
+            {
+                athlets.Clear();
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "Select * from [User] Where UserType = 1";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    // Users ophalen uit database
+                                    int userId = reader.GetInt32(0);
+                                    string userName = reader.GetString(1);
+                                    string userEmail = reader.GetString(2);
+                                    string userPassword = reader.GetString(3);
+
+                                    Athlete user = new Athlete(userId, userName, userEmail, userPassword, new List<Activity>());
+                                    athlets.Add(user);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+            }
         }
 
         public class EquipmentDAL
@@ -266,10 +296,41 @@ namespace CasusZuydFitV0._1
 
         public class TrainerDAL
         {
-        }
+            public List<Trainer> trainers = new List<Trainer>();
+            public void GetTrainers()
+            //Trainer wordt opgehaald maar lijsten worden nog niet gevuld
+            {
+                trainers.Clear();
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "Select * from [User] Where UserType = 2";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    // Users ophalen uit database
+                                    int userId = reader.GetInt32(0);
+                                    string userName = reader.GetString(1);
+                                    string userEmail = reader.GetString(2);
+                                    string userPassword = reader.GetString(3);
 
-        public class EventorganisorDAL
-        {
+                                    Trainer user = new Trainer(userId, userName, userEmail, userPassword, new List<Activity>());
+                                    trainers.Add(user);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+            }
         }
     }
 }
