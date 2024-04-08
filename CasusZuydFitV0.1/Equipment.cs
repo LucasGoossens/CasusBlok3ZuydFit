@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CasusZuydFitV0._1.DAL;
 
 namespace CasusZuydFitV0._1
 {
@@ -19,6 +20,28 @@ namespace CasusZuydFitV0._1
             EquipmentName = equipmentName;
             EquipmentDescription = equipmentDescription;
             EquipmentAvailability = equipmentAvailability;
+        }
+
+        static public List<Equipment> GetEquipment()
+        {
+            EquipmentDAL Dal = new EquipmentDAL();
+            Dal.GetEquipment();
+            return Dal.equipments;
+        }
+        public void CreateEquipment()
+        {
+            EquipmentDAL Dal = new EquipmentDAL();
+            Dal.CreateEquipment(this);
+        }
+        public void UpdateEquipment()
+        {
+            EquipmentDAL Dal = new EquipmentDAL();
+            Dal.UpdateEquipment(this);
+        }
+        public void DeleteEquipment()
+        {
+            EquipmentDAL Dal = new EquipmentDAL();
+            Dal.DeleteEquipment(this);
         }
     }
 }

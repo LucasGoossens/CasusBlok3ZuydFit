@@ -15,6 +15,9 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("1: Display all users");
                 Console.WriteLine("2: Create new user");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("3. Create new Exercise");
+
 
                 int option;
 

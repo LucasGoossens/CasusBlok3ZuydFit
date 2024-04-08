@@ -1,26 +1,32 @@
 {
   "format": 1,
   "restore": {
-    "/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/CasusZuydFitV0.1.csproj": {}
+    "C:\\Users\\floyd\\Source\\Repos\\ZuydFit\\CasusZuydFitV0.1\\CasusZuydFitV0.1.csproj": {}
   },
   "projects": {
-    "/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/CasusZuydFitV0.1.csproj": {
+    "C:\\Users\\floyd\\Source\\Repos\\ZuydFit\\CasusZuydFitV0.1\\CasusZuydFitV0.1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/CasusZuydFitV0.1.csproj",
+        "projectUniqueName": "C:\\Users\\floyd\\Source\\Repos\\ZuydFit\\CasusZuydFitV0.1\\CasusZuydFitV0.1.csproj",
         "projectName": "CasusZuydFitV0.1",
-        "projectPath": "/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/CasusZuydFitV0.1.csproj",
-        "packagesPath": "/Users/gabriellunesu/.nuget/packages/",
-        "outputPath": "/Users/gabriellunesu/Documents/GitHub/CasusBlok3ZuydFit/CasusZuydFitV0.1/obj/",
+        "projectPath": "C:\\Users\\floyd\\Source\\Repos\\ZuydFit\\CasusZuydFitV0.1\\CasusZuydFitV0.1.csproj",
+        "packagesPath": "C:\\Users\\floyd\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\floyd\\Source\\Repos\\ZuydFit\\CasusZuydFitV0.1\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "/Users/gabriellunesu/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\floyd\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
-          "/usr/local/share/dotnet/library-packs": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -47,6 +53,10 @@
             "Microsoft.Data.SqlClient": {
               "target": "Package",
               "version": "[5.2.0, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.6, )"
             }
           },
           "imports": [
@@ -65,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
