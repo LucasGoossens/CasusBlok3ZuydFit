@@ -26,8 +26,22 @@ namespace CasusZuydFitV0._1
         {
             EquipmentDAL Dal = new EquipmentDAL();
             Dal.GetEquipment();
-
             return Dal.equipments;
+        }
+        public void CreateEquipment()
+        {
+            EquipmentDAL Dal = new EquipmentDAL();
+            Dal.CreateEquipment(this);
+        }
+        public void UpdateEquipment()
+        {
+            EquipmentDAL Dal = new EquipmentDAL();
+            Dal.UpdateEquipment(this);
+        }
+        public void DeleteEquipment()
+        {
+            EquipmentDAL Dal = new EquipmentDAL();
+            Dal.DeleteEquipment(this);
         }
     }
 }

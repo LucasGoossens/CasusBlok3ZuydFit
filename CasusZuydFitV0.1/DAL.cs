@@ -172,7 +172,7 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
-        }
+        
 
         public void UpdateEquipment(Equipment equipment)
         {
@@ -199,25 +199,26 @@ namespace CasusZuydFitV0._1
             }
         }
 
-        public void DeleteEquipment(Equipment equipment)
-        {
-            try
+            public void DeleteEquipment(Equipment equipment)
             {
-                using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                try
                 {
-                    connection.Open();
-                    string query = "Delete [Equipment] WHERE EquipmentId = @EquipmentId;";
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "Delete [Equipment] WHERE EquipmentId = @EquipmentId;";
 
-                    SqlCommand dbCommand = new SqlCommand(query, connection);
+                        SqlCommand dbCommand = new SqlCommand(query, connection);
 
-                    dbCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
+                        dbCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
 
-                    dbCommand.ExecuteNonQuery();
+                        dbCommand.ExecuteNonQuery();
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
             }
         }
 
