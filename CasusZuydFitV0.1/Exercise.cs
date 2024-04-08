@@ -8,13 +8,20 @@ namespace CasusZuydFitV0._1
 {
     public class Exercise : Activity
     {
-        public Dictionary<string, string> ExerciseLog { get; set; }
+
         public Athlete ExerciseParticipant { get; set; }
 
-        public Exercise(int activityId, string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, List<Equipment> equipents, Dictionary<string, string> exerciseLog, Athlete exerciseParticipant)
-            : base(activityId, activityName, activityDuration, startingTime, trainer, activityDescription, equipents)
+        public Exercise(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, List<Equipment> equipments, Athlete exerciseParticipant)
+              : base(activityId, activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription, equipments)
         {
-            ExerciseLog = exerciseLog;
+
+            ExerciseParticipant = exerciseParticipant;
+        }
+
+        public Exercise(string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, List<Equipment> equipments, Athlete exerciseParticipant)
+           : base(activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription, equipments)
+        {
+
             ExerciseParticipant = exerciseParticipant;
         }
     }
