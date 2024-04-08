@@ -81,10 +81,7 @@ namespace CasusZuydFitV0._1
                         {
                             dbCommand.Parameters.AddWithValue("@UserType", 2);
                         }
-                        else if(user is Eventorganisor)
-                        {
-                            dbCommand.Parameters.AddWithValue("@UserType", 3);
-                        }
+
 
                         dbCommand.ExecuteNonQuery();
                     }
@@ -261,21 +258,21 @@ namespace CasusZuydFitV0._1
         {       
         }
         
-        public class FeedbackDAL
+        public class LogFeedbackDAL
         {
-            public void GetFeedback()
+            public void GetLogFeedback()
             {
                 // kan pas gedaan worden wanneer get activty's werkt?
             }
 
-            public void CreateFeedback(Feedback feedback)
+            public void CreateLogFeedback(Feedback feedback)
             {
                 try
                 {
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "INSERT INTO [Feedback](TrainerId, AthleteId, ActivityId, FeedbackInfo) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo);";
+                        string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId, FeedbackInfo) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo);";
 
                         SqlCommand dbCommand = new SqlCommand(query, connection);
 
