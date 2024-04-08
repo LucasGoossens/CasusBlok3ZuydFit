@@ -147,6 +147,78 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
+            public void CreateEquipment(Equipment equipment) 
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "INSERT INTO [Equipment](EquipmentId, EquipmentName, EquipmentDescription, EquipmentAvailability) VALUES(@EquipmentId, @EquipmentName, @EquipmentDescription, @EquipmentAvailability);";
+
+                        SqlCommand dbCommand = new SqlCommand(query, connection);
+
+                        dbCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
+                        dbCommand.Parameters.AddWithValue("@EquipmentName", equipment.EquipmentName);
+                        dbCommand.Parameters.AddWithValue("@EquipmentDescription", equipment.EquipmentDescription);
+                        dbCommand.Parameters.AddWithValue("@EquipmentAvailability", equipment.EquipmentAvailability);
+
+
+                        dbCommand.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+            }
+        }
+
+        public void UpdateEquipment(Equipment equipment)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                {
+                    connection.Open();
+                    string query = "UPDATE [Equipment] SET EquipmentName = @EquipmentName, EquipmentDescription = @EquipmentDescription, EquipmentAvailability = @EquipmentAvailability WHERE EquipmentId = @EquipmentId;";
+
+                    SqlCommand dbCommand = new SqlCommand(query, connection);
+
+                    dbCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
+                    dbCommand.Parameters.AddWithValue("@EquipmentName", equipment.EquipmentName);
+                    dbCommand.Parameters.AddWithValue("@EquipmentDescription", equipment.EquipmentDescription);
+                    dbCommand.Parameters.AddWithValue("@EquipmentAvailability", equipment.EquipmentAvailability);
+
+                    dbCommand.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+            }
+        }
+
+        public void DeleteEquipment(Equipment equipment)
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                {
+                    connection.Open();
+                    string query = "Delete [Equipment] WHERE EquipmentId = @EquipmentId;";
+
+                    SqlCommand dbCommand = new SqlCommand(query, connection);
+
+                    dbCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
+
+                    dbCommand.ExecuteNonQuery();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+            }
         }
 
         public class EventDAL
