@@ -118,6 +118,10 @@ namespace CasusZuydFitV0._1
         {
         }
 
+        public class ExerciseDAL
+        {       
+        }
+        
         public class FeedbackDAL
         {
             public void GetFeedback()
