@@ -50,5 +50,16 @@ namespace CasusZuydFitV0._1
             LogFeedbackDAL Dal = new LogFeedbackDAL();
             Dal.CreateLogFeedback(this);
         }
+
+        public void UpdateFeedback()
+        {
+            LogFeedbackDAL Dal = new LogFeedbackDAL();
+            Dal.UpdateLogFeedback(this);
+        }
+        public void DeleteFeedback()
+        {
+            LogFeedbackDAL Dal = new LogFeedbackDAL();
+            Dal.DeleteLogFeedback(this);
+        }
     }
 }

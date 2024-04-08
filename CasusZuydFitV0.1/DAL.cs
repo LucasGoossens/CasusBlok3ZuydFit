@@ -289,6 +289,55 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
+
+
+            public void UpdateLogFeedback(Feedback feedback)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "UPDATE [LogFeedback] SET TrainerId = @TrainerId, AthleteId = @AthleteId, ActivityId = @ActivityId, FeedbackInfo = @FeedbackInfo WHERE LogFeedbackId = @LogFeedbackId;";
+
+                        SqlCommand dbCommand = new SqlCommand(query, connection);
+
+                        dbCommand.Parameters.AddWithValue("@TrainerId", feedback.Trainer.UserId);
+                        dbCommand.Parameters.AddWithValue("@AthleteId", feedback.Athlete.UserId);
+                        dbCommand.Parameters.AddWithValue("@ActivityId", feedback.Activity.ActivityId);
+                        dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo);
+                        dbCommand.Parameters.AddWithValue("@LogFeedbackId", feedback.FeedbackId);
+
+                        dbCommand.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgetreden bij het bijwerken van de feedback in de database. Neem contact op met de klantenservice. Foutmelding: {ex.Message}");
+                }
+            }
+
+            public void DeleteLogFeedback(Feedback feedback)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "DELETE FROM [LogFeedback] WHERE LogFeedbackId = @LogFeedbackId;";
+
+                        SqlCommand dbCommand = new SqlCommand(query, connection);
+                        dbCommand.Parameters.AddWithValue("@LogFeedbackId", feedback.FeedbackId);
+
+                        dbCommand.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgetreden bij het verwijderen van de feedback uit de database. Neem contact op met de klantenservice. Foutmelding: {ex.Message}");
+                }
+            }
+
         }
 
         public class TrainerDAL
