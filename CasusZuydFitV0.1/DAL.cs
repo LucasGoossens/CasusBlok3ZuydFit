@@ -265,7 +265,7 @@ namespace CasusZuydFitV0._1
                 // kan pas gedaan worden wanneer get activty's werkt?
             }
 
-            public void CreateLogFeedback(Feedback feedback)
+            public void CreateLogFeedback(LogFeedback feedback)
             {
                 try
                 {
@@ -291,7 +291,7 @@ namespace CasusZuydFitV0._1
             }
 
 
-            public void UpdateLogFeedback(Feedback feedback)
+            public void UpdateLogFeedback(LogFeedback feedback)
             {
                 try
                 {
@@ -317,7 +317,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            public void DeleteLogFeedback(Feedback feedback)
+            public void DeleteLogFeedback(LogFeedback feedback)
             {
                 try
                 {
