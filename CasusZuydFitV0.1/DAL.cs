@@ -251,7 +251,39 @@ namespace CasusZuydFitV0._1
 
         public class EventDAL
         {
+            public List<Event> events = new List<Event>(); // the type event is TYPE = 'event' in DB!
 
+            public void GetEvents()
+            {
+                events.Clear();
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "SELECT * FROM [Event] WHERE Type = 'event';";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    int eventId = reader.GetInt32(0);
+                                    string eventName = reader.GetString(1);
+                                    string eventDescription = reader.GetString(2);
+
+                                    Event eventItem = new Event(eventId, eventName, eventDescription);
+                                    events.Add(eventItem);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while retrieving events from the database. Please contact customer service. Error: {ex.Message}");
+                }
+            }
         }
 
         public class ExerciseDAL
