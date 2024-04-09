@@ -17,6 +17,8 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("2: Create new user");
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("3. Create new Exercise");
+                Console.WriteLine("4. Display all Exercises");
+                Console.WriteLine("5. Create new Workout");
 
 
                 int option;
@@ -40,6 +42,15 @@ namespace CasusZuydFitV0._1
                         break;
                     case 2:
                         CreateNewUser();
+                        break;
+                    case 3:
+                        CreateNewExercise();
+                        break;
+                    case 4:
+                        DisplayAllExercises();
+                        break;
+                    case 5:
+                        //CreateNewWorkout();
                         break;
                 }
             }
@@ -80,10 +91,9 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("Enter user type:");
                     Console.WriteLine("1. Athlete");
                     Console.WriteLine("2. Trainer");
-                    Console.WriteLine("3. Eventorganiser");
                     UserType = Convert.ToInt32(Console.ReadLine());
                     Console.Clear();
-                } while (UserType < 1 || UserType > 3);
+                } while (UserType < 1 || UserType > 2);
 
                 User user;
 
@@ -97,14 +107,38 @@ namespace CasusZuydFitV0._1
                         user = new Trainer(UserName, UserEmail, UserPassword, new List<Activity>());
                         user.CreateNewUser();
                         break;
-                    case 3:
-                        user = new Eventorganisor(UserName, UserEmail, UserPassword, new List<Event>());
-                        user.CreateNewUser();
-                        break;
                 }
 
                 Console.WriteLine("New user " + UserName + "succesfully created.");
             }
+
+            void CreateNewExercise()
+            {
+                Console.Clear();
+                Console.WriteLine("Enter Exercise Name:");
+                string ExerciseName = Console.ReadLine();
+                Console.WriteLine("Enter Exercise description:");
+                string ExerciseDescription = Console.ReadLine();
+
+                Exercise testExercise = new Exercise(ExerciseName, "exerciseresult", ExerciseDescription);
+                testExercise.CreateExercise();
+            }
+
+            void DisplayAllExercises()
+            {
+                Console.Clear();
+
+                Console.WriteLine("Total Exercises: ");
+                Console.WriteLine(Exercise.GetExercises().Count());
+
+
+                Console.WriteLine("List of Exercises:");
+                foreach (var exercise in Exercise.GetExercises())
+                {
+                    Console.WriteLine($"Exercise ID: {exercise.ExerciseId}, Name: {exercise.ExerciseName}, Description: {exercise.ExerciseDescription}");
+                }
+            }
+
         }
     }
 }
