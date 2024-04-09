@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CasusZuydFitV0._1.DAL;
 
 namespace CasusZuydFitV0._1
 {
@@ -35,6 +36,12 @@ namespace CasusZuydFitV0._1
             Trainer = trainer;
             ActivityDescription = activityDescription;
             Equipments = equipments;
+        }
+
+        public void DeleteActivity()
+        {
+            ActivityDAL Dal = new ActivityDAL();
+            Dal.DeleteActivity(this);
         }
     }
 }
