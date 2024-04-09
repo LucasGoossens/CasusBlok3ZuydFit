@@ -3,26 +3,52 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CasusZuydFitV0._1.DAL;
 
 namespace CasusZuydFitV0._1
 {
-    public class Exercise : Activity
+    public class Exercise
     {
+        public int ExerciseId { get; set; }
+        public string ExerciseName { get; set; }
+        public string ExerciseResult { get; set; }
+        public int ExerciseSets { get; set; } // deze weg voorlopig
+        public int ExerciseReps { get; set; } // deze weg voorlopig
+        public int ExerciseWeight { get; set; } // deze weg voorlopig
+        public string ExerciseDescription { get; set; }
 
-        public Athlete ExerciseParticipant { get; set; }
-
-        public Exercise(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, List<Equipment> equipments, Athlete exerciseParticipant)
-              : base(activityId, activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription, equipments)
+        public Exercise(int ExerciseId, string ExerciseName, string ExerciseResult, /*int ExerciseSets, int ExerciseReps, int ExerciseWeight, */string ExerciseDescription)
         {
-
-            ExerciseParticipant = exerciseParticipant;
+            ExerciseId = ExerciseId;
+            ExerciseName = ExerciseName;
+            ExerciseResult = ExerciseResult;
+            //ExerciseSets = ExerciseSets;
+            //ExerciseReps = ExerciseReps;
+            //ExerciseWeight = ExerciseWeight;
+            ExerciseDescription = ExerciseDescription;
         }
 
-        public Exercise(string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, List<Equipment> equipments, Athlete exerciseParticipant)
-           : base(activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription, equipments)
+        public Exercise(string ExerciseName, string ExerciseResult,/* int ExerciseSets, int ExerciseReps, int ExerciseWeight, */string ExerciseDescription)
         {
-
-            ExerciseParticipant = exerciseParticipant;
+            ExerciseName = ExerciseName;
+            ExerciseResult = ExerciseResult;
+            //ExerciseSets = ExerciseSets;
+            //ExerciseReps = ExerciseReps;
+            //ExerciseWeight = ExerciseWeight;
+            ExerciseDescription = ExerciseDescription;
         }
+        static public List<Exercise> GetExercises()
+        {
+            ExerciseDAL dal = new ExerciseDAL();
+            dal.GetExercises();
+            return dal.Exercises;
+        }
+
+        public void CreateExercise()
+        {
+            ExerciseDAL exerciseDAL = new ExerciseDAL();
+            exerciseDAL.CreateNewExercise(this);
+        }
+
     }
 }

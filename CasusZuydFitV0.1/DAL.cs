@@ -180,12 +180,12 @@ namespace CasusZuydFitV0._1
                 {
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
-                        connection.Open();
+                        connection.Open();                     
                         string query = "INSERT INTO [Equipment](EquipmentId, EquipmentName, EquipmentDescription, EquipmentAvailability) VALUES(@EquipmentId, @EquipmentName, @EquipmentDescription, @EquipmentAvailability);";
 
                         SqlCommand dbCommand = new SqlCommand(query, connection);
 
-                        dbCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
+                        dbCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId); 
                         dbCommand.Parameters.AddWithValue("@EquipmentName", equipment.EquipmentName);
                         dbCommand.Parameters.AddWithValue("@EquipmentDescription", equipment.EquipmentDescription);
                         dbCommand.Parameters.AddWithValue("@EquipmentAvailability", equipment.EquipmentAvailability);
@@ -255,7 +255,111 @@ namespace CasusZuydFitV0._1
         }
 
         public class ExerciseDAL
-        {       
+        {
+            public List<Exercise> Exercises = new List<Exercise>();
+
+            public void GetExercises()
+            {
+                Exercises.Clear();
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "SELECT * FROM [Exercise];";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {                                 
+                                    int exerciseId = reader.GetInt32(0);
+                                    string exerciseName = reader.GetString(1);
+                                    // reader.GetString(2) overgeslagen want klopt niet in db 
+                                    string exerciseDescription = reader.GetString(3);
+
+                                    Exercise exercise = new Exercise(exerciseId, exerciseName, "test", exerciseDescription);
+                                    Exercises.Add(exercise);
+
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+            }
+
+            public void CreateNewExercise(Exercise exercise)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "INSERT INTO [Exercise](ExerciseName, ExerciseDescription, ExerciseResult) VALUES(@ExerciseName, @ExerciseDescription, @ExerciseResult);";
+
+                        SqlCommand dbCommand = new SqlCommand(query, connection);
+                                                
+                        dbCommand.Parameters.AddWithValue("@ExerciseName", exercise.ExerciseName);
+                        dbCommand.Parameters.AddWithValue("@ExerciseDescription", exercise.ExerciseDescription);
+                        dbCommand.Parameters.AddWithValue("@ExerciseResult", exercise.ExerciseResult);
+
+                        dbCommand.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+            }
+
+            public void AddWorkoutIdToExercise(Workout workout)
+            {
+
+            }
+
+        }
+
+        public class WorkoutDAL
+        {
+
+            public void GetWorkouts()
+            {
+                
+            }
+
+            //public void CreateNewWorkout()
+            //{
+            //    try
+            //    {
+            //        using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+            //        {
+            //            connection.Open();
+            //            string query = "INSERT INTO [Workout](Workout, ExerciseDescription, ExerciseResult) VALUES(@ExerciseName, @ExerciseDescription, @ExerciseResult);";
+
+            //            SqlCommand dbCommand = new SqlCommand(query, connection);
+
+            //            dbCommand.Parameters.AddWithValue("@ExerciseName", exercise.ExerciseName);
+            //            dbCommand.Parameters.AddWithValue("@ExerciseDescription", exercise.ExerciseDescription);
+            //            dbCommand.Parameters.AddWithValue("@ExerciseResult", exercise.ExerciseResult);
+
+            //            dbCommand.ExecuteNonQuery();
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+            //    }
+
+            //}
+
+            public void AddExerciseToWorkout(Exercise exercise)
+            {
+
+            }
         }
         
         public class LogFeedbackDAL
@@ -291,7 +395,7 @@ namespace CasusZuydFitV0._1
             }
 
 
-            public void UpdateLogFeedback(LogFeedback feedback)
+            public void UpdateLogFeedback(LogFeedback feedback) // dit klopt niet?
             {
                 try
                 {
