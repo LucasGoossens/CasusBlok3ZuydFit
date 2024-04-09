@@ -67,25 +67,26 @@ namespace CasusZuydFitV0._1
 
                         string query = "INSERT INTO [User](UserName, UserEmail, UserPassword, UserType) VALUES(@UserName, @UserEmail, @UserPassword, @UserType);";
 
-                        SqlCommand dbCommand = new SqlCommand(query, connection);
-
-                        dbCommand.Parameters.AddWithValue("@UserName", user.UserName);
-                        dbCommand.Parameters.AddWithValue("@UserEmail", user.UserEmail);
-                        dbCommand.Parameters.AddWithValue("@UserPassword", user.UserPassword);
-
-                        if (user is Athlete)
+                        using (SqlCommand dbCommand = new SqlCommand(query, connection))
                         {
-                            dbCommand.Parameters.AddWithValue("@UserType", 1);
-                        }
-                        else if (user is Trainer)
-                        {
-                            dbCommand.Parameters.AddWithValue("@UserType", 2);
-                        }
+
+                            dbCommand.Parameters.AddWithValue("@UserName", user.UserName);
+                            dbCommand.Parameters.AddWithValue("@UserEmail", user.UserEmail);
+                            dbCommand.Parameters.AddWithValue("@UserPassword", user.UserPassword);
+
+                            if (user is Athlete)
+                            {
+                                dbCommand.Parameters.AddWithValue("@UserType", 1);
+                            }
+                            else if (user is Trainer)
+                            {
+                                dbCommand.Parameters.AddWithValue("@UserType", 2);
+                            }
 
 
-                        dbCommand.ExecuteNonQuery();
+                            dbCommand.ExecuteNonQuery();
+                        }
                     }
-
                 }
                 catch (Exception ex)
                 {
@@ -93,6 +94,53 @@ namespace CasusZuydFitV0._1
                 }
 
             }
+            public void DeleteUser(User user) 
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "DELETE FROM [User] WHERE UserId = @UserId;";
+
+                        using (SqlCommand dbCommand = new SqlCommand(query, connection))
+                        {
+                            dbCommand.Parameters.AddWithValue("@UserId", user.UserId);
+                            dbCommand.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het verwijderen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }   
+            }
+            public void UpdateUser(User user)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "UPDATE [User] SET UserName = @UserName, UserEmail = @UserEmail, UserPassword = @UserPassword WHERE UserId = @UserId;";
+
+                        using (SqlCommand dbCommand = new SqlCommand(query, connection))
+                        {
+                            dbCommand.Parameters.AddWithValue("@UserId", user.UserId);
+                            dbCommand.Parameters.AddWithValue("@UserName", user.UserName);
+                            dbCommand.Parameters.AddWithValue("@UserEmail", user.UserEmail);
+                            dbCommand.Parameters.AddWithValue("@UserPassword", user.UserPassword);
+
+                            dbCommand.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het bijwerken van de klanten in de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }   
+            }
+
         }
 
         public class ActivityDAL
