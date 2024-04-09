@@ -398,7 +398,7 @@ namespace CasusZuydFitV0._1
                                     int eventParticipantLimit = reader.GetInt32(8);
 
                                     // Create Event object and add it to the Events list
-                                    Event eventItem = new Event(eventId, eventName, activityDuration, startingTime, activityDescription, trainer, equipments, eventParticipants, eventLocation, eventParticipantLimit);
+                                    Event eventItem = new Event(eventId, eventName, activityDuration, startingTime,  trainer, activityDescription, equipments, eventParticipants, eventLocation, eventParticipantLimit);
                                     events.Add(eventItem);
                                 }
                             }
