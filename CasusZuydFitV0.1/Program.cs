@@ -16,9 +16,9 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("1: Display all users");
                 Console.WriteLine("2: Create new user");
                 Console.WriteLine("-----------------------");
-                Console.WriteLine("3. Create new Exercise");
-                Console.WriteLine("4. Display all Exercises");
-                Console.WriteLine("5. Create new Workout");
+                //Console.WriteLine("3. Create new Exercise");
+                //Console.WriteLine("4. Display all Exercises");
+                Console.WriteLine("3. Create new Workout");
 
 
                 int option;
@@ -44,13 +44,7 @@ namespace CasusZuydFitV0._1
                         CreateNewUser();
                         break;
                     case 3:
-                        CreateNewExercise();
-                        break;
-                    case 4:
-                        DisplayAllExercises();
-                        break;
-                    case 5:
-                        //CreateNewWorkout();
+                        CreateNewWorkout();
                         break;
                 }
             }
@@ -112,7 +106,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("New user " + UserName + "succesfully created.");
             }
 
-            void CreateNewExercise()
+            Exercise CreateNewExercise(int workoutId) // dit moet waarschijnlijk in Exercise.cs
             {
                 Console.Clear();
                 Console.WriteLine("Enter Exercise Name:");
@@ -120,8 +114,8 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("Enter Exercise description:");
                 string ExerciseDescription = Console.ReadLine();
 
-                Exercise testExercise = new Exercise(ExerciseName, "exerciseresult", ExerciseDescription);
-                testExercise.CreateExercise();
+                Exercise testExercise = new Exercise(ExerciseName, "exerciseresult", ExerciseDescription, workoutId);
+                return testExercise;
             }
 
             void DisplayAllExercises()
@@ -139,6 +133,58 @@ namespace CasusZuydFitV0._1
                 }
             }
 
+            void CreateNewWorkout()
+            {
+                Console.Clear();
+                                
+                Console.WriteLine("      New workout");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("New Workout Name:");
+                string newWorkoutName = Console.ReadLine();
+                Console.WriteLine("Workout duration in minutes:");
+                int newWorkoutDuration = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Workout starting time:");
+                string newWorkoutStartingTime = Console.ReadLine();
+                Console.WriteLine("Workout description:");
+                string newWorkoutDescription= Console.ReadLine();
+                Console.WriteLine("Workout Athlete ID:"); // dit is foutgevoelig voor nu, uiteindelijk misschien eerst lijst van alle Athlete Id's geven
+                int newAthleteParticipantId = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Workout Trainer ID:"); // dit is foutgevoelig voor nu, uiteindelijk misschien eerst lijst van alle Trainer Id's geven
+                int newTrainerParticipantId = Convert.ToInt32(Console.ReadLine());
+
+                List<User> allUsers = User.GetUsers();
+
+                Athlete newWorkOutAthlete = (Athlete)allUsers.FirstOrDefault(athlete => athlete.UserId == newAthleteParticipantId);
+                Trainer newWorkOutTrainer = (Trainer)allUsers.FirstOrDefault(trainer => trainer.UserId == newTrainerParticipantId);
+
+                Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
+                newWorkout.CreateNewWorkout();
+                int workoutIdToAddToExercise = newWorkout.ActivityId;
+                Console.WriteLine(workoutIdToAddToExercise.ToString());
+                
+                int addExerciseOption = 1;
+                while (addExerciseOption == 1)
+                {
+                    Console.WriteLine("-----------------------");
+                    Console.WriteLine("1. Add new Exercise to Workout");
+                    Console.WriteLine("2. Save Workout");
+
+                    addExerciseOption = Convert.ToInt32(Console.ReadLine());                                       
+
+                    switch (addExerciseOption)
+                    {
+                        case 1:
+                            Console.WriteLine("-----------------------");
+                            Exercise testExercise = CreateNewExercise(workoutIdToAddToExercise); // dit is een Program.method
+                            testExercise.CreateExercise();              // dit is een object.method
+                            break;
+                        case 2:
+                            addExerciseOption = 2;
+                            break;
+                    }
+                }
+
+            }
         }
     }
 }

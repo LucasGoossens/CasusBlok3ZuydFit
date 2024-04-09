@@ -19,7 +19,7 @@ namespace CasusZuydFitV0._1
         {
             ActivityList = activity;
         }
-
+        
         public void EventRegisterAthlete(Event eventToRegisterAthlete)
         {
             eventToRegisterAthlete.EventParticipants.Add(this);

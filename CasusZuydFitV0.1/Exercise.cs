@@ -17,25 +17,29 @@ namespace CasusZuydFitV0._1
         public int ExerciseWeight { get; set; } // deze weg voorlopig
         public string ExerciseDescription { get; set; }
 
-        public Exercise(int ExerciseId, string ExerciseName, string ExerciseResult, /*int ExerciseSets, int ExerciseReps, int ExerciseWeight, */string ExerciseDescription)
+        public int WorkoutId { get; set; }
+
+        public Exercise(int exerciseId, string exerciseName, string exerciseResult, /*int ExerciseSets, int ExerciseReps, int ExerciseWeight, */string exerciseDescription, int workoutId)
         {
-            ExerciseId = ExerciseId;
-            ExerciseName = ExerciseName;
-            ExerciseResult = ExerciseResult;
-            //ExerciseSets = ExerciseSets;
+            ExerciseId = exerciseId;
+            ExerciseName = exerciseName;
+            ExerciseResult = exerciseResult;
+            //ExerciseSets = ExerciseSets; hoofdletters nog veranderen hier en in parameters
             //ExerciseReps = ExerciseReps;
             //ExerciseWeight = ExerciseWeight;
-            ExerciseDescription = ExerciseDescription;
+            ExerciseDescription = exerciseDescription;
+            WorkoutId = workoutId;
         }
 
-        public Exercise(string ExerciseName, string ExerciseResult,/* int ExerciseSets, int ExerciseReps, int ExerciseWeight, */string ExerciseDescription)
+        public Exercise(string exerciseName, string exerciseResult,/* int ExerciseSets, int ExerciseReps, int ExerciseWeight, */string exerciseDescription, int workoutId)
         {
-            ExerciseName = ExerciseName;
-            ExerciseResult = ExerciseResult;
+            ExerciseName = exerciseName;
+            ExerciseResult = exerciseResult;
             //ExerciseSets = ExerciseSets;
             //ExerciseReps = ExerciseReps;
             //ExerciseWeight = ExerciseWeight;
-            ExerciseDescription = ExerciseDescription;
+            ExerciseDescription = exerciseDescription;
+            WorkoutId = workoutId;
         }
         static public List<Exercise> GetExercises()
         {

@@ -36,5 +36,25 @@ namespace CasusZuydFitV0._1
             ActivityDescription = activityDescription;
             Equipments = equipments;
         }
+
+        public Activity(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription)
+        {
+            ActivityId = activityId;
+            ActivityName = activityName;
+            ActivityDurationMinutes = activityDurationMinutes;
+            ActivityStartingTime = activityStartingTime;
+            Trainer = trainer;
+            ActivityDescription = activityDescription;
+        }
+
+        public Activity(string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription)
+        {
+            ActivityName = activityName;
+            ActivityDurationMinutes = activityDurationMinutes;
+            ActivityStartingTime = activityStartingTime;
+            Trainer = trainer;
+            ActivityDescription = activityDescription;
+            
+        }
     }
 }

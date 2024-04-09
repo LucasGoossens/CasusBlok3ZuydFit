@@ -24,11 +24,28 @@ namespace CasusZuydFitV0._1
             WorkoutParticipant = exerciseParticipant;
         }
 
-        public void AddExercise(Exercise exercise)
+        public Workout(string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, Athlete exerciseParticipant)
+         : base(activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription)
         {
-            WorkoutExercises.Add(exercise);
-            //DAL.AddExercise(exercise);
+            WorkoutParticipant = exerciseParticipant;
         }
+
+        public Workout(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription)
+        : base(activityId, activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription)
+        {
+        // hmm   
+        }
+
+        public void CreateNewWorkout()
+        {
+            DAL.WorkoutDAL workoutdal = new DAL.WorkoutDAL();
+            this.ActivityId = workoutdal.CreateNewWorkout(this);
+        }
+        //public void AddExercise(Exercise exercise)
+        //{
+        //    WorkoutExercises.Add(exercise);
+        //    //DAL.AddExercise(exercise);
+        //}
 
     }
 }
