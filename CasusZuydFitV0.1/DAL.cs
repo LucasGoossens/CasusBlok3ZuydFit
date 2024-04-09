@@ -317,6 +317,59 @@ namespace CasusZuydFitV0._1
                 }
             }
 
+            public void UpdateExercise(Exercise exercise)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "UPDATE [Exercise] SET ExerciseName = @ExerciseName, ExerciseDescription = @ExerciseDescription, ExerciseResult = @ExerciseResult WHERE ExerciseId = @ExerciseId;";
+
+                        using (SqlCommand dbCommand = new SqlCommand(query, connection)){
+
+                            dbCommand.Parameters.AddWithValue("@ExerciseId", exercise.ExerciseId);
+                            dbCommand.Parameters.AddWithValue("@ExerciseName", exercise.ExerciseName);
+                            dbCommand.Parameters.AddWithValue("@ExerciseDescription", exercise.ExerciseDescription);
+                            dbCommand.Parameters.AddWithValue("@ExerciseResult", exercise.ExerciseResult);
+
+                            dbCommand.ExecuteNonQuery();
+                        };
+
+                        
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while updating the exercise in the database. Please contact customer service. Error: {ex.Message}");
+                }
+            }
+
+                public void DeleteExercise(int exerciseId)
+                {
+                    try
+                    {
+                        using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                        {
+                            connection.Open();
+                            string query = "DELETE FROM [Exercise] WHERE ExerciseId = @ExerciseId;";
+
+                            using (SqlCommand dbCommand = new SqlCommand(query, connection)){
+
+                                dbCommand.Parameters.AddWithValue("@ExerciseId", exerciseId);
+
+                                dbCommand.ExecuteNonQuery();
+                            };
+
+                            
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"An error occurred while deleting the exercise from the database. Please contact customer service. Error: {ex.Message}");
+                    }
+                }
+
             public void AddWorkoutIdToExercise(Workout workout)
             {
 
