@@ -6,8 +6,8 @@ namespace CasusZuydFitV0._1
 {
     public class DAL
     {
-        private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-
+        //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        private static readonly string dbConString = "data source = LUCAS; initial catalog = ZuydFitFinal; trusted_connection=true";
         public class UserDAL
         {
             public List<User> users = new List<User>();
@@ -145,6 +145,63 @@ namespace CasusZuydFitV0._1
 
         public class ActivityDAL
         {
+            public List<Activity> activities = new List<Activity>();
+            public void GetActivities()
+
+            {
+                activities.Clear();
+
+                UserDAL getTrainerDal = new UserDAL();
+                getTrainerDal.GetUsers();
+
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "Select * from [Activity]";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    int activityId = reader.GetInt32(0);
+                                    string activityName = reader.GetString(1);
+                                    int activityDuration = Convert.ToInt32(reader.GetString(2));
+                                    string activityStartingTime = reader.GetString(3);
+                                    string activityDescription = reader.GetString(4);
+
+                                    int activityTrainerId = Convert.ToInt32(reader.GetString(5));
+                                    Trainer activityTrainer = (Trainer)getTrainerDal.users.Find(trainer => trainer.UserId == activityTrainerId);
+
+                                    string activityType = reader.GetString(6);
+
+                                    if (activityType == "event")
+                                    {
+                                        string eventLocation = reader.GetString(7);
+                                        int eventParticipantsLimit = Convert.ToInt32(reader.GetString(8));
+
+                                        Event eventToAdd = new Event(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, eventLocation, eventParticipantsLimit);
+                                        activities.Add(eventToAdd);
+                                    }
+                                    else if (activityType == "workout")
+                                    {
+                                        Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription);
+                                        activities.Add(workoutToAdd);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+            }
+
         }
 
         public class AthleteDAL
@@ -184,6 +241,8 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
+
+
         }
 
         public class EquipmentDAL
@@ -376,8 +435,9 @@ namespace CasusZuydFitV0._1
                                     string exerciseName = reader.GetString(1);
                                     // reader.GetString(2) overgeslagen want klopt niet in db 
                                     string exerciseDescription = reader.GetString(3);
+                                    int workoutId = reader.GetInt32(4);
 
-                                    Exercise exercise = new Exercise(exerciseId, exerciseName, "test", exerciseDescription);
+                                    Exercise exercise = new Exercise(exerciseId, exerciseName, "test", exerciseDescription, workoutId);
                                     Exercises.Add(exercise);
 
                                 }
@@ -391,6 +451,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
+            //The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Exercise_Activity". The conflict occurred in database "ZuydFitFinal", table "dbo.Activity", column 'ActivityId'.
             public void CreateNewExercise(Exercise exercise)
             {
                 try
@@ -398,20 +459,22 @@ namespace CasusZuydFitV0._1
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "INSERT INTO [Exercise](ExerciseName, ExerciseDescription, ExerciseResult) VALUES(@ExerciseName, @ExerciseDescription, @ExerciseResult);";
+                        string query = "INSERT INTO [Exercise](ExerciseName, ExerciseDescription, ExerciseResult, WorkoutId) VALUES(@ExerciseName, @ExerciseDescription, @ExerciseResult, @WorkoutId);";
 
-                        SqlCommand dbCommand = new SqlCommand(query, connection);
+                        using (SqlCommand dbCommand = new SqlCommand(query, connection))
+                        {
+                            dbCommand.Parameters.AddWithValue("@ExerciseName", exercise.ExerciseName);
+                            dbCommand.Parameters.AddWithValue("@ExerciseDescription", exercise.ExerciseDescription);
+                            dbCommand.Parameters.AddWithValue("@ExerciseResult", exercise.ExerciseResult);
+                            dbCommand.Parameters.AddWithValue("@WorkoutId", exercise.WorkoutId);
 
-                        dbCommand.Parameters.AddWithValue("@ExerciseName", exercise.ExerciseName);
-                        dbCommand.Parameters.AddWithValue("@ExerciseDescription", exercise.ExerciseDescription);
-                        dbCommand.Parameters.AddWithValue("@ExerciseResult", exercise.ExerciseResult);
-
-                        dbCommand.ExecuteNonQuery();
+                            dbCommand.ExecuteNonQuery();
+                        }
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                    Console.WriteLine($"An error occurred while creating a new exercise in the database. Please contact Customer Service: {ex.Message}");
                 }
             }
 
@@ -424,7 +487,8 @@ namespace CasusZuydFitV0._1
                         connection.Open();
                         string query = "UPDATE [Exercise] SET ExerciseName = @ExerciseName, ExerciseDescription = @ExerciseDescription, ExerciseResult = @ExerciseResult WHERE ExerciseId = @ExerciseId;";
 
-                        using (SqlCommand dbCommand = new SqlCommand(query, connection)){
+                        using (SqlCommand dbCommand = new SqlCommand(query, connection))
+                        {
 
                             dbCommand.Parameters.AddWithValue("@ExerciseId", exercise.ExerciseId);
                             dbCommand.Parameters.AddWithValue("@ExerciseName", exercise.ExerciseName);
@@ -434,7 +498,7 @@ namespace CasusZuydFitV0._1
                             dbCommand.ExecuteNonQuery();
                         };
 
-                        
+
                     }
                 }
                 catch (Exception ex)
@@ -443,30 +507,31 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-                public void DeleteExercise(int exerciseId)
+            public void DeleteExercise(int exerciseId)
+            {
+                try
                 {
-                    try
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
-                        using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                        connection.Open();
+                        string query = "DELETE FROM [Exercise] WHERE ExerciseId = @ExerciseId;";
+
+                        using (SqlCommand dbCommand = new SqlCommand(query, connection))
                         {
-                            connection.Open();
-                            string query = "DELETE FROM [Exercise] WHERE ExerciseId = @ExerciseId;";
 
-                            using (SqlCommand dbCommand = new SqlCommand(query, connection)){
+                            dbCommand.Parameters.AddWithValue("@ExerciseId", exerciseId);
 
-                                dbCommand.Parameters.AddWithValue("@ExerciseId", exerciseId);
+                            dbCommand.ExecuteNonQuery();
+                        };
 
-                                dbCommand.ExecuteNonQuery();
-                            };
 
-                            
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"An error occurred while deleting the exercise from the database. Please contact customer service. Error: {ex.Message}");
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while deleting the exercise from the database. Please contact customer service. Error: {ex.Message}");
+                }
+            }
 
             public void AddWorkoutIdToExercise(Workout workout)
             {
@@ -483,30 +548,41 @@ namespace CasusZuydFitV0._1
 
             }
 
-            //public void CreateNewWorkout()
-            //{
-            //    try
-            //    {
-            //        using (SqlConnection connection = new SqlConnection(DAL.dbConString))
-            //        {
-            //            connection.Open();
-            //            string query = "INSERT INTO [Workout](Workout, ExerciseDescription, ExerciseResult) VALUES(@ExerciseName, @ExerciseDescription, @ExerciseResult);";
+            public int CreateNewWorkout(Workout workout)
+            {
+                int insertedId = -1;
 
-            //            SqlCommand dbCommand = new SqlCommand(query, connection);
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "INSERT INTO [Activity](ActivityName, ActivityDuration, ActivityStartingTime, ActivityDescription, TrainerId, Type) VALUES(@ActivityName, @ActivityDuration, @ActivityStartingTime, @ActivityDescription, @TrainerId, @Type); SELECT SCOPE_IDENTITY();";
 
-            //            dbCommand.Parameters.AddWithValue("@ExerciseName", exercise.ExerciseName);
-            //            dbCommand.Parameters.AddWithValue("@ExerciseDescription", exercise.ExerciseDescription);
-            //            dbCommand.Parameters.AddWithValue("@ExerciseResult", exercise.ExerciseResult);
+                        using (SqlCommand dbCommand = new SqlCommand(query, connection))
+                        {
+                            dbCommand.Parameters.AddWithValue("@ActivityName", workout.ActivityName);
+                            dbCommand.Parameters.AddWithValue("@ActivityDuration", workout.ActivityDurationMinutes);
+                            dbCommand.Parameters.AddWithValue("@ActivityStartingTime", workout.ActivityStartingTime);
+                            dbCommand.Parameters.AddWithValue("@ActivityDescription", workout.ActivityDescription);
+                            dbCommand.Parameters.AddWithValue("@TrainerId", workout.Trainer.UserId);
+                            dbCommand.Parameters.AddWithValue("@Type", "workout");
 
-            //            dbCommand.ExecuteNonQuery();
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
-            //    }
+                            object result = dbCommand.ExecuteScalar();
+                            if (result != null && result != DBNull.Value)
+                            {
+                                insertedId = Convert.ToInt32(result);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while saving the workout to the database. Please contact Customer Service: {ex.Message}");
+                }
 
-            //}
+                return insertedId;
+            }
 
             public void AddExerciseToWorkout(Exercise exercise)
             {
