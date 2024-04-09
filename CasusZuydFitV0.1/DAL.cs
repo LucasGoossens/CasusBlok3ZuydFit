@@ -282,9 +282,9 @@ namespace CasusZuydFitV0._1
                                     int trainerId = reader.GetInt32(5); // Assuming TrainerId is stored in the database
                                     Trainer trainer = trainerDAL.trainers.First(x => x.UserId == trainerId); // You need to implement this method to get Trainer details
 
-                                    List<Equipment> equipments = new List<Equipment>(); 
+                                    List<Equipment> equipments = new List<Equipment>(); // deze moet nog gevuld worden
 
-                                    List<Athlete> eventParticipants = new List<Athlete>(); 
+                                    List<Athlete> eventParticipants = new List<Athlete>(); // deze moet nog gevuld worden
 
                                     string eventLocation = reader.GetString(7);
                                     
