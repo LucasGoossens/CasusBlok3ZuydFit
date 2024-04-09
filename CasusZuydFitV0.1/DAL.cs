@@ -182,11 +182,10 @@ namespace CasusZuydFitV0._1
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "INSERT INTO [Equipment](EquipmentId, EquipmentName, EquipmentDescription, EquipmentAvailability) VALUES(@EquipmentId, @EquipmentName, @EquipmentDescription, @EquipmentAvailability);";
+                        string query = "INSERT INTO [Equipment](EquipmentName, EquipmentDescription, EquipmentAvailability) VALUES(@EquipmentName, @EquipmentDescription, @EquipmentAvailability);";
 
                         SqlCommand dbCommand = new SqlCommand(query, connection);
 
-                        dbCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
                         dbCommand.Parameters.AddWithValue("@EquipmentName", equipment.EquipmentName);
                         dbCommand.Parameters.AddWithValue("@EquipmentDescription", equipment.EquipmentDescription);
                         dbCommand.Parameters.AddWithValue("@EquipmentAvailability", equipment.EquipmentAvailability);
