@@ -258,10 +258,13 @@ namespace CasusZuydFitV0._1
                 events.Clear();
                 try
                 {
+                    TrainerDAL trainerDAL = new TrainerDAL();
+                    trainerDAL.GetTrainers();
+            
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "SELECT * FROM [Event] WHERE Type = 'event';";
+                        string query = "SELECT * FROM [Activity] WHERE Type = 'event';";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             using (SqlDataReader reader = command.ExecuteReader())
@@ -270,9 +273,25 @@ namespace CasusZuydFitV0._1
                                 {
                                     int eventId = reader.GetInt32(0);
                                     string eventName = reader.GetString(1);
-                                    string eventDescription = reader.GetString(2);
+                                    int activityDuration = reader.GetInt32(2); // Assuming this is the activity duration
+                                    string startingTime = reader.GetString(3); // Assuming this is the starting time
+                                  
+                                    string activityDescription = reader.GetString(4); 
 
-                                    Event eventItem = new Event(eventId, eventName, eventDescription);
+
+                                    int trainerId = reader.GetInt32(5); // Assuming TrainerId is stored in the database
+                                    Trainer trainer = trainerDAL.trainers.First(x => x.UserId == trainerId); // You need to implement this method to get Trainer details
+
+                                    List<Equipment> equipments = new List<Equipment>(); 
+
+                                    List<Athlete> eventParticipants = new List<Athlete>(); 
+
+                                    string eventLocation = reader.GetString(7);
+                                    
+                                    int eventParticipantLimit = reader.GetInt32(8);
+
+                                    // Create Event object and add it to the Events list
+                                    Event eventItem = new Event(eventId, eventName, activityDuration, startingTime, activityDescription, trainer, equipments, eventParticipants, eventLocation, eventParticipantLimit);
                                     events.Add(eventItem);
                                 }
                             }
