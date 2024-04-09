@@ -96,6 +96,28 @@ namespace CasusZuydFitV0._1
 
         public class ActivityDAL
         {
+
+            public void DeleteActivity(Activity activity)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "Delete [Activity] WHERE ActivityId = @ActivityId;";
+
+                        SqlCommand dbCommand = new SqlCommand(query, connection);
+
+                        dbCommand.Parameters.AddWithValue("@ActivityId", activity.ActivityId);
+
+                        dbCommand.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
+            }
         }
 
         public class AthleteDAL
@@ -250,6 +272,11 @@ namespace CasusZuydFitV0._1
         }
 
         public class EventDAL
+        {
+
+        }
+
+        public class Workout
         {
 
         }
