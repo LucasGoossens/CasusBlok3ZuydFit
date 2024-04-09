@@ -299,7 +299,58 @@ namespace CasusZuydFitV0._1
 
         public class EventDAL
         {
+            public List<Event> events = new List<Event>(); // the type event is TYPE = 'event' in DB!
 
+            public void GetEvents()
+            {
+                events.Clear();
+                try
+                {
+                    TrainerDAL trainerDAL = new TrainerDAL();
+                    trainerDAL.GetTrainers();
+            
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "SELECT * FROM [Activity] WHERE Type = 'event';";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    int eventId = reader.GetInt32(0);
+                                    string eventName = reader.GetString(1);
+                                    int activityDuration = reader.GetInt32(2); // Assuming this is the activity duration
+                                    string startingTime = reader.GetString(3); // Assuming this is the starting time
+                                  
+                                    string activityDescription = reader.GetString(4); 
+
+
+                                    int trainerId = reader.GetInt32(5); // Assuming TrainerId is stored in the database
+                                    Trainer trainer = trainerDAL.trainers.First(x => x.UserId == trainerId); // You need to implement this method to get Trainer details
+
+                                    List<Equipment> equipments = new List<Equipment>(); // deze moet nog gevuld worden
+
+                                    List<Athlete> eventParticipants = new List<Athlete>(); // deze moet nog gevuld worden
+
+                                    string eventLocation = reader.GetString(7);
+                                    
+                                    int eventParticipantLimit = reader.GetInt32(8);
+
+                                    // Create Event object and add it to the Events list
+                                    Event eventItem = new Event(eventId, eventName, activityDuration, startingTime, activityDescription, trainer, equipments, eventParticipants, eventLocation, eventParticipantLimit);
+                                    events.Add(eventItem);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while retrieving events from the database. Please contact customer service. Error: {ex.Message}");
+                }
+            }
         }
 
         public class ExerciseDAL
