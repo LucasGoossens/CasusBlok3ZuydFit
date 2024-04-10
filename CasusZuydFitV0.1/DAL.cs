@@ -56,9 +56,8 @@ namespace CasusZuydFitV0._1
                             {
                                 while (reader.Read())
                                 {
-                                    // Users ophalen uit database
                                     int athleteId = reader.GetInt32(0);
-                                    string activityId = reader.GetString(1);
+                                    int activityId = reader.GetInt32(1);
                                     Activity activity = activityDAL.activities.Find(x => x.ActivityId == activityId);
                                     Athlete athlete = users.Find(x => x.UserId == athleteId) as Athlete;
                                     athlete.ActivityList.Add(activity);
@@ -404,14 +403,14 @@ namespace CasusZuydFitV0._1
                                 {
                                     int eventId = reader.GetInt32(0);
                                     string eventName = reader.GetString(1);
-                                    int activityDuration = reader.GetInt32(2); // Assuming this is the activity duration
-                                    string startingTime = reader.GetString(3); // Assuming this is the starting time
+                                    int activityDuration = reader.GetInt32(2); 
+                                    string startingTime = reader.GetString(3); 
                                   
                                     string activityDescription = reader.GetString(4); 
 
 
-                                    int trainerId = reader.GetInt32(5); // Assuming TrainerId is stored in the database
-                                    Trainer trainer = trainerDAL.trainers.First(x => x.UserId == trainerId); // You need to implement this method to get Trainer details
+                                    int trainerId = reader.GetInt32(5); 
+                                    Trainer trainer = trainerDAL.trainers.First(x => x.UserId == trainerId);
 
                                     List<Equipment> equipments = new List<Equipment>(); // deze moet nog gevuld worden
 
@@ -616,12 +615,54 @@ namespace CasusZuydFitV0._1
 
         public class LogFeedbackDAL
         {
-            public List<LogFeedback> LogFeedbacks = new List<LogFeedback>();
+            public List<LogFeedback> logFeedbacks = new List<LogFeedback>();
             
             public void GetLogFeedback()
             {
-                // nog toe te passen
+                logFeedbacks.Clear();
+                try
+                {
+                    UserDAL userDal = new UserDAL();
+                    userDal.GetUsers();
+                    ActivityDAL activityDal = new ActivityDAL();
+                    activityDal.GetActivities();
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = "Select * from [LogFeedback]";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    // Users ophalen uit database
+                                    int logFeedbackId = reader.GetInt32(0);
+                                    int trainerId = reader.GetInt32(1);
+                                    int athleteId = reader.GetInt32(2);
+                                    int activityId = reader.GetInt32(3);
+                                    string feedbackInfo = reader.GetString(4);
+
+
+                                    Trainer trainer = userDal.users.Find(x => x.UserId == trainerId) as Trainer;
+                                    Athlete athlete = userDal.users.Find(x => x.UserId == athleteId) as Athlete;
+
+
+                                    Activity activity = activityDal.activities.Find(x => x.ActivityId == activityId);
+
+                                    LogFeedback feedback = new LogFeedback(logFeedbackId, trainer, athlete, activity, feedbackInfo);
+                                    logFeedbacks.Add(feedback);
+                                }
+                            }
+                        }   
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                }
             }
+        
 
             public void CreateLogFeedback(LogFeedback feedback)
             {
@@ -632,7 +673,7 @@ namespace CasusZuydFitV0._1
                         connection.Open();
                         string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId, FeedbackInfo) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo);";
 
-                        SqlCommand dbCommand = new SqlCommand(query, connection);
+                        using SqlCommand dbCommand = new SqlCommand(query, connection);
 
                         dbCommand.Parameters.AddWithValue("@TrainerId", feedback.Trainer.UserId);
                         dbCommand.Parameters.AddWithValue("@AthleteId", feedback.Athlete.UserId);
@@ -658,7 +699,7 @@ namespace CasusZuydFitV0._1
                         connection.Open();
                         string query = "UPDATE [LogFeedback] SET TrainerId = @TrainerId, AthleteId = @AthleteId, ActivityId = @ActivityId, FeedbackInfo = @FeedbackInfo WHERE LogFeedbackId = @LogFeedbackId;";
 
-                        SqlCommand dbCommand = new SqlCommand(query, connection);
+                         using SqlCommand dbCommand = new SqlCommand(query, connection);
 
                         dbCommand.Parameters.AddWithValue("@TrainerId", feedback.Trainer.UserId);
                         dbCommand.Parameters.AddWithValue("@AthleteId", feedback.Athlete.UserId);
@@ -684,7 +725,7 @@ namespace CasusZuydFitV0._1
                         connection.Open();
                         string query = "DELETE FROM [LogFeedback] WHERE LogFeedbackId = @LogFeedbackId;";
 
-                        SqlCommand dbCommand = new SqlCommand(query, connection);
+                        using SqlCommand dbCommand = new SqlCommand(query, connection);
                         dbCommand.Parameters.AddWithValue("@LogFeedbackId", feedback.FeedbackId);
 
                         dbCommand.ExecuteNonQuery();
@@ -738,3 +779,4 @@ namespace CasusZuydFitV0._1
         }
     }
 }
+
