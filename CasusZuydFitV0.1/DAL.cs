@@ -12,11 +12,12 @@ namespace CasusZuydFitV0._1
         {
             public List<User> users = new List<User>();
             public void GetUsers()
-            //User wordt opgehaald maar lijsten worden nog niet gevuld
             {
                 users.Clear();
                 try
                 {
+                    ActivityDAL activityDAL = new ActivityDAL();
+                    activityDAL.GetActivities();
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
@@ -45,6 +46,29 @@ namespace CasusZuydFitV0._1
                                         users.Add(user);
                                     }
                                 }
+                            }
+                        }
+                        // users bestaan maar lijsten zijn nog leeg
+                        query = "Select AthleteId, ActivityId from LogFeedback";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    // Users ophalen uit database
+                                    int athleteId = reader.GetInt32(0);
+                                    string activityId = reader.GetString(1);
+                                    Activity activity = activityDAL.activities.Find(x => x.ActivityId == activityId);
+                                    Athlete athlete = users.Find(x => x.UserId == athleteId) as Athlete;
+                                    athlete.ActivityList.Add(activity);
+                                }
+                            }
+                            foreach (Activity activity in activityDAL.activities)
+                            {
+                                Trainer trainer = users.Find(x => x.UserId == activity.Trainer.UserId) as Trainer;
+                                trainer.ActivityList.Add(activity);
+                                
                             }
                         }
                     }
@@ -592,9 +616,11 @@ namespace CasusZuydFitV0._1
 
         public class LogFeedbackDAL
         {
+            public List<LogFeedback> LogFeedbacks = new List<LogFeedback>();
+            
             public void GetLogFeedback()
             {
-                // kan pas gedaan worden wanneer get activty's werkt?
+                // nog toe te passen
             }
 
             public void CreateLogFeedback(LogFeedback feedback)
