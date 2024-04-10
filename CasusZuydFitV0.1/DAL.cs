@@ -174,8 +174,14 @@ namespace CasusZuydFitV0._1
             {
                 activities.Clear();
 
-                UserDAL getTrainerDal = new UserDAL();
-                getTrainerDal.GetUsers();
+                TrainerDAL getTrainerDal = new TrainerDAL();
+                getTrainerDal.GetTrainers();
+
+                AthleteDAL getAthleteDal = new AthleteDAL();
+                getAthleteDal.GetAthlets();
+
+                EquipmentDAL getEquipmentDal = new EquipmentDAL();
+                getEquipmentDal.GetEquipment();
 
                 try
                 {
@@ -196,7 +202,7 @@ namespace CasusZuydFitV0._1
                                     string activityDescription = reader.GetString(4);
 
                                     int activityTrainerId = Convert.ToInt32(reader.GetString(5));
-                                    Trainer activityTrainer = (Trainer)getTrainerDal.users.Find(trainer => trainer.UserId == activityTrainerId);
+                                    Trainer activityTrainer = (Trainer)getTrainerDal.trainers.Find(trainer => trainer.UserId == activityTrainerId);
 
                                     string activityType = reader.GetString(6);
 
@@ -205,23 +211,66 @@ namespace CasusZuydFitV0._1
                                         string eventLocation = reader.GetString(7);
                                         int eventParticipantsLimit = Convert.ToInt32(reader.GetString(8));
 
-                                        Event eventToAdd = new Event(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, eventLocation, eventParticipantsLimit);
-                                        activities.Add(eventToAdd);
+
+                                        List<Athlete> eventAthletes = new List<Athlete>();
+                                        query = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
+                                        using (SqlCommand athleteCommand = new SqlCommand(query, connection))
+                                        {
+                                            using (SqlDataReader athleteReader = athleteCommand.ExecuteReader())
+                                            {
+                                                while (athleteReader.Read())
+                                                {
+                                                    int athleteId = athleteReader.GetInt32(0);
+                                                    Athlete athlete = getAthleteDal.athletes.Find(a => a.UserId == athleteId);
+                                                    if (athlete != null)
+                                                    {
+                                                        eventAthletes.Add(athlete);
+                                                    }
+                                                }
+                                            }
+                                            // nieuwe constructor voor event nodig
+                                            Event eventToAdd = new Event(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, eventLocation, eventParticipantsLimit, eventAthletes);
+                                            activities.Add(eventToAdd);
+                                        }
+
                                     }
                                     else if (activityType == "workout")
                                     {
-                                        Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription);
-                                        activities.Add(workoutToAdd);
+                                        query = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
+                                        using (SqlCommand athleteCommand = new SqlCommand(query, connection))
+                                        {
+                                            int athleteId = Convert.ToInt32(athleteCommand.ExecuteScalar());
+                                            Athlete athlete = getAthleteDal.athletes.Find(a => a.UserId == athleteId);
+                                            if (athlete != null)
+                                            {
+                                                // nieuwe constructor nodig voor workout
+                                                Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
+                                                activities.Add(workoutToAdd);
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-
+                        query = "Select * from [ActivityEquipment]";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    int activityId = reader.GetInt32(1);
+                                    int equipmentId = reader.GetInt32(2);
+                                    Activity activity = activities.Find(a => a.ActivityId == activityId);
+                                    Equipment equipment = getEquipmentDal.equipments.Find(e => e.EquipmentId == equipmentId);
+                                    activity.Equipments.Add(equipment);
+                                }
+                            }
+                        }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                    Console.WriteLine($"Er is een fout opgetreden bij het ophalen van activiteiten uit de database. Neem contact op met de klantenservice: {ex.Message}");
                 }
             }
 
@@ -229,11 +278,11 @@ namespace CasusZuydFitV0._1
 
         public class AthleteDAL
         {
-            public List<Athlete> athlets = new List<Athlete>();
+            public List<Athlete> athletes = new List<Athlete>();
             public void GetAthlets()
             //User wordt opgehaald maar lijsten worden nog niet gevuld
             {
-                athlets.Clear();
+                athletes.Clear();
                 try
                 {
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
@@ -253,7 +302,7 @@ namespace CasusZuydFitV0._1
                                     string userPassword = reader.GetString(3);
 
                                     Athlete user = new Athlete(userId, userName, userEmail, userPassword, new List<Activity>());
-                                    athlets.Add(user);
+                                    athletes.Add(user);
                                 }
                             }
                         }
