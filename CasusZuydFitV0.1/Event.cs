@@ -41,5 +41,21 @@ namespace CasusZuydFitV0._1
             EventLocation = eventLocation;
             EventPatricipantLimit = eventPatricipantLimit;
         }
+
+        public Event(int activityId, string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, string eventLocation, int eventPatricipantLimit,List<Athlete> eventParticipants )
+        : base(activityId, activityName, activityDuration, startingTime, trainer, activityDescription)
+        {
+            EventLocation = eventLocation;
+            EventParticipants = eventParticipants;
+            EventPatricipantLimit = eventPatricipantLimit;
+        }
+
+        public Event(string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, string eventLocation, int eventPatricipantLimit, List<Athlete> eventParticipants)
+      : base(activityName, activityDuration, startingTime, trainer, activityDescription)
+        {
+            EventLocation = eventLocation;
+            EventParticipants = eventParticipants;
+            EventPatricipantLimit = eventPatricipantLimit;
+        }
     }
 }
