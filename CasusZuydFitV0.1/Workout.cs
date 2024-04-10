@@ -35,6 +35,12 @@ namespace CasusZuydFitV0._1
         {
         // hmm   
         }
+        
+        public Workout(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, Athlete activityAthlete)
+        : base(activityId, activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription)
+        {
+            WorkoutParticipant = activityAthlete;
+        }
 
         public void CreateNewWorkout()
         {
