@@ -21,6 +21,7 @@ namespace CasusZuydFitV0._1
                 //Console.WriteLine("4. Display all Exercises");
                 Console.WriteLine("3. Create new Workout");
                 Console.WriteLine("4. Show all events");
+                Console.WriteLine("5. Show all workouts");
 
 
                 int option;
@@ -50,6 +51,9 @@ namespace CasusZuydFitV0._1
                         break;
                     case 4:
                         DisplayAllEvents();
+                        break;
+                    case 5:
+                        DisplayAllWorkouts();
                         break;
                 }
             }
@@ -255,6 +259,58 @@ namespace CasusZuydFitV0._1
                         Console.WriteLine("Invalid choice entered.");
                         break;
                 }
+            }
+
+            void DisplayAllWorkouts()
+            {
+                WorkoutDAL workoutDAL = new WorkoutDAL();
+                workoutDAL.GetWorkouts();
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("Available Workouts:\n");
+
+                int workoutNumber = 1;
+                foreach (Workout workout in workoutDAL.workouts)
+                        {
+                            Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
+                            Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
+                            Console.WriteLine($"   Trainer: {workout.Trainer.UserName}"); 
+                            Console.WriteLine($"   Description: {workout.ActivityDescription}");
+                            Console.WriteLine("---------------------------------------------------------");
+                            workoutNumber++;
+                        }
+
+                Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
+                if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > workoutDAL.workouts.Count)
+                {
+                    Console.WriteLine("Invalid selection. Please restart and enter a valid workout number.");
+                    return;
+                }
+
+                selectedNumber--;
+                Workout selectedWorkout = workoutDAL.workouts[selectedNumber];
+
+                Console.WriteLine($"\nSelected Workout: {selectedWorkout.ActivityName}");
+                Console.WriteLine($"Duration (minutes): {selectedWorkout.ActivityDurationMinutes}");
+                Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
+                Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
+                Console.WriteLine($"Description: {selectedWorkout.ActivityDescription}");
+                
+                Console.WriteLine("\nExercises:");
+                if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
+                {
+                    foreach (Exercise exercise in selectedWorkout.WorkoutExercises)
+                    {
+                        Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
+                        Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
+                        Console.WriteLine($"  Result: {exercise.ExerciseResult}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("This workout has no exercises listed.");
+                }
+                
+                
             }
 
         }
