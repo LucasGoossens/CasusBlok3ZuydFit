@@ -183,6 +183,9 @@ namespace CasusZuydFitV0._1
                 EquipmentDAL getEquipmentDal = new EquipmentDAL();
                 getEquipmentDal.GetEquipment();
 
+                ExerciseDAL getExerciseDal = new ExerciseDAL();
+                getExerciseDal.GetExercises();
+
                 try
                 {
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
@@ -244,6 +247,14 @@ namespace CasusZuydFitV0._1
                                             {                                                
                                                 Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
                                                 activities.Add(workoutToAdd);
+                                            }
+                                        }
+                                        foreach (Exercise exercise in getExerciseDal.Exercises)
+                                        {
+                                            if (exercise.WorkoutId == activityId)
+                                            {
+                                                Workout workout = (Workout)activities.Find(a => a.ActivityId == activityId);
+                                                workout.WorkoutExercises.Add(exercise);
                                             }
                                         }
                                     }
