@@ -477,7 +477,7 @@ namespace CasusZuydFitV0._1
                                     Trainer activityTrainer = (Trainer)trainerDAL.trainers.Find(trainer => trainer.UserId == activityTrainerId);
                                 
                                     string eventLocation = reader.GetString(7);
-                                    int eventParticipantsLimit = Convert.ToInt32(reader.GetString(8));
+                                    int eventParticipantsLimit = reader.GetInt32(8);
 
                                     List<Athlete> eventAthletes = new List<Athlete>();
                                     string activityQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
