@@ -212,7 +212,7 @@ namespace CasusZuydFitV0._1
                                     if (activityType == "event")
                                     {
                                         string eventLocation = reader.GetString(7);
-                                        int eventParticipantsLimit = Convert.ToInt32(reader.GetString(8));
+                                        int eventParticipantsLimit = reader.GetInt32(8);
 
                                         List<Athlete> eventAthletes = new List<Athlete>();
                                         string activityQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
@@ -246,17 +246,20 @@ namespace CasusZuydFitV0._1
                                             if (athlete != null)
                                             {                                                
                                                 Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
+                                                
+                                                foreach (Exercise exercise in getExerciseDal.Exercises)
+                                                {
+                                                    if (exercise.WorkoutId == activityId)
+                                                    {                                                        
+                                                        workoutToAdd.WorkoutExercises.Add(exercise);
+                                                    }
+                                                }
+
                                                 activities.Add(workoutToAdd);
+
                                             }
                                         }
-                                        foreach (Exercise exercise in getExerciseDal.Exercises)
-                                        {
-                                            if (exercise.WorkoutId == activityId)
-                                            {
-                                                Workout workout = (Workout)activities.Find(a => a.ActivityId == activityId);
-                                                workout.WorkoutExercises.Add(exercise);
-                                            }
-                                        }
+                                        
                                     }
                                 }
                             }
