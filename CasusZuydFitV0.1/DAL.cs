@@ -439,11 +439,90 @@ namespace CasusZuydFitV0._1
                     TrainerDAL trainerDAL = new TrainerDAL();
                     trainerDAL.GetTrainers();
 
+                    EquipmentDAL equipmentDAL = new EquipmentDAL();
+                    equipmentDAL.GetEquipment();
+
+                    AthleteDAL athleteDAL = new AthleteDAL();
+                    athleteDAL.GetAthlets();
+
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
                         string query = "SELECT * FROM [Activity] WHERE Type = 'event';";
                         using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    int activityId = reader.GetInt32(0);
+                                    string activityName = reader.GetString(1);
+                                    int activityDuration = reader.GetInt32(2);                                    
+                                    string activityStartingTime = reader.GetString(3);
+                                    string activityDescription = reader.GetString(4);
+
+                                    int activityTrainerId = reader.GetInt32(5);
+                                    Trainer activityTrainer = (Trainer)trainerDAL.trainers.Find(trainer => trainer.UserId == activityTrainerId);
+                                
+                                    string eventLocation = reader.GetString(7);
+                                    int eventParticipantsLimit = Convert.ToInt32(reader.GetString(8));
+
+                                    List<Athlete> eventAthletes = new List<Athlete>();
+                                    string activityQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
+                                    using (SqlCommand athleteCommand = new SqlCommand(activityQuery, connection))
+                                    {
+                                        using (SqlDataReader athleteReader = athleteCommand.ExecuteReader())
+                                        {
+                                            while (athleteReader.Read())
+                                            {
+                                                int athleteId = athleteReader.GetInt32(0);
+                                                Athlete athlete = athleteDAL.athletes.Find(a => a.UserId == athleteId);
+                                                if (athlete != null)
+                                                {
+                                                    eventAthletes.Add(athlete);
+                                                }
+                                            }
+                                        }                                            
+                                        Event eventToAdd = new Event(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, eventLocation, eventParticipantsLimit, eventAthletes);
+                                        events.Add(eventToAdd);
+                                    }
+                                }
+                            }
+                        }
+                        string activityEquipmentQuery = "Select * from [ActivityEquipment]";
+                        using (SqlCommand activityEquipmentCommand = new SqlCommand(activityEquipmentQuery, connection))
+                        {
+                            using (SqlDataReader reader = activityEquipmentCommand.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    int activityId = reader.GetInt32(1);
+                                    int equipmentId = reader.GetInt32(2);
+                                    Event eventToEdit = events.Find(a => a.ActivityId == activityId);
+                                    Equipment equipment = equipmentDAL.equipments.Find(e => e.EquipmentId == equipmentId);
+                                    eventToEdit.Equipments.Add(equipment);
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgetreden bij het ophalen van activiteiten uit de database. Neem contact op met de klantenservice: {ex.Message}");
+                }
+            }
+        }
+                
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        /* using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
@@ -459,6 +538,13 @@ namespace CasusZuydFitV0._1
 
                                     int trainerId = reader.GetInt32(5);
                                     Trainer trainer = trainerDAL.trainers.First(x => x.UserId == trainerId);
+
+                                    int equipmentId = reader.GetInt32(5);
+                                    Equipment equipment = equipmentDAL.equipments.First(x => x.EquipmentId == equipmentId);
+
+                                    int athleteId = reader.GetInt32(5);
+                                    Athlete athlete = athleteDAL.athletes.First(x => x.EquipmentId == equipmentId);
+                                    
 
                                     List<Equipment> equipments = new List<Equipment>(); // deze moet nog gevuld worden
 
@@ -482,6 +568,7 @@ namespace CasusZuydFitV0._1
                 }
             }
         }
+        */
 
         public class ExerciseDAL
         {
