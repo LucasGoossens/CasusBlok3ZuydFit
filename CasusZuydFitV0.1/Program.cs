@@ -197,8 +197,7 @@ namespace CasusZuydFitV0._1
 
             void DisplayAllEvents()
             {
-                EventDAL work = new EventDAL();
-                work.GetEvents();
+
                 
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
@@ -237,7 +236,7 @@ namespace CasusZuydFitV0._1
                         }
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are the events you are signed up for:");
-                        foreach (var eventItem in work.events)
+                        foreach (Event eventItem in Event.GetEvents())
                         {
                             if (eventItem.EventParticipants.Exists(a => a.UserId == athleteId))
                             {
@@ -249,7 +248,7 @@ namespace CasusZuydFitV0._1
                     case 2:
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are all the events:");
-                        foreach (var eventItem in work.events)
+                        foreach (Event eventItem in Event.GetEvents())
                         {
                             Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
                            
@@ -262,7 +261,9 @@ namespace CasusZuydFitV0._1
             }
             void ManageProfile()
             {
-                Athlete user = new Athlete(1, "Floyd", "fictieveMail", "wachtwoord123", new List<Activity>());
+                // voor nu wordt de eerste user uit de database gepakt. dit moet uiteindelijk de ingelogde user zijn.
+                User user = User.GetUsers().First(); 
+
                 Console.Clear();
                 Console.WriteLine($"Profile:");
                 Console.WriteLine("-----------------------");
