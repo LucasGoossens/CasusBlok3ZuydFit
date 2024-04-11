@@ -19,6 +19,7 @@ namespace CasusZuydFitV0._1
                 //Console.WriteLine("3. Create new Exercise");
                 //Console.WriteLine("4. Display all Exercises");
                 Console.WriteLine("3. Create new Workout");
+                Console.WriteLine("4. Show all events");
 
 
                 int option;
@@ -45,6 +46,9 @@ namespace CasusZuydFitV0._1
                         break;
                     case 3:
                         CreateNewWorkout();
+                        break;
+                    case 4:
+                        DisplayAllEvents();
                         break;
                 }
             }
@@ -183,6 +187,34 @@ namespace CasusZuydFitV0._1
                             break;
                     }
                 }
+
+            }
+
+            void DisplayAllEvents()
+            {
+                EventDAL work = new EventDAL();
+                work.GetEvents();
+                work.events;
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("Which events do you want to see?");
+                Console.WriteLine("1. The events I am signed up for");
+                Console.WriteLine("2. All events");
+                int EventChoice = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+
+                switch (EventChoice)
+                {
+                    case 1:
+                        Console.WriteLine("These are the events you are signed up for:");
+                        Console.WriteLine("");
+                        break;
+                    case 2:
+                        
+                        break;
+                }
+
+
+
 
             }
         }
