@@ -57,5 +57,11 @@ namespace CasusZuydFitV0._1
             EventParticipants = eventParticipants;
             EventPatricipantLimit = eventPatricipantLimit;
         }
+        public static List<Event> GetEvents()
+        {
+            DAL.EventDAL eventdal = new DAL.EventDAL();
+            GetEvents();
+            return eventdal.events;
+        }
     }
 }
