@@ -198,20 +198,7 @@ namespace CasusZuydFitV0._1
                 
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
-                Console.WriteLine("Enter ID:");
-                string idString = Console.ReadLine(); 
-                int athleteId;
-                try
-                {
-                    athleteId = int.Parse(idString); 
-                    Console.WriteLine("Parsed ID: " + athleteId);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("The entered value is not in the correct format.");
-                    return; 
-                }
-
+              
                 Console.WriteLine("1. The events I am signed up for");
                 Console.WriteLine("2. All events");
                 string choiceString = Console.ReadLine();
@@ -231,6 +218,19 @@ namespace CasusZuydFitV0._1
                 switch (eventChoice)
                 {
                     case 1:
+                        Console.WriteLine("Enter ID:");
+                        string idString = Console.ReadLine();
+                        int athleteId;
+                        try
+                        {
+                            athleteId = int.Parse(idString);
+                            Console.WriteLine("Parsed ID: " + athleteId);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("The entered value is not in the correct format.");
+                            return;
+                        }
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are the events you are signed up for:");
                         foreach (var eventItem in work.events)
