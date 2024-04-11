@@ -21,7 +21,8 @@ namespace CasusZuydFitV0._1
                 //Console.WriteLine("4. Display all Exercises");
                 Console.WriteLine("3. Create new Workout");
                 Console.WriteLine("4. Show all events");
-
+                Console.WriteLine("5. Manage profile");
+                Console.WriteLine("=======================");
 
                 int option;
 
@@ -50,6 +51,9 @@ namespace CasusZuydFitV0._1
                         break;
                     case 4:
                         DisplayAllEvents();
+                        break;
+                    case 5:
+                        ManageProfile();
                         break;
                 }
             }
@@ -193,8 +197,7 @@ namespace CasusZuydFitV0._1
 
             void DisplayAllEvents()
             {
-                EventDAL work = new EventDAL();
-                work.GetEvents();
+
                 
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
@@ -233,7 +236,7 @@ namespace CasusZuydFitV0._1
                         }
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are the events you are signed up for:");
-                        foreach (var eventItem in work.events)
+                        foreach (Event eventItem in Event.GetEvents())
                         {
                             if (eventItem.EventParticipants.Exists(a => a.UserId == athleteId))
                             {
@@ -245,7 +248,7 @@ namespace CasusZuydFitV0._1
                     case 2:
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are all the events:");
-                        foreach (var eventItem in work.events)
+                        foreach (Event eventItem in Event.GetEvents())
                         {
                             Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
                            
@@ -253,6 +256,58 @@ namespace CasusZuydFitV0._1
                         break;
                     default:
                         Console.WriteLine("Invalid choice entered.");
+                        break;
+                }
+            }
+            void ManageProfile()
+            {
+                // voor nu wordt de eerste user uit de database gepakt. dit moet uiteindelijk de ingelogde user zijn.
+                User user = User.GetUsers().First(); 
+
+                Console.Clear();
+                Console.WriteLine($"Profile:");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine($"Name: {user.UserName}");
+                Console.WriteLine($"Email: {user.UserEmail}");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("1. Edit profile");
+                Console.WriteLine("2. Delete profiel");
+                Console.WriteLine("3. Main menu");
+                int profileChoice = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+                switch (profileChoice)
+                {
+                    case 1:
+                        Console.WriteLine("enter a new username:");
+                        string newUserName = Console.ReadLine();
+                        Console.Clear();
+                        while (User.GetUsers().Any(existingUser => existingUser.UserName == newUserName && newUserName != user.UserName))
+                        {
+                            Console.WriteLine("This username is already taken, please enter a new one.");
+                            newUserName = Console.ReadLine() ?? string.Empty;
+                            Console.Clear();
+                        }
+                        Console.WriteLine("enter a new email:");
+                        string newUserEmail = Console.ReadLine();
+                        Console.WriteLine("enter a new password:");
+                        string newUserPassword = Console.ReadLine();
+                        Console.Clear();
+                        user.UpdateUser(newUserName, newUserEmail, newUserPassword);
+                        Console.WriteLine("Profile updated.");
+                        Console.WriteLine();
+                        break;
+                    case 2:
+                        Console.WriteLine("Are you sure you wanna delete your profile?");
+                        Console.WriteLine("1. Yes");
+                        Console.WriteLine("2. No");
+                        int deleteProfileChoice = Convert.ToInt32(Console.ReadLine());
+                        Console.Clear();
+                        if (deleteProfileChoice == 1)
+                        {
+                            user.DeleteUser();
+                            Console.WriteLine("Profile deleted.");
+                            Console.WriteLine();
+                        }
                         break;
                 }
             }
