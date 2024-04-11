@@ -504,11 +504,12 @@ namespace CasusZuydFitV0._1
                                 {
                                     int exerciseId = reader.GetInt32(0);
                                     string exerciseName = reader.GetString(1);
-                                    // reader.GetString(2) overgeslagen want klopt niet in db 
-                                    string exerciseDescription = reader.GetString(3);
-                                    int workoutId = reader.GetInt32(4);
+                                    int workoutId = reader.GetInt32(2);
+                                    string excersiceResult = reader.GetString(3);
+                                    string exerciseDescription = reader.GetString(4);
+                                    
 
-                                    Exercise exercise = new Exercise(exerciseId, exerciseName, "test", exerciseDescription, workoutId);
+                                    Exercise exercise = new Exercise(exerciseId, exerciseName, excersiceResult, exerciseDescription, workoutId);
                                     Exercises.Add(exercise);
 
                                 }
