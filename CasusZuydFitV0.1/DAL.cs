@@ -639,30 +639,30 @@ namespace CasusZuydFitV0._1
                             // Execute the update query
                             command.ExecuteNonQuery();
 
-                            // Delete existing equipment associations for the event
-                            string deleteEquipmentQuery = "DELETE FROM ActivityEquipment WHERE ActivityId = @ActivityId;";
-                            using (SqlCommand deleteEquipmentCommand = new SqlCommand(deleteEquipmentQuery, connection))
-                            {
-                                deleteEquipmentCommand.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
-                                deleteEquipmentCommand.ExecuteNonQuery();
-                            }
+                            // // Delete existing equipment associations for the event
+                            // string deleteEquipmentQuery = "DELETE FROM ActivityEquipment WHERE ActivityId = @ActivityId;";
+                            // using (SqlCommand deleteEquipmentCommand = new SqlCommand(deleteEquipmentQuery, connection))
+                            // {
+                            //     deleteEquipmentCommand.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
+                            //     deleteEquipmentCommand.ExecuteNonQuery();
+                            // }
 
-                            // Insert updated equipment associations for the event into the ActivityEquipment table
-                            foreach (Equipment equipment in updatedEvent.Equipments)
-                            {
-                                string insertEquipmentQuery = "INSERT INTO ActivityEquipment (ActivityId, EquipmentId) " +
-                                                            "VALUES (@ActivityId, @EquipmentId);";
+                            // // Insert updated equipment associations for the event into the ActivityEquipment table
+                            // foreach (Equipment equipment in updatedEvent.Equipments)
+                            // {
+                            //     string insertEquipmentQuery = "INSERT INTO ActivityEquipment (ActivityId, EquipmentId) " +
+                            //                                 "VALUES (@ActivityId, @EquipmentId);";
 
-                                using (SqlCommand equipmentCommand = new SqlCommand(insertEquipmentQuery, connection))
-                                {
-                                    // Add parameters to the query
-                                    equipmentCommand.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
-                                    equipmentCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
+                            //     using (SqlCommand equipmentCommand = new SqlCommand(insertEquipmentQuery, connection))
+                            //     {
+                            //         // Add parameters to the query
+                            //         equipmentCommand.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
+                            //         equipmentCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
 
-                                    // Execute the query to associate the equipment with the event
-                                    equipmentCommand.ExecuteNonQuery();
-                                }
-                            }
+                            //         // Execute the query to associate the equipment with the event
+                            //         equipmentCommand.ExecuteNonQuery();
+                            //     }
+                            // } // this code will be used in other method 
                         }
                     }
                 }
