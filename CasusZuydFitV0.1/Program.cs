@@ -9,6 +9,7 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
+            User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
             while (true)
             {
                 Console.WriteLine("=======================");
@@ -22,6 +23,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("3. Create new Workout");
                 Console.WriteLine("4. Show all events");
                 Console.WriteLine("5. Show all workouts");
+                Console.WriteLine("6. Manage profile");
 
 
                 int option;
@@ -50,12 +52,13 @@ namespace CasusZuydFitV0._1
                         CreateNewWorkout();
                         break;
                     case 4:
-                        DisplayAllEvents();
+                        DisplayAllEvents(user);
                         break;
                     case 5:
                         DisplayAllWorkouts();
                         break;
-                    case 7:
+                    case 6:
+                        ManageProfile(user);
                         break;
                 }
             }
@@ -197,10 +200,8 @@ namespace CasusZuydFitV0._1
 
             }
 
-            void DisplayAllEvents()
+            void DisplayAllEvents(User user)
             {
-                EventDAL work = new EventDAL();
-                work.GetEvents();
                 
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
@@ -224,34 +225,20 @@ namespace CasusZuydFitV0._1
                 switch (eventChoice)
                 {
                     case 1:
-                        Console.WriteLine("Enter ID:");
-                        string idString = Console.ReadLine();
-                        int athleteId;
-                        try
-                        {
-                            athleteId = int.Parse(idString);
-                            Console.WriteLine("Parsed ID: " + athleteId);
-                        }
-                        catch (FormatException)
-                        {
-                            Console.WriteLine("The entered value is not in the correct format.");
-                            return;
-                        }
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are the events you are signed up for:");
-                        foreach (var eventItem in work.events)
+                        foreach (var eventItem in Event.GetEvents())
                         {
-                            if (eventItem.EventParticipants.Exists(a => a.UserId == athleteId))
+                            if (eventItem.EventParticipants.Exists(a => a.UserId == user.UserId))
                             {
                                 Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
-                                
                             }
                         }
                         break;
                     case 2:
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are all the events:");
-                        foreach (var eventItem in work.events)
+                        foreach (var eventItem in Event.GetEvents())
                         {
                             Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
                            
