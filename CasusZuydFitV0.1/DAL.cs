@@ -448,9 +448,12 @@ namespace CasusZuydFitV0._1
 
             public void GetEvents()
             {
+                // Clear existing events
                 events.Clear();
+
                 try
                 {
+                    // Initialize Data Access Layer instances
                     TrainerDAL trainerDAL = new TrainerDAL();
                     trainerDAL.GetTrainers();
 
@@ -460,61 +463,81 @@ namespace CasusZuydFitV0._1
                     AthleteDAL athleteDAL = new AthleteDAL();
                     athleteDAL.GetAthlets();
 
+                    // Establish a database connection
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
+
+                        // Select events from the database
                         string query = "SELECT * FROM [Activity] WHERE Type = 'event';";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
+                            // Execute the query
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
+                                // Iterate through the result set
                                 while (reader.Read())
                                 {
+                                    // Retrieve event data from the reader
                                     int activityId = reader.GetInt32(0);
                                     string activityName = reader.GetString(1);
                                     int activityDuration = reader.GetInt32(2);
                                     string activityStartingTime = reader.GetString(3);
                                     string activityDescription = reader.GetString(4);
-
                                     int activityTrainerId = reader.GetInt32(5);
+                                    
+                                    // Retrieve the trainer associated with the event
                                     Trainer activityTrainer = (Trainer)trainerDAL.trainers.Find(trainer => trainer.UserId == activityTrainerId);
 
                                     string eventLocation = reader.GetString(7);
                                     int eventParticipantsLimit = reader.GetInt32(8);
 
+                                    // Create a list to store event athletes
                                     List<Athlete> eventAthletes = new List<Athlete>();
+
+                                    // Query to select athletes associated with the event
                                     string activityQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
                                     using (SqlCommand athleteCommand = new SqlCommand(activityQuery, connection))
                                     {
                                         using (SqlDataReader athleteReader = athleteCommand.ExecuteReader())
                                         {
+                                            // Iterate through the result set
                                             while (athleteReader.Read())
                                             {
                                                 int athleteId = athleteReader.GetInt32(0);
+                                                // Retrieve the athlete associated with the ID
                                                 Athlete athlete = athleteDAL.athletes.Find(a => a.UserId == athleteId);
+                                                // Add the athlete to the event's list of athletes
                                                 if (athlete != null)
                                                 {
                                                     eventAthletes.Add(athlete);
                                                 }
                                             }
                                         }
+                                        // Create an Event object and add it to the events collection
                                         Event eventToAdd = new Event(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, eventLocation, eventParticipantsLimit, eventAthletes);
                                         events.Add(eventToAdd);
                                     }
                                 }
                             }
                         }
+
+                        // Query to retrieve associated equipment for events
                         string activityEquipmentQuery = "Select * from [ActivityEquipment]";
                         using (SqlCommand activityEquipmentCommand = new SqlCommand(activityEquipmentQuery, connection))
                         {
                             using (SqlDataReader reader = activityEquipmentCommand.ExecuteReader())
                             {
+                                // Iterate through the result set
                                 while (reader.Read())
                                 {
                                     int activityId = reader.GetInt32(1);
                                     int equipmentId = reader.GetInt32(2);
+                                    // Find the event associated with the ID
                                     Event eventToEdit = events.Find(a => a.ActivityId == activityId);
+                                    // Retrieve the equipment associated with the ID
                                     Equipment equipment = equipmentDAL.equipments.Find(e => e.EquipmentId == equipmentId);
+                                    // Add the equipment to the event's list of equipment
                                     eventToEdit.Equipments.Add(equipment);
                                 }
                             }
@@ -523,9 +546,142 @@ namespace CasusZuydFitV0._1
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgetreden bij het ophalen van activiteiten uit de database. Neem contact op met de klantenservice: {ex.Message}");
+                    // Handle exceptions
+                    Console.WriteLine($"An error occurred while retrieving events from the database. Please contact customer service: {ex.Message}");
                 }
             }
+
+            // create event
+            public void CreateEvent(Event newEvent)
+            {
+                try
+                {
+                    // Establish a database connection
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+
+                        // Insert event data into the Activity table
+                        string insertQuery = "INSERT INTO [Activity] (Name, Duration, StartingTime, Description, TrainerId, Location, ParticipantsLimit, Type) " +
+                                            "VALUES (@Name, @Duration, @StartingTime, @Description, @TrainerId, @Location, @ParticipantsLimit, @Type); " +
+                                            "SELECT SCOPE_IDENTITY();"; // Retrieve the ID of the inserted event
+
+                        using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                        {
+                            // Add parameters to the query
+                            command.Parameters.AddWithValue("@Name", newEvent.ActivityName);
+                            command.Parameters.AddWithValue("@Duration", newEvent.ActivityDurationMinutes);
+                            command.Parameters.AddWithValue("@StartingTime", newEvent.ActivityStartingTime);
+                            command.Parameters.AddWithValue("@Description", newEvent.ActivityDescription);
+                            command.Parameters.AddWithValue("@TrainerId", newEvent.Trainer.UserId);
+                            command.Parameters.AddWithValue("@Location", newEvent.EventLocation);
+                            command.Parameters.AddWithValue("@ParticipantsLimit", newEvent.EventPatricipantLimit);
+                            command.Parameters.AddWithValue("@Type", "event"); // Assuming events are of type 'event'
+
+                            // Execute the query and retrieve the ID of the inserted event
+                            int newEventId = Convert.ToInt32(command.ExecuteScalar());
+
+                           
+
+                            // Insert equipment associated with the event into the ActivityEquipment table
+                            foreach (Equipment equipment in newEvent.Equipments)
+                            {
+                                string insertEquipmentQuery = "INSERT INTO ActivityEquipment (ActivityId, EquipmentId) " +
+                                                            "VALUES (@ActivityId, @EquipmentId);";
+
+                                using (SqlCommand equipmentCommand = new SqlCommand(insertEquipmentQuery, connection))
+                                {
+                                    // Add parameters to the query
+                                    equipmentCommand.Parameters.AddWithValue("@ActivityId", newEventId);
+                                    equipmentCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
+
+                                    // Execute the query to associate the equipment with the event
+                                    equipmentCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                    Console.WriteLine($"An error occurred while creating the event in the database. Please contact customer service: {ex.Message}");
+                }
+            }
+
+            // update event
+            public void UpdateEvent(Event updatedEvent)
+            {
+                try
+                {
+                    // Establish a database connection
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+
+                        // Update event data in the Activity table
+                        string updateQuery = "UPDATE [Activity] SET Name = @Name, Duration = @Duration, StartingTime = @StartingTime, " +
+                                            "Description = @Description, TrainerId = @TrainerId, Location = @Location, " +
+                                            "ParticipantsLimit = @ParticipantsLimit WHERE ActivityId = @ActivityId;";
+
+                        using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                        {
+                            // Add parameters to the query
+                            command.Parameters.AddWithValue("@Name", updatedEvent.ActivityName);
+                            command.Parameters.AddWithValue("@Duration", updatedEvent.ActivityDurationMinutes);
+                            command.Parameters.AddWithValue("@StartingTime", updatedEvent.ActivityStartingTime);
+                            command.Parameters.AddWithValue("@Description", updatedEvent.ActivityDescription);
+                            command.Parameters.AddWithValue("@TrainerId", updatedEvent.Trainer.UserId);
+                            command.Parameters.AddWithValue("@Location", updatedEvent.EventLocation);
+                            command.Parameters.AddWithValue("@ParticipantsLimit", updatedEvent.EventPatricipantLimit);
+                            command.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
+
+                            // Execute the update query
+                            command.ExecuteNonQuery();
+
+                          
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                    Console.WriteLine($"An error occurred while updating the event in the database. Please contact customer service: {ex.Message}");
+                }
+            }
+
+
+            // delete event
+            public void DeleteEvent(int eventId)
+            {
+                try
+                {
+                    // Establish a database connection
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+
+                        // Delete event from the Activity table
+                        string deleteQuery = "DELETE FROM [Activity] WHERE ActivityId = @ActivityId;";
+
+                        using (SqlCommand command = new SqlCommand(deleteQuery, connection))
+                        {
+                            // Add parameter to the query
+                            command.Parameters.AddWithValue("@ActivityId", eventId);
+
+                            // Execute the delete query
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                    Console.WriteLine($"An error occurred while deleting the event from the database. Please contact customer service: {ex.Message}");
+                }
+            }
+
+
         }
 
 
