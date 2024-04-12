@@ -55,6 +55,8 @@ namespace CasusZuydFitV0._1
                     case 5:
                         DisplayAllWorkouts();
                         break;
+                    case 7:
+                        break;
                 }
             }
 
@@ -312,7 +314,63 @@ namespace CasusZuydFitV0._1
                 
                 
             }
-
+            void TrainerGivesFeedback(User user)
+            {
+                try
+                {
+                    LogFeedback logFeedback = null;
+                    Console.WriteLine($"All activities where {user.UserName} is the trainer: ");
+                    foreach (Activity activity in Activity.GetActivities())
+                    {
+                        if (activity.Trainer.UserId == user.UserId)
+                        {
+                            Console.WriteLine($"Activity ID: {activity.ActivityId}, Name: {activity.ActivityName}");
+                        }
+                    }
+                    Console.WriteLine("Enter the ID of the activity you want to give feedback on: ");
+                    int activityId = Convert.ToInt32(Console.ReadLine());
+                    Console.Clear();
+                    var activityToGiveFeedbackOn = Activity.GetActivities().FirstOrDefault(activity => activity.ActivityId == activityId);
+                    if (activityToGiveFeedbackOn == null)
+                    {
+                        Console.WriteLine("A non-existing ID was given");
+                        return;
+                    }
+                    else if (activityToGiveFeedbackOn.Trainer.UserId == user.UserId)
+                    {
+                        if (activityToGiveFeedbackOn is Event)
+                        {
+                            Console.WriteLine("All users that are signed up for this event: ");
+                            foreach (Athlete athlete in activityToGiveFeedbackOn.EventParticipants)
+                            {
+                                Console.WriteLine($"User ID: {athlete.UserId}, Name: {athlete.UserName}");
+                                Console.WriteLine("Pick a UserID for the user you wanna give feedback on");
+                            }
+                            int pickedUserId = Convert.ToInt32(Console.ReadLine());
+                            User? userToGiveFeedbackOn = User.GetUsers().FirstOrDefault(user => user.UserId == pickedUserId);
+                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.Activity.ActivityId == activityId && feedback.Trainer.UserId == pickedUserId);
+                        }
+                        else
+                        {
+                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.Activity.ActivityId == activityId && feedback.Trainer.UserId == activityToGiveFeedbackOn.WorkoutParticipant.UserId);
+                        }
+                        Console.Clear();
+                        Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}, Athlete to give feedback on: {logFeedback.Athlete.UserName}");
+                        Console.WriteLine("Enter the feedback you want to give: ");
+                        string NewFeedback = Console.ReadLine();
+                        
+                    }
+                    else
+                    {
+                        Console.WriteLine("You are not the trainer of this activity.");
+                        return;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid input given.");
+                }
+            }
         }
     }
 }
