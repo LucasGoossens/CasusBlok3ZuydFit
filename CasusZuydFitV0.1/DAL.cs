@@ -609,6 +609,70 @@ namespace CasusZuydFitV0._1
                 }
             }
 
+            // update event
+            public void UpdateEvent(Event updatedEvent)
+            {
+                try
+                {
+                    // Establish a database connection
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+
+                        // Update event data in the Activity table
+                        string updateQuery = "UPDATE [Activity] SET Name = @Name, Duration = @Duration, StartingTime = @StartingTime, " +
+                                            "Description = @Description, TrainerId = @TrainerId, Location = @Location, " +
+                                            "ParticipantsLimit = @ParticipantsLimit WHERE ActivityId = @ActivityId;";
+
+                        using (SqlCommand command = new SqlCommand(updateQuery, connection))
+                        {
+                            // Add parameters to the query
+                            command.Parameters.AddWithValue("@Name", updatedEvent.ActivityName);
+                            command.Parameters.AddWithValue("@Duration", updatedEvent.ActivityDurationMinutes);
+                            command.Parameters.AddWithValue("@StartingTime", updatedEvent.ActivityStartingTime);
+                            command.Parameters.AddWithValue("@Description", updatedEvent.ActivityDescription);
+                            command.Parameters.AddWithValue("@TrainerId", updatedEvent.Trainer.UserId);
+                            command.Parameters.AddWithValue("@Location", updatedEvent.EventLocation);
+                            command.Parameters.AddWithValue("@ParticipantsLimit", updatedEvent.EventPatricipantLimit);
+                            command.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
+
+                            // Execute the update query
+                            command.ExecuteNonQuery();
+
+                            // Delete existing equipment associations for the event
+                            string deleteEquipmentQuery = "DELETE FROM ActivityEquipment WHERE ActivityId = @ActivityId;";
+                            using (SqlCommand deleteEquipmentCommand = new SqlCommand(deleteEquipmentQuery, connection))
+                            {
+                                deleteEquipmentCommand.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
+                                deleteEquipmentCommand.ExecuteNonQuery();
+                            }
+
+                            // Insert updated equipment associations for the event into the ActivityEquipment table
+                            foreach (Equipment equipment in updatedEvent.Equipments)
+                            {
+                                string insertEquipmentQuery = "INSERT INTO ActivityEquipment (ActivityId, EquipmentId) " +
+                                                            "VALUES (@ActivityId, @EquipmentId);";
+
+                                using (SqlCommand equipmentCommand = new SqlCommand(insertEquipmentQuery, connection))
+                                {
+                                    // Add parameters to the query
+                                    equipmentCommand.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
+                                    equipmentCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
+
+                                    // Execute the query to associate the equipment with the event
+                                    equipmentCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                    Console.WriteLine($"An error occurred while updating the event in the database. Please contact customer service: {ex.Message}");
+                }
+            }
+
 
         }
 
