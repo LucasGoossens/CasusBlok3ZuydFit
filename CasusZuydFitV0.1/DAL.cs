@@ -712,16 +712,17 @@ namespace CasusZuydFitV0._1
                                         {
                                             Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
                                             workouts.Add(workoutToAdd);
+
+                                            foreach (Exercise exercise in getExerciseDal.Exercises)
+                                            {
+                                                if (exercise.WorkoutId == activityId)
+                                                {                                                 
+                                                    workoutToAdd.WorkoutExercises.Add(exercise);
+                                                }
+                                            }
                                         }
                                     }
-                                    foreach (Exercise exercise in getExerciseDal.Exercises)
-                                    {
-                                        if (exercise.WorkoutId == activityId)
-                                        {
-                                            Workout workout = (Workout)workouts.Find(a => a.ActivityId == activityId);
-                                            workout.WorkoutExercises.Add(exercise);
-                                        }
-                                    }
+                                    
 
                                 }
                             }

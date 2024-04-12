@@ -11,11 +11,6 @@ namespace CasusZuydFitV0._1
         {
             while (true)
             {
-
-                // voor nu wordt de eerste user uit de database gepakt. dit moet uiteindelijk de ingelogde user zijn.
-                User user = User.GetUsers().First();
-
-
                 Console.WriteLine("=======================");
                 Console.WriteLine("Kies optie:");
                 Console.WriteLine("-----------------------");
@@ -26,8 +21,8 @@ namespace CasusZuydFitV0._1
                 //Console.WriteLine("4. Display all Exercises");
                 Console.WriteLine("3. Create new Workout");
                 Console.WriteLine("4. Show all events");
-                Console.WriteLine("5. Manage profile");
-                Console.WriteLine("=======================");
+                Console.WriteLine("5. Show all workouts");
+
 
                 int option;
 
@@ -55,10 +50,10 @@ namespace CasusZuydFitV0._1
                         CreateNewWorkout();
                         break;
                     case 4:
-                        DisplayAllEvents(user);
+                        DisplayAllEvents();
                         break;
                     case 5:
-                        ManageProfile(user);
+                        DisplayAllWorkouts();
                         break;
                 }
             }
@@ -200,9 +195,10 @@ namespace CasusZuydFitV0._1
 
             }
 
-            void DisplayAllEvents(User user)
+            void DisplayAllEvents()
             {
-
+                EventDAL work = new EventDAL();
+                work.GetEvents();
                 
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
@@ -226,11 +222,24 @@ namespace CasusZuydFitV0._1
                 switch (eventChoice)
                 {
                     case 1:
+                        Console.WriteLine("Enter ID:");
+                        string idString = Console.ReadLine();
+                        int athleteId;
+                        try
+                        {
+                            athleteId = int.Parse(idString);
+                            Console.WriteLine("Parsed ID: " + athleteId);
+                        }
+                        catch (FormatException)
+                        {
+                            Console.WriteLine("The entered value is not in the correct format.");
+                            return;
+                        }
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are the events you are signed up for:");
-                        foreach (Event eventItem in Event.GetEvents())
+                        foreach (var eventItem in work.events)
                         {
-                            if (eventItem.EventParticipants.Exists(a => a.UserId == user.UserId))
+                            if (eventItem.EventParticipants.Exists(a => a.UserId == athleteId))
                             {
                                 Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
                                 
@@ -240,7 +249,7 @@ namespace CasusZuydFitV0._1
                     case 2:
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are all the events:");
-                        foreach (Event eventItem in Event.GetEvents())
+                        foreach (var eventItem in work.events)
                         {
                             Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
                            
@@ -251,56 +260,57 @@ namespace CasusZuydFitV0._1
                         break;
                 }
             }
-            void ManageProfile( User user)
+
+            void DisplayAllWorkouts()
             {
-
-
-                Console.Clear();
-                Console.WriteLine($"Profile:");
+                WorkoutDAL workoutDAL = new WorkoutDAL();
+                workoutDAL.GetWorkouts();
                 Console.WriteLine("-----------------------");
-                Console.WriteLine($"Name: {user.UserName}");
-                Console.WriteLine($"Email: {user.UserEmail}");
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("1. Edit profile");
-                Console.WriteLine("2. Delete profiel");
-                Console.WriteLine("3. Main menu");
-                int profileChoice = Convert.ToInt32(Console.ReadLine());
-                Console.Clear();
-                switch (profileChoice)
+                Console.WriteLine("Available Workouts:\n");
+
+                int workoutNumber = 1;
+                foreach (Workout workout in workoutDAL.workouts)
+                        {
+                            Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
+                            Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
+                            Console.WriteLine($"   Trainer: {workout.Trainer.UserName}"); 
+                            Console.WriteLine($"   Description: {workout.ActivityDescription}");
+                            Console.WriteLine("---------------------------------------------------------");
+                            workoutNumber++;
+                        }
+
+                Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
+                if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > workoutDAL.workouts.Count)
                 {
-                    case 1:
-                        Console.WriteLine("enter a new username:");
-                        string newUserName = Console.ReadLine();
-                        Console.Clear();
-                        while (User.GetUsers().Any(existingUser => existingUser.UserName == newUserName && newUserName != user.UserName))
-                        {
-                            Console.WriteLine("This username is already taken, please enter a new one.");
-                            newUserName = Console.ReadLine() ?? string.Empty;
-                            Console.Clear();
-                        }
-                        Console.WriteLine("enter a new email:");
-                        string newUserEmail = Console.ReadLine();
-                        Console.WriteLine("enter a new password:");
-                        string newUserPassword = Console.ReadLine();
-                        Console.Clear();
-                        user.UpdateUser(newUserName, newUserEmail, newUserPassword);
-                        Console.WriteLine("Profile updated.");
-                        Console.WriteLine();
-                        break;
-                    case 2:
-                        Console.WriteLine("Are you sure you wanna delete your profile?");
-                        Console.WriteLine("1. Yes");
-                        Console.WriteLine("2. No");
-                        int deleteProfileChoice = Convert.ToInt32(Console.ReadLine());
-                        Console.Clear();
-                        if (deleteProfileChoice == 1)
-                        {
-                            user.DeleteUser();
-                            Console.WriteLine("Profile deleted.");
-                            Console.WriteLine();
-                        }
-                        break;
+                    Console.WriteLine("Invalid selection. Please restart and enter a valid workout number.");
+                    return;
                 }
+
+                selectedNumber--;
+                Workout selectedWorkout = workoutDAL.workouts[selectedNumber];
+
+                Console.WriteLine($"\nSelected Workout: {selectedWorkout.ActivityName}");
+                Console.WriteLine($"Duration (minutes): {selectedWorkout.ActivityDurationMinutes}");
+                Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
+                Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
+                Console.WriteLine($"Description: {selectedWorkout.ActivityDescription}");
+                
+                Console.WriteLine("\nExercises:");
+                if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
+                {
+                    foreach (Exercise exercise in selectedWorkout.WorkoutExercises)
+                    {
+                        Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
+                        Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
+                        Console.WriteLine($"  Result: {exercise.ExerciseResult}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("This workout has no exercises listed.");
+                }
+                
+                
             }
 
         }
