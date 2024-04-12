@@ -314,6 +314,7 @@ namespace CasusZuydFitV0._1
                 
                 
             }
+            /*
             void TrainerGivesFeedback(User user)
             {
                 try
@@ -371,6 +372,7 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("Invalid input given.");
                 }
             }
+            */
         }
     }
 }
