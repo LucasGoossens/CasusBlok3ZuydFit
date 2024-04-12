@@ -639,30 +639,7 @@ namespace CasusZuydFitV0._1
                             // Execute the update query
                             command.ExecuteNonQuery();
 
-                            // // Delete existing equipment associations for the event
-                            // string deleteEquipmentQuery = "DELETE FROM ActivityEquipment WHERE ActivityId = @ActivityId;";
-                            // using (SqlCommand deleteEquipmentCommand = new SqlCommand(deleteEquipmentQuery, connection))
-                            // {
-                            //     deleteEquipmentCommand.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
-                            //     deleteEquipmentCommand.ExecuteNonQuery();
-                            // }
-
-                            // // Insert updated equipment associations for the event into the ActivityEquipment table
-                            // foreach (Equipment equipment in updatedEvent.Equipments)
-                            // {
-                            //     string insertEquipmentQuery = "INSERT INTO ActivityEquipment (ActivityId, EquipmentId) " +
-                            //                                 "VALUES (@ActivityId, @EquipmentId);";
-
-                            //     using (SqlCommand equipmentCommand = new SqlCommand(insertEquipmentQuery, connection))
-                            //     {
-                            //         // Add parameters to the query
-                            //         equipmentCommand.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
-                            //         equipmentCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
-
-                            //         // Execute the query to associate the equipment with the event
-                            //         equipmentCommand.ExecuteNonQuery();
-                            //     }
-                            // } // this code will be used in other method 
+                          
                         }
                     }
                 }
@@ -670,6 +647,37 @@ namespace CasusZuydFitV0._1
                 {
                     // Handle exceptions
                     Console.WriteLine($"An error occurred while updating the event in the database. Please contact customer service: {ex.Message}");
+                }
+            }
+
+
+            // delete event
+            public void DeleteEvent(int eventId)
+            {
+                try
+                {
+                    // Establish a database connection
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+
+                        // Delete event from the Activity table
+                        string deleteQuery = "DELETE FROM [Activity] WHERE ActivityId = @ActivityId;";
+
+                        using (SqlCommand command = new SqlCommand(deleteQuery, connection))
+                        {
+                            // Add parameter to the query
+                            command.Parameters.AddWithValue("@ActivityId", eventId);
+
+                            // Execute the delete query
+                            command.ExecuteNonQuery();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                    Console.WriteLine($"An error occurred while deleting the event from the database. Please contact customer service: {ex.Message}");
                 }
             }
 
