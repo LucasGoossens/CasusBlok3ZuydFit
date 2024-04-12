@@ -314,6 +314,59 @@ namespace CasusZuydFitV0._1
                 
                 
             }
+
+            void ManageProfile(User user)
+            {
+
+
+                Console.Clear();
+                Console.WriteLine($"Profile:");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine($"Name: {user.UserName}");
+                Console.WriteLine($"Email: {user.UserEmail}");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("1. Edit profile");
+                Console.WriteLine("2. Delete profiel");
+                Console.WriteLine("3. Main menu");
+                int profileChoice = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+                switch (profileChoice)
+                {
+                    case 1:
+                        Console.WriteLine("enter a new username:");
+                        string newUserName = Console.ReadLine();
+                        Console.Clear();
+                        while (User.GetUsers().Any(existingUser => existingUser.UserName == newUserName && newUserName != user.UserName))
+                        {
+                            Console.WriteLine("This username is already taken, please enter a new one.");
+                            newUserName = Console.ReadLine() ?? string.Empty;
+                            Console.Clear();
+                        }
+                        Console.WriteLine("enter a new email:");
+                        string newUserEmail = Console.ReadLine();
+                        Console.WriteLine("enter a new password:");
+                        string newUserPassword = Console.ReadLine();
+                        Console.Clear();
+                        user.UpdateUser(newUserName, newUserEmail, newUserPassword);
+                        Console.WriteLine("Profile updated.");
+                        Console.WriteLine();
+                        break;
+                    case 2:
+                        Console.WriteLine("Are you sure you wanna delete your profile?");
+                        Console.WriteLine("1. Yes");
+                        Console.WriteLine("2. No");
+                        int deleteProfileChoice = Convert.ToInt32(Console.ReadLine());
+                        Console.Clear();
+                        if (deleteProfileChoice == 1)
+                        {
+                            user.DeleteUser();
+                            Console.WriteLine("Profile deleted.");
+                            Console.WriteLine();
+                        }
+                        break;
+                }
+            }
+
             /*
             void TrainerGivesFeedback(User user)
             {
