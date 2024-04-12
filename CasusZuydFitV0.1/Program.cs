@@ -309,8 +309,93 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("This workout has no exercises listed.");
                 }
+
+                {
+                Console.WriteLine("\nWould you like to 'do' this workout? (yes/no)");
+                string response = Console.ReadLine().Trim().ToLower();
+                if (response == "yes")
+                {
+                    DoWorkout(selectedWorkout);
+                }
+                else
+                {
+                    Console.WriteLine("Returning to the main menu.");
+                }
+            }
                 
-                
+            void DoWorkout(Workout workout)
+            {
+                Console.WriteLine("Enter your User ID:"); // ophalen uit andere functie!!
+                if (!int.TryParse(Console.ReadLine(), out int userId))
+                {
+                    Console.WriteLine("Invalid User ID. Aborting workout.");
+                    return;
+                }
+            
+                //Dictionary<Exercise, List<(int sets, double weight, int reps)>> workoutLog = new Dictionary<Exercise, List<(int sets, double weight, int reps)>>();
+                Console.Clear();
+                Console.WriteLine($"Starting Workout: {workout.ActivityName}");
+                foreach (Exercise exercise in workout.WorkoutExercises)
+                {
+                    Console.WriteLine($"\nExercise: {exercise.ExerciseName}");
+                    Console.WriteLine("Enter the number of sets, weight (in kg), and repetitions for this exercise:");
+
+                    List<(int sets, double weight, int reps)> exerciseLog = new List<(int sets, double weight, int reps)>();
+
+                    Console.Write("How many sets will you do for this exercise? ");
+                    int numberOfSets;
+                    while (!int.TryParse(Console.ReadLine(), out numberOfSets) || numberOfSets <= 0)
+                    {
+                        Console.WriteLine("Invalid input. Please enter a positive integer for the number of sets.");
+                    }
+
+                    for (int set = 1; set <= numberOfSets; set++)
+                    {
+                        Console.WriteLine($"\nSet {set}:");
+                        Console.Write("Weight (kg): ");
+                        double kg;
+                        while (!double.TryParse(Console.ReadLine(), out kg) || kg < 0)
+                        {
+                            Console.WriteLine("Invalid input. Please enter a non-negative number for the weight.");
+                        }
+
+                        Console.Write("Reps: ");
+                        int reps;
+                        while (!int.TryParse(Console.ReadLine(), out reps) || reps <= 0)
+                        {
+                            Console.WriteLine("Invalid input. Please enter a positive integer for the number of reps.");
+                        }
+
+                        exerciseLog.Add((set, kg, reps));
+                    }
+
+                    workoutLog.Add(exercise, exerciseLog);
+                }
+
+                Console.WriteLine("\nWorkout completed! Here's what you've logged:");
+                foreach (var logEntry in workoutLog)
+                {
+                    Console.WriteLine($"\nExercise: {logEntry.Key.ExerciseName}");
+                    foreach (var setEntry in logEntry.Value)
+                    {
+                        Console.WriteLine($"Set {setEntry.sets}: {setEntry.weight} kg for {setEntry.reps} reps");
+                    }
+                }
+
+                Console.WriteLine("\nPress any key to finish...");
+                Console.ReadKey();
+
+                Console.WriteLine("\nYour Workout Log:");
+                foreach (var logEntry in workoutLog)
+                {
+                    Console.WriteLine($"\nExercise: {logEntry.Key.ExerciseName}");
+                    foreach (var setEntry in logEntry.Value)
+                    {
+                        Console.WriteLine($"Set {setEntry.sets}: {setEntry.weight} kg for {setEntry.reps} reps");
+                    }
+                }
+            }
+  
             }
 
         }
