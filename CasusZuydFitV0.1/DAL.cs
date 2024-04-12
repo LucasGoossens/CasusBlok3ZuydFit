@@ -551,6 +551,79 @@ namespace CasusZuydFitV0._1
                 }
             }
 
+            // create event
+            public void CreateEvent(Event newEvent)
+            {
+                try
+                {
+                    // Establish a database connection
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+
+                        // Insert event data into the Activity table
+                        string insertQuery = "INSERT INTO [Activity] (Name, Duration, StartingTime, Description, TrainerId, Location, ParticipantsLimit, Type) " +
+                                            "VALUES (@Name, @Duration, @StartingTime, @Description, @TrainerId, @Location, @ParticipantsLimit, @Type); " +
+                                            "SELECT SCOPE_IDENTITY();"; // Retrieve the ID of the inserted event
+
+                        using (SqlCommand command = new SqlCommand(insertQuery, connection))
+                        {
+                            // Add parameters to the query
+                            command.Parameters.AddWithValue("@Name", newEvent.ActivityName);
+                            command.Parameters.AddWithValue("@Duration", newEvent.ActivityDurationMinutes);
+                            command.Parameters.AddWithValue("@StartingTime", newEvent.ActivityStartingTime);
+                            command.Parameters.AddWithValue("@Description", newEvent.ActivityDescription);
+                            command.Parameters.AddWithValue("@TrainerId", newEvent.Trainer.UserId);
+                            command.Parameters.AddWithValue("@Location", newEvent.EventLocation);
+                            command.Parameters.AddWithValue("@ParticipantsLimit", newEvent.EventPatricipantLimit);
+                            command.Parameters.AddWithValue("@Type", "event"); // Assuming events are of type 'event'
+
+                            // Execute the query and retrieve the ID of the inserted event
+                            int newEventId = Convert.ToInt32(command.ExecuteScalar());
+
+                            // Insert athletes associated with the event into the LogFeedback table
+                            foreach (Athlete athlete in newEvent.EventParticipants) // ???
+                            {
+                                string insertAthleteQuery = "INSERT INTO LogFeedback (ActivityId, AthleteId) " +
+                                                            "VALUES (@ActivityId, @AthleteId);";
+
+                                using (SqlCommand athleteCommand = new SqlCommand(insertAthleteQuery, connection))
+                                {
+                                    // Add parameters to the query
+                                    athleteCommand.Parameters.AddWithValue("@ActivityId", newEventId);
+                                    athleteCommand.Parameters.AddWithValue("@AthleteId", athlete.UserId);
+
+                                    // Execute the query to associate the athlete with the event
+                                    athleteCommand.ExecuteNonQuery();
+                                }
+                            }
+
+                            // Insert equipment associated with the event into the ActivityEquipment table
+                            foreach (Equipment equipment in newEvent.Equipments)
+                            {
+                                string insertEquipmentQuery = "INSERT INTO ActivityEquipment (ActivityId, EquipmentId) " +
+                                                            "VALUES (@ActivityId, @EquipmentId);";
+
+                                using (SqlCommand equipmentCommand = new SqlCommand(insertEquipmentQuery, connection))
+                                {
+                                    // Add parameters to the query
+                                    equipmentCommand.Parameters.AddWithValue("@ActivityId", newEventId);
+                                    equipmentCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
+
+                                    // Execute the query to associate the equipment with the event
+                                    equipmentCommand.ExecuteNonQuery();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions
+                    Console.WriteLine($"An error occurred while creating the event in the database. Please contact customer service: {ex.Message}");
+                }
+            }
+
 
         }
 
