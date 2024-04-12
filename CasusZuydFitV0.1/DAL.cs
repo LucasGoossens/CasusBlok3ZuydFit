@@ -448,9 +448,12 @@ namespace CasusZuydFitV0._1
 
             public void GetEvents()
             {
+                // Clear existing events
                 events.Clear();
+
                 try
                 {
+                    // Initialize Data Access Layer instances
                     TrainerDAL trainerDAL = new TrainerDAL();
                     trainerDAL.GetTrainers();
 
@@ -460,61 +463,81 @@ namespace CasusZuydFitV0._1
                     AthleteDAL athleteDAL = new AthleteDAL();
                     athleteDAL.GetAthlets();
 
+                    // Establish a database connection
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
+
+                        // Select events from the database
                         string query = "SELECT * FROM [Activity] WHERE Type = 'event';";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
+                            // Execute the query
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
+                                // Iterate through the result set
                                 while (reader.Read())
                                 {
+                                    // Retrieve event data from the reader
                                     int activityId = reader.GetInt32(0);
                                     string activityName = reader.GetString(1);
                                     int activityDuration = reader.GetInt32(2);
                                     string activityStartingTime = reader.GetString(3);
                                     string activityDescription = reader.GetString(4);
-
                                     int activityTrainerId = reader.GetInt32(5);
+                                    
+                                    // Retrieve the trainer associated with the event
                                     Trainer activityTrainer = (Trainer)trainerDAL.trainers.Find(trainer => trainer.UserId == activityTrainerId);
 
                                     string eventLocation = reader.GetString(7);
                                     int eventParticipantsLimit = reader.GetInt32(8);
 
+                                    // Create a list to store event athletes
                                     List<Athlete> eventAthletes = new List<Athlete>();
+
+                                    // Query to select athletes associated with the event
                                     string activityQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
                                     using (SqlCommand athleteCommand = new SqlCommand(activityQuery, connection))
                                     {
                                         using (SqlDataReader athleteReader = athleteCommand.ExecuteReader())
                                         {
+                                            // Iterate through the result set
                                             while (athleteReader.Read())
                                             {
                                                 int athleteId = athleteReader.GetInt32(0);
+                                                // Retrieve the athlete associated with the ID
                                                 Athlete athlete = athleteDAL.athletes.Find(a => a.UserId == athleteId);
+                                                // Add the athlete to the event's list of athletes
                                                 if (athlete != null)
                                                 {
                                                     eventAthletes.Add(athlete);
                                                 }
                                             }
                                         }
+                                        // Create an Event object and add it to the events collection
                                         Event eventToAdd = new Event(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, eventLocation, eventParticipantsLimit, eventAthletes);
                                         events.Add(eventToAdd);
                                     }
                                 }
                             }
                         }
+
+                        // Query to retrieve associated equipment for events
                         string activityEquipmentQuery = "Select * from [ActivityEquipment]";
                         using (SqlCommand activityEquipmentCommand = new SqlCommand(activityEquipmentQuery, connection))
                         {
                             using (SqlDataReader reader = activityEquipmentCommand.ExecuteReader())
                             {
+                                // Iterate through the result set
                                 while (reader.Read())
                                 {
                                     int activityId = reader.GetInt32(1);
                                     int equipmentId = reader.GetInt32(2);
+                                    // Find the event associated with the ID
                                     Event eventToEdit = events.Find(a => a.ActivityId == activityId);
+                                    // Retrieve the equipment associated with the ID
                                     Equipment equipment = equipmentDAL.equipments.Find(e => e.EquipmentId == equipmentId);
+                                    // Add the equipment to the event's list of equipment
                                     eventToEdit.Equipments.Add(equipment);
                                 }
                             }
@@ -523,9 +546,12 @@ namespace CasusZuydFitV0._1
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgetreden bij het ophalen van activiteiten uit de database. Neem contact op met de klantenservice: {ex.Message}");
+                    // Handle exceptions
+                    Console.WriteLine($"An error occurred while retrieving events from the database. Please contact customer service: {ex.Message}");
                 }
             }
+
+
         }
 
 
