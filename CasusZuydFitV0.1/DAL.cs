@@ -6,7 +6,7 @@ namespace CasusZuydFitV0._1
 {
     public class DAL
     {
-        //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=True;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         private static readonly string dbConString = "data source = LUCAS; initial catalog = ZuydFitFinal; trusted_connection=true;MultipleActiveResultSets=True;";
         public class UserDAL
         {
@@ -212,7 +212,7 @@ namespace CasusZuydFitV0._1
                                     if (activityType == "event")
                                     {
                                         string eventLocation = reader.GetString(7);
-                                        int eventParticipantsLimit = Convert.ToInt32(reader.GetString(8));
+                                        int eventParticipantsLimit = reader.GetInt32(8);
 
                                         List<Athlete> eventAthletes = new List<Athlete>();
                                         string activityQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
@@ -246,17 +246,20 @@ namespace CasusZuydFitV0._1
                                             if (athlete != null)
                                             {
                                                 Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
+                                                
+                                                foreach (Exercise exercise in getExerciseDal.Exercises)
+                                                {
+                                                    if (exercise.WorkoutId == activityId)
+                                                    {                                                        
+                                                        workoutToAdd.WorkoutExercises.Add(exercise);
+                                                    }
+                                                }
+
                                                 activities.Add(workoutToAdd);
+
                                             }
                                         }
-                                        foreach (Exercise exercise in getExerciseDal.Exercises)
-                                        {
-                                            if (exercise.WorkoutId == activityId)
-                                            {
-                                                Workout workout = (Workout)activities.Find(a => a.ActivityId == activityId);
-                                                workout.WorkoutExercises.Add(exercise);
-                                            }
-                                        }
+                                        
                                     }
                                 }
                             }

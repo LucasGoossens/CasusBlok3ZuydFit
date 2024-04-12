@@ -43,5 +43,20 @@ namespace CasusZuydFitV0._1
             UserDAL Dal = new UserDAL();
             Dal.CreateNewUser(this);
         }
+
+        public void UpdateUser(string newUsername, string newEmail, string newPassword)
+        {
+            UserName = newUsername;
+            UserEmail = newEmail;
+            UserPassword = newPassword;
+
+            UserDAL Dal = new UserDAL();
+            Dal.UpdateUser(this);
+        }
+        public void DeleteUser()
+        {
+            UserDAL Dal = new UserDAL();
+            Dal.DeleteUser(this);
+        }
     }
 }
