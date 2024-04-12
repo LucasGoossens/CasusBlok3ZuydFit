@@ -7,7 +7,7 @@ using static CasusZuydFitV0._1.DAL;
 
 namespace CasusZuydFitV0._1
 {
-    public class Activity
+    public abstract class Activity
     {
         public int ActivityId { get; set; }
         public string ActivityName { get; set; }
