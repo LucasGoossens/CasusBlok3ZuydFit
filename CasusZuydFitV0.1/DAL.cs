@@ -581,22 +581,7 @@ namespace CasusZuydFitV0._1
                             // Execute the query and retrieve the ID of the inserted event
                             int newEventId = Convert.ToInt32(command.ExecuteScalar());
 
-                            // Insert athletes associated with the event into the LogFeedback table
-                            foreach (Athlete athlete in newEvent.EventParticipants) // ???
-                            {
-                                string insertAthleteQuery = "INSERT INTO LogFeedback (ActivityId, AthleteId) " +
-                                                            "VALUES (@ActivityId, @AthleteId);";
-
-                                using (SqlCommand athleteCommand = new SqlCommand(insertAthleteQuery, connection))
-                                {
-                                    // Add parameters to the query
-                                    athleteCommand.Parameters.AddWithValue("@ActivityId", newEventId);
-                                    athleteCommand.Parameters.AddWithValue("@AthleteId", athlete.UserId);
-
-                                    // Execute the query to associate the athlete with the event
-                                    athleteCommand.ExecuteNonQuery();
-                                }
-                            }
+                           
 
                             // Insert equipment associated with the event into the ActivityEquipment table
                             foreach (Equipment equipment in newEvent.Equipments)
