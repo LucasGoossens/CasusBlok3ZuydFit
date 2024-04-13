@@ -145,7 +145,7 @@ namespace CasusZuydFitV0._1
             void CreateNewWorkout()
             {
                 Console.Clear();
-                                
+
                 Console.WriteLine("      New workout");
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("New Workout Name:");
@@ -155,7 +155,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("Workout starting time:");
                 string newWorkoutStartingTime = Console.ReadLine();
                 Console.WriteLine("Workout description:");
-                string newWorkoutDescription= Console.ReadLine();
+                string newWorkoutDescription = Console.ReadLine();
                 Console.WriteLine("Workout Athlete ID:"); // dit is foutgevoelig voor nu, uiteindelijk misschien eerst lijst van alle Athlete Id's geven
                 int newAthleteParticipantId = Convert.ToInt32(Console.ReadLine());
                 Console.WriteLine("Workout Trainer ID:"); // dit is foutgevoelig voor nu, uiteindelijk misschien eerst lijst van alle Trainer Id's geven
@@ -170,7 +170,7 @@ namespace CasusZuydFitV0._1
                 newWorkout.CreateNewWorkout();
                 int workoutIdToAddToExercise = newWorkout.ActivityId;
                 Console.WriteLine(workoutIdToAddToExercise.ToString());
-                
+
                 int addExerciseOption = 1;
                 while (addExerciseOption == 1)
                 {
@@ -178,7 +178,7 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("1. Add new Exercise to Workout");
                     Console.WriteLine("2. Save Workout");
 
-                    addExerciseOption = Convert.ToInt32(Console.ReadLine());                                       
+                    addExerciseOption = Convert.ToInt32(Console.ReadLine());
 
                     switch (addExerciseOption)
                     {
@@ -199,10 +199,10 @@ namespace CasusZuydFitV0._1
             {
                 EventDAL work = new EventDAL();
                 work.GetEvents();
-                
+
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
-              
+
                 Console.WriteLine("1. The events I am signed up for");
                 Console.WriteLine("2. All events");
                 string choiceString = Console.ReadLine();
@@ -216,7 +216,7 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("The entered choice is not valid.");
                     return;
                 }
-                
+
                 Console.Clear();
 
                 switch (eventChoice)
@@ -242,7 +242,7 @@ namespace CasusZuydFitV0._1
                             if (eventItem.EventParticipants.Exists(a => a.UserId == athleteId))
                             {
                                 Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
-                                
+
                             }
                         }
                         break;
@@ -252,7 +252,7 @@ namespace CasusZuydFitV0._1
                         foreach (var eventItem in work.events)
                         {
                             Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
-                           
+
                         }
                         break;
                     default:
@@ -265,19 +265,29 @@ namespace CasusZuydFitV0._1
             {
                 WorkoutDAL workoutDAL = new WorkoutDAL();
                 workoutDAL.GetWorkouts();
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("Available Workouts:\n");
 
+                AthleteDAL athleteDAL = new AthleteDAL();
+                athleteDAL.GetAthlets();
+
+                int MockAthleteId = 6; // dit dan uiteindelijk de ingelogde athlete
+                Athlete currentAthlete = athleteDAL.athletes.Find(athlete => athlete.UserId == MockAthleteId);
+
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("All Workouts:\n");
+                Console.WriteLine("-----------------------");
                 int workoutNumber = 1;
                 foreach (Workout workout in workoutDAL.workouts)
-                        {
-                            Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
-                            Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
-                            Console.WriteLine($"   Trainer: {workout.Trainer.UserName}"); 
-                            Console.WriteLine($"   Description: {workout.ActivityDescription}");
-                            Console.WriteLine("---------------------------------------------------------");
-                            workoutNumber++;
-                        }
+                {
+                    workoutNumber++;
+                    if (currentAthlete.ActivityList.Contains(workout))
+                    {
+                        Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
+                        Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
+                        Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
+                        Console.WriteLine($"   Description: {workout.ActivityDescription}");
+                        Console.WriteLine("---------------------------------------------------------");
+                    }
+                }
 
                 Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
                 if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > workoutDAL.workouts.Count)
@@ -294,7 +304,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
                 Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
                 Console.WriteLine($"Description: {selectedWorkout.ActivityDescription}");
-                
+
                 Console.WriteLine("\nExercises:");
                 if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
                 {
@@ -311,91 +321,90 @@ namespace CasusZuydFitV0._1
                 }
 
                 {
-                Console.WriteLine("\nWould you like to 'do' this workout? (yes/no)");
-                string response = Console.ReadLine().Trim().ToLower();
-                if (response == "yes")
-                {
-                    DoWorkout(selectedWorkout);
-                }
-                else
-                {
-                    Console.WriteLine("Returning to the main menu.");
-                }
-            }
-                
-            void DoWorkout(Workout workout)
-            {
-                Console.WriteLine("Enter your User ID:"); // ophalen uit andere functie!!
-                if (!int.TryParse(Console.ReadLine(), out int userId))
-                {
-                    Console.WriteLine("Invalid User ID. Aborting workout.");
-                    return;
-                }
-            
-                //Dictionary<Exercise, List<(int sets, double weight, int reps)>> workoutLog = new Dictionary<Exercise, List<(int sets, double weight, int reps)>>();
-                Console.Clear();
-                Console.WriteLine($"Starting Workout: {workout.ActivityName}");
-                foreach (Exercise exercise in workout.WorkoutExercises)
-                {
-                    Console.WriteLine($"\nExercise: {exercise.ExerciseName}");
-                    Console.WriteLine("Enter the number of sets, weight (in kg), and repetitions for this exercise:");
-
-                    List<(int sets, double weight, int reps)> exerciseLog = new List<(int sets, double weight, int reps)>();
-
-                    Console.Write("How many sets will you do for this exercise? ");
-                    int numberOfSets;
-                    while (!int.TryParse(Console.ReadLine(), out numberOfSets) || numberOfSets <= 0)
+                    Console.WriteLine("\n1. Log this workout.");
+                    int response = Convert.ToInt32(Console.ReadLine());
+                    if (response == 1)
                     {
-                        Console.WriteLine("Invalid input. Please enter a positive integer for the number of sets.");
+                        DoWorkout(selectedWorkout);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Returning to the main menu.");
+                    }
+                }
+
+                void DoWorkout(Workout workout)
+                {                    
+                    if (!int.TryParse(Console.ReadLine(), out int userId))
+                    {
+                        Console.WriteLine("Invalid User ID. Aborting workout.");
+                        return;
                     }
 
-                    for (int set = 1; set <= numberOfSets; set++)
+                    //Dictionary<Exercise, List<(int sets, double weight, int reps)>> workoutLog = new Dictionary<Exercise, List<(int sets, double weight, int reps)>>();
+                    Console.Clear();
+                    Console.WriteLine($"Starting Workout: {workout.ActivityName}");
+                    foreach (Exercise exercise in workout.WorkoutExercises)
                     {
-                        Console.WriteLine($"\nSet {set}:");
-                        Console.Write("Weight (kg): ");
-                        double kg;
-                        while (!double.TryParse(Console.ReadLine(), out kg) || kg < 0)
+                        Console.WriteLine($"\nExercise: {exercise.ExerciseName}");
+                        Console.WriteLine("Enter the number of sets, weight (in kg), and repetitions for this exercise:");
+
+                        List<(int sets, double weight, int reps)> exerciseLog = new List<(int sets, double weight, int reps)>();
+
+                        Console.Write("How many sets will you do for this exercise? ");
+                        int numberOfSets;
+                        while (!int.TryParse(Console.ReadLine(), out numberOfSets) || numberOfSets <= 0)
                         {
-                            Console.WriteLine("Invalid input. Please enter a non-negative number for the weight.");
+                            Console.WriteLine("Invalid input. Please enter a positive integer for the number of sets.");
                         }
 
-                        Console.Write("Reps: ");
-                        int reps;
-                        while (!int.TryParse(Console.ReadLine(), out reps) || reps <= 0)
+                        for (int set = 1; set <= numberOfSets; set++)
                         {
-                            Console.WriteLine("Invalid input. Please enter a positive integer for the number of reps.");
+                            Console.WriteLine($"\nSet {set}:");
+                            Console.Write("Weight (kg): ");
+                            double kg;
+                            while (!double.TryParse(Console.ReadLine(), out kg) || kg < 0)
+                            {
+                                Console.WriteLine("Invalid input. Please enter a non-negative number for the weight.");
+                            }
+
+                            Console.Write("Reps: ");
+                            int reps;
+                            while (!int.TryParse(Console.ReadLine(), out reps) || reps <= 0)
+                            {
+                                Console.WriteLine("Invalid input. Please enter a positive integer for the number of reps.");
+                            }
+
+                            exerciseLog.Add((set, kg, reps));
                         }
 
-                        exerciseLog.Add((set, kg, reps));
+                        workoutLog.Add(exercise, exerciseLog);
                     }
 
-                    workoutLog.Add(exercise, exerciseLog);
-                }
-
-                Console.WriteLine("\nWorkout completed! Here's what you've logged:");
-                foreach (var logEntry in workoutLog)
-                {
-                    Console.WriteLine($"\nExercise: {logEntry.Key.ExerciseName}");
-                    foreach (var setEntry in logEntry.Value)
+                    Console.WriteLine("\nWorkout completed! Here's what you've logged:");
+                    foreach (var logEntry in workoutLog)
                     {
-                        Console.WriteLine($"Set {setEntry.sets}: {setEntry.weight} kg for {setEntry.reps} reps");
+                        Console.WriteLine($"\nExercise: {logEntry.Key.ExerciseName}");
+                        foreach (var setEntry in logEntry.Value)
+                        {
+                            Console.WriteLine($"Set {setEntry.sets}: {setEntry.weight} kg for {setEntry.reps} reps");
+                        }
                     }
-                }
 
-                Console.WriteLine("\nPress any key to finish...");
-                Console.ReadKey();
+                    Console.WriteLine("\nPress any key to finish...");
+                    Console.ReadKey();
 
-                Console.WriteLine("\nYour Workout Log:");
-                foreach (var logEntry in workoutLog)
-                {
-                    Console.WriteLine($"\nExercise: {logEntry.Key.ExerciseName}");
-                    foreach (var setEntry in logEntry.Value)
+                    Console.WriteLine("\nYour Workout Log:");
+                    foreach (var logEntry in workoutLog)
                     {
-                        Console.WriteLine($"Set {setEntry.sets}: {setEntry.weight} kg for {setEntry.reps} reps");
+                        Console.WriteLine($"\nExercise: {logEntry.Key.ExerciseName}");
+                        foreach (var setEntry in logEntry.Value)
+                        {
+                            Console.WriteLine($"Set {setEntry.sets}: {setEntry.weight} kg for {setEntry.reps} reps");
+                        }
                     }
                 }
-            }
-  
+
             }
 
         }
