@@ -9,6 +9,7 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
+            User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
             while (true)
             {
                 Console.WriteLine("=======================");
@@ -22,6 +23,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("3. Create new Workout");
                 Console.WriteLine("4. Show all events");
                 Console.WriteLine("5. Show all workouts");
+                Console.WriteLine("6. Manage profile");
 
 
                 int option;
@@ -50,10 +52,13 @@ namespace CasusZuydFitV0._1
                         CreateNewWorkout();
                         break;
                     case 4:
-                        DisplayAllEvents();
+                        DisplayAllEvents(user);
                         break;
                     case 5:
                         DisplayAllWorkouts();
+                        break;
+                    case 6:
+                        ManageProfile(user);
                         break;
                 }
             }
@@ -195,11 +200,9 @@ namespace CasusZuydFitV0._1
 
             }
 
-            void DisplayAllEvents()
+            void DisplayAllEvents(User user)
             {
-                EventDAL work = new EventDAL();
-                work.GetEvents();
-
+                
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
 
@@ -222,34 +225,20 @@ namespace CasusZuydFitV0._1
                 switch (eventChoice)
                 {
                     case 1:
-                        Console.WriteLine("Enter ID:");
-                        string idString = Console.ReadLine();
-                        int athleteId;
-                        try
-                        {
-                            athleteId = int.Parse(idString);
-                            Console.WriteLine("Parsed ID: " + athleteId);
-                        }
-                        catch (FormatException)
-                        {
-                            Console.WriteLine("The entered value is not in the correct format.");
-                            return;
-                        }
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are the events you are signed up for:");
-                        foreach (var eventItem in work.events)
+                        foreach (var eventItem in Event.GetEvents())
                         {
-                            if (eventItem.EventParticipants.Exists(a => a.UserId == athleteId))
+                            if (eventItem.EventParticipants.Exists(a => a.UserId == user.UserId))
                             {
                                 Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
-
                             }
                         }
                         break;
                     case 2:
                         Console.WriteLine("-----------------------");
                         Console.WriteLine("These are all the events:");
-                        foreach (var eventItem in work.events)
+                        foreach (var eventItem in Event.GetEvents())
                         {
                             Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
 
@@ -319,24 +308,121 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("This workout has no exercises listed.");
                 }
+                
+                
+            }
 
+            void ManageProfile(User user)
+            {
+
+
+                Console.Clear();
+                Console.WriteLine($"Profile:");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine($"Name: {user.UserName}");
+                Console.WriteLine($"Email: {user.UserEmail}");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("1. Edit profile");
+                Console.WriteLine("2. Delete profiel");
+                Console.WriteLine("3. Main menu");
+                int profileChoice = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
+                switch (profileChoice)
                 {
-                    Console.WriteLine("\n1. Log this workout.");
-                    int response = Convert.ToInt32(Console.ReadLine());
-                    if (response == 1)
+                    case 1:
+                        Console.WriteLine("enter a new username:");
+                        string newUserName = Console.ReadLine();
+                        Console.Clear();
+                        while (User.GetUsers().Any(existingUser => existingUser.UserName == newUserName && newUserName != user.UserName))
+                        {
+                            Console.WriteLine("This username is already taken, please enter a new one.");
+                            newUserName = Console.ReadLine() ?? string.Empty;
+                            Console.Clear();
+                        }
+                        Console.WriteLine("enter a new email:");
+                        string newUserEmail = Console.ReadLine();
+                        Console.WriteLine("enter a new password:");
+                        string newUserPassword = Console.ReadLine();
+                        Console.Clear();
+                        user.UpdateUser(newUserName, newUserEmail, newUserPassword);
+                        Console.WriteLine("Profile updated.");
+                        Console.WriteLine();
+                        break;
+                    case 2:
+                        Console.WriteLine("Are you sure you wanna delete your profile?");
+                        Console.WriteLine("1. Yes");
+                        Console.WriteLine("2. No");
+                        int deleteProfileChoice = Convert.ToInt32(Console.ReadLine());
+                        Console.Clear();
+                        if (deleteProfileChoice == 1)
+                        {
+                            user.DeleteUser();
+                            Console.WriteLine("Profile deleted.");
+                            Console.WriteLine();
+                        }
+                        break;
+                }
+            }
+
+            /*
+            void TrainerGivesFeedback(User user)
+            {
+                try
+                {
+                    LogFeedback logFeedback = null;
+                    Console.WriteLine($"All activities where {user.UserName} is the trainer: ");
+                    foreach (Activity activity in Activity.GetActivities())
                     {
-                        //DoWorkout(selectedWorkout);
+                        if (activity.Trainer.UserId == user.UserId)
+                        {
+                            Console.WriteLine($"Activity ID: {activity.ActivityId}, Name: {activity.ActivityName}");
+                        }
+                    }
+                    Console.WriteLine("Enter the ID of the activity you want to give feedback on: ");
+                    int activityId = Convert.ToInt32(Console.ReadLine());
+                    Console.Clear();
+                    var activityToGiveFeedbackOn = Activity.GetActivities().FirstOrDefault(activity => activity.ActivityId == activityId);
+                    if (activityToGiveFeedbackOn == null)
+                    {
+                        Console.WriteLine("A non-existing ID was given");
+                        return;
+                    }
+                    else if (activityToGiveFeedbackOn.Trainer.UserId == user.UserId)
+                    {
+                        if (activityToGiveFeedbackOn is Event)
+                        {
+                            Console.WriteLine("All users that are signed up for this event: ");
+                            foreach (Athlete athlete in activityToGiveFeedbackOn.EventParticipants)
+                            {
+                                Console.WriteLine($"User ID: {athlete.UserId}, Name: {athlete.UserName}");
+                                Console.WriteLine("Pick a UserID for the user you wanna give feedback on");
+                            }
+                            int pickedUserId = Convert.ToInt32(Console.ReadLine());
+                            User? userToGiveFeedbackOn = User.GetUsers().FirstOrDefault(user => user.UserId == pickedUserId);
+                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.Activity.ActivityId == activityId && feedback.Trainer.UserId == pickedUserId);
+                        }
+                        else
+                        {
+                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.Activity.ActivityId == activityId && feedback.Trainer.UserId == activityToGiveFeedbackOn.WorkoutParticipant.UserId);
+                        }
+                        Console.Clear();
+                        Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}, Athlete to give feedback on: {logFeedback.Athlete.UserName}");
+                        Console.WriteLine("Enter the feedback you want to give: ");
+                        string NewFeedback = Console.ReadLine();
+                        
                     }
                     else
                     {
-                        Console.WriteLine("Returning to the main menu.");
+                        Console.WriteLine("You are not the trainer of this activity.");
+                        return;
                     }
                 }
-
-                
-
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid input given.");
+                }
             }
-
+            */
         }
     }
 }
