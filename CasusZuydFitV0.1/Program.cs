@@ -150,7 +150,7 @@ namespace CasusZuydFitV0._1
             void CreateNewWorkout()
             {
                 Console.Clear();
-                                
+
                 Console.WriteLine("      New workout");
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("New Workout Name:");
@@ -160,7 +160,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("Workout starting time:");
                 string newWorkoutStartingTime = Console.ReadLine();
                 Console.WriteLine("Workout description:");
-                string newWorkoutDescription= Console.ReadLine();
+                string newWorkoutDescription = Console.ReadLine();
                 Console.WriteLine("Workout Athlete ID:"); // dit is foutgevoelig voor nu, uiteindelijk misschien eerst lijst van alle Athlete Id's geven
                 int newAthleteParticipantId = Convert.ToInt32(Console.ReadLine());
                 Console.WriteLine("Workout Trainer ID:"); // dit is foutgevoelig voor nu, uiteindelijk misschien eerst lijst van alle Trainer Id's geven
@@ -175,7 +175,7 @@ namespace CasusZuydFitV0._1
                 newWorkout.CreateNewWorkout();
                 int workoutIdToAddToExercise = newWorkout.ActivityId;
                 Console.WriteLine(workoutIdToAddToExercise.ToString());
-                
+
                 int addExerciseOption = 1;
                 while (addExerciseOption == 1)
                 {
@@ -183,7 +183,7 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("1. Add new Exercise to Workout");
                     Console.WriteLine("2. Save Workout");
 
-                    addExerciseOption = Convert.ToInt32(Console.ReadLine());                                       
+                    addExerciseOption = Convert.ToInt32(Console.ReadLine());
 
                     switch (addExerciseOption)
                     {
@@ -205,7 +205,7 @@ namespace CasusZuydFitV0._1
                 
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
-              
+
                 Console.WriteLine("1. The events I am signed up for");
                 Console.WriteLine("2. All events");
                 string choiceString = Console.ReadLine();
@@ -219,7 +219,7 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("The entered choice is not valid.");
                     return;
                 }
-                
+
                 Console.Clear();
 
                 switch (eventChoice)
@@ -241,7 +241,7 @@ namespace CasusZuydFitV0._1
                         foreach (var eventItem in Event.GetEvents())
                         {
                             Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
-                           
+
                         }
                         break;
                     default:
@@ -254,19 +254,29 @@ namespace CasusZuydFitV0._1
             {
                 WorkoutDAL workoutDAL = new WorkoutDAL();
                 workoutDAL.GetWorkouts();
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("Available Workouts:\n");
 
+                AthleteDAL athleteDAL = new AthleteDAL();
+                athleteDAL.GetAthlets();
+
+                int MockAthleteId = 6; // dit dan uiteindelijk de ingelogde athlete
+                Athlete currentAthlete = athleteDAL.athletes.Find(athlete => athlete.UserId == MockAthleteId);
+
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("All Workouts:\n");
+                Console.WriteLine("-----------------------");
                 int workoutNumber = 1;
                 foreach (Workout workout in workoutDAL.workouts)
-                        {
-                            Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
-                            Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
-                            Console.WriteLine($"   Trainer: {workout.Trainer.UserName}"); 
-                            Console.WriteLine($"   Description: {workout.ActivityDescription}");
-                            Console.WriteLine("---------------------------------------------------------");
-                            workoutNumber++;
-                        }
+                {
+                    workoutNumber++;
+                    if (currentAthlete.ActivityList.Contains(workout))
+                    {
+                        Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
+                        Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
+                        Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
+                        Console.WriteLine($"   Description: {workout.ActivityDescription}");
+                        Console.WriteLine("---------------------------------------------------------");
+                    }
+                }
 
                 Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
                 if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > workoutDAL.workouts.Count)
@@ -283,7 +293,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
                 Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
                 Console.WriteLine($"Description: {selectedWorkout.ActivityDescription}");
-                
+
                 Console.WriteLine("\nExercises:");
                 if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
                 {
