@@ -725,6 +725,44 @@ namespace CasusZuydFitV0._1
                 }
             }
 
+            public List<Exercise> GetAllExercisesInWorkoutWithId(int workoutId)
+            {
+                List<Exercise> Exercises = new List<Exercise>();
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    {
+                        connection.Open();
+                        string query = $"SELECT * FROM [Exercise] WHERE workoutId = {workoutId}";
+                        using (SqlCommand command = new SqlCommand(query, connection))
+                        {
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    int exerciseId = reader.GetInt32(0);
+                                    string exerciseName = reader.GetString(1);
+                                    //int workoutId = reader.GetInt32(2); niet nodig, heb je al
+                                    string excersiceResult = reader.GetString(3);
+                                    string exerciseDescription = reader.GetString(4);
+
+                                    Exercise exercise = new Exercise(exerciseId, exerciseName, excersiceResult, exerciseDescription, workoutId);
+                                    Exercises.Add(exercise);
+
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"An error occurred while creating a new exercise in the database. Please contact Customer Service: {ex.Message}");
+                }
+
+                return Exercises;
+
+            }
+
             //The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Exercise_Activity". The conflict occurred in database "ZuydFitFinal", table "dbo.Activity", column 'ActivityId'.
             public void CreateNewExercise(Exercise exercise)
             {
@@ -843,7 +881,7 @@ namespace CasusZuydFitV0._1
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             using (SqlDataReader reader = command.ExecuteReader())
-                            {
+                            {                               
                                 while (reader.Read())
                                 {
                                     int activityId = reader.GetInt32(0);

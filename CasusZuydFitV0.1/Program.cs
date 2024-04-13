@@ -9,7 +9,8 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
-            User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
+            //User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
+            User user = new Trainer(1, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
             while (true)
             {
                 Console.WriteLine("=======================");
