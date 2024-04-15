@@ -4,7 +4,7 @@ namespace CasusZuydFitV0._1
     public class DAL
     {
         //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
+private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
         public class UserDAL
         {
             public List<User> users = new List<User>();
@@ -325,7 +325,7 @@ private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial C
                 }
             }
 
-
+      
         }
 
         public class EquipmentDAL
@@ -991,6 +991,36 @@ private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial C
 
                 return insertedId;
             }
+
+            public List<Workout> GetAllWorkoutsByAthleteId(int athleteId)
+            {
+                TrainerDAL allTrainers = new TrainerDAL();
+                allTrainers.GetTrainers();
+
+                string query = $"SELECT Activity.ActivityId, ActivityName, ActivityDuration, ActivityStartingTime, ActivityDescription, Activity.TrainerId FROM LogFeedback INNER JOIN Activity ON LogFeedback.ActivityId = Activity.ActivityId WHERE Activity.Type = 'workout' AND LogFeedback.AthleteId = {athleteId}" ;
+                using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                {
+                    using (SqlCommand athleteCommand = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = athleteCommand.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int activityId = reader.GetInt32(0);
+                                string activityName = reader.GetString(1);
+                                int activityDuration = reader.GetInt32(2);
+                                string activityStartingTime = reader.GetString(3);
+                                Trainer activityTrainer = allTrainers.trainers.FirstOrDefault(trainer => trainer.UserId == reader.GetInt32(4));
+                                string activityDescription = reader.GetString(5);
+
+                            }
+
+                            Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
+
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -1151,7 +1181,7 @@ private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial C
                 {
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
-            }
+            }       
         }
     }
 }

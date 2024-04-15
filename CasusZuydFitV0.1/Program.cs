@@ -34,6 +34,7 @@ namespace CasusZuydFitV0._1
             */
 
 
+                User user = new Trainer(13, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
                 bool running = true;
                 while (running)
                 {
@@ -49,13 +50,13 @@ namespace CasusZuydFitV0._1
                     switch (input)
                     {
                         case "1":
-                            //ManageProfile(user);
+                            ManageProfile(user);
                             break;
                         case "2":
-                            //DisplayAllActivities(user);
+                            DisplayAllActivities();
                             break;
                         case "3":
-                            DisplayAllUsers();
+                            DisplayAllAthletes();
                             break;
                         case "exit":
                             running = false;
@@ -65,78 +66,77 @@ namespace CasusZuydFitV0._1
                             break;
                     }
                 }
-                
-                //User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
-                User user = new Trainer(1, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
-                while (true)
-                {
-                    Console.WriteLine("=======================");
-                    Console.WriteLine("Kies optie:");
-                    Console.WriteLine("-----------------------");
-                    Console.WriteLine("1: Display all users");
-                    Console.WriteLine("2: Create new user");
-                    Console.WriteLine("-----------------------");
-                    //Console.WriteLine("3. Create new Exercise");
-                    //Console.WriteLine("4. Display all Exercises");
-                    Console.WriteLine("3. Create new Workout");
-                    Console.WriteLine("4. Show all events");
-                    Console.WriteLine("5. Show all workouts");
-                    Console.WriteLine("6. Manage profile");
+              
+               
+                //while (true)
+                //{
+                //    Console.WriteLine("=======================");
+                //    Console.WriteLine("Kies optie:");
+                //    Console.WriteLine("-----------------------");
+                //    Console.WriteLine("1: Display all users");
+                //    Console.WriteLine("2: Create new user");
+                //    Console.WriteLine("-----------------------");
+                //    //Console.WriteLine("3. Create new Exercise");
+                //    //Console.WriteLine("4. Display all Exercises");
+                //    Console.WriteLine("3. Create new Workout");
+                //    Console.WriteLine("4. Show all events");
+                //    Console.WriteLine("5. Show all workouts");
+                //    Console.WriteLine("6. Manage profile");
 
-                    // Trainer functies
-                    Console.WriteLine("7. Trainer gives feedback");
+                //    // Trainer functies
+                //    Console.WriteLine("7. Trainer gives feedback");
 
-                    int option;
+                //    int option;
 
-                    try
-                    {
-                        option = Convert.ToInt32(Console.ReadLine());
-                    }
-                    catch (Exception e)
-                    {
-                        Console.Clear();
-                        Console.WriteLine("Invalid option.");
-                        continue;
-                    }
+                //    try
+                //    {
+                //        option = Convert.ToInt32(Console.ReadLine());
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        Console.Clear();
+                //        Console.WriteLine("Invalid option.");
+                //        continue;
+                //    }
 
 
-                    switch (option)
-                    {
-                        case 1:
-                            DisplayAllUsers();
-                            break;
-                        case 2:
-                            CreateNewUser();
-                            break;
-                        case 3:
-                            CreateNewWorkout();
-                            break;
-                        case 4:
-                            DisplayAllEvents(user);
-                            break;
-                        case 5:
-                            DisplayAllWorkouts();
-                            break;
-                        case 6:
-                            ManageProfile(user);
-                            break;
-                        case 7:
-                            TrainerGivesFeedback(user);
-                            break;
-                    }
-                }
+                //    switch (option)
+                //    {
+                //        case 1:
+                //            DisplayAllUsers();
+                //            break;
+                //        case 2:
+                //            CreateNewUser();
+                //            break;
+                //        case 3:
+                //            CreateNewWorkout();
+                //            break;
+                //        case 4:
+                //            DisplayAllEvents(user);
+                //            break;
+                //        case 5:
+                //            DisplayAllWorkouts();
+                //            break;
+                //        case 6:
+                //            ManageProfile(user);
+                //            break;
+                //        case 7:
+                //            TrainerGivesFeedback(user);
+                //            break;
+                //    }
+                //}
 
             void DisplayAllUsers()
             {
                 Console.Clear();
 
-
+                List<User> allUsers = User.GetUsers();
                 Console.WriteLine("Total Users: ");
-                Console.WriteLine(User.GetUsers().Count());
+                Console.WriteLine(allUsers.Count());
 
 
                 Console.WriteLine("List of Users:");
-                foreach (var user in User.GetUsers())
+                foreach (var user in allUsers)
                 {
                     Console.WriteLine($"User ID: {user.UserId}, Name: {user.UserName}, Email: {user.UserEmail}");
                 }
@@ -146,9 +146,6 @@ namespace CasusZuydFitV0._1
             void DisplayAllAthletes()
             {
                 Console.Clear();
-
-                AthleteDAL athleteDAL = new AthleteDAL();
-                athleteDAL.GetAthlets();
 
                 List<User> allUsers = User.GetUsers();
                 Console.WriteLine("Total Users: ");
@@ -373,7 +370,7 @@ namespace CasusZuydFitV0._1
                 AthleteDAL athleteDAL = new AthleteDAL();
                 athleteDAL.GetAthlets();
 
-                int MockAthleteId = 6; // dit dan uiteindelijk de ingelogde athlete
+                int MockAthleteId = user.UserId; // dit dan uiteindelijk de ingelogde athlete
                 Athlete currentAthlete = athleteDAL.athletes.Find(athlete => athlete.UserId == MockAthleteId);
 
                 Console.WriteLine("-----------------------");
@@ -445,7 +442,7 @@ namespace CasusZuydFitV0._1
                 switch (profileChoice)
                 {
                     case 1:
-                        Console.WriteLine("enter a new username:");
+                        Console.WriteLine("Enter a new username:");
                         string newUserName = Console.ReadLine();
                         Console.Clear();
                         while (User.GetUsers().Any(existingUser => existingUser.UserName == newUserName && newUserName != user.UserName))
@@ -580,7 +577,7 @@ namespace CasusZuydFitV0._1
             {
             Console.WriteLine("What Activities do you want to see?");
             Console.WriteLine("1: Events (Group activity)");
-            Console.WriteLine("2: Workouts (Solo activity)");
+            Console.WriteLine("2: Workouts (Solo activity)");            
             Console.Write("Please enter your choice (1 or 2): ");
             
             string choice = Console.ReadLine();
