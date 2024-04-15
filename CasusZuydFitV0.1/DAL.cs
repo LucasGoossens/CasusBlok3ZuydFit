@@ -974,8 +974,18 @@ namespace CasusZuydFitV0._1
                             {
                                 insertedId = Convert.ToInt32(result);
                             }
+                            else
+                            {
+                                // Log error if the result is null
+                                Console.WriteLine("Failed to get inserted ID from the database.");
+                            }
                         }
                     }
+                }
+                 catch (SqlException sqlEx)
+                {
+                    // Log SQL exceptions
+                    Console.WriteLine($"SQL Exception occurred: {sqlEx.Message}");
                 }
                 catch (Exception ex)
                 {
