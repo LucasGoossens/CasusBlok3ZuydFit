@@ -42,7 +42,7 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("Main Menu");
                     Console.WriteLine("1. View Profile");
                     Console.WriteLine("2. View All Activities");
-                    Console.WriteLine("3. View All Activities");
+                    Console.WriteLine("3. View All Athletes (Trainers only!)");
                     Console.WriteLine("Enter option (or 'exit' to close): ");
 
                     string input = Console.ReadLine();
@@ -52,10 +52,10 @@ namespace CasusZuydFitV0._1
                             //ManageProfile(user);
                             break;
                         case "2":
-                            DisplayAllActivites();
+                            //DisplayAllActivities(user);
                             break;
                         case "3":
-                            //DisplayAllEvents(user);
+                            DisplayAllUsers();
                             break;
                         case "exit":
                             running = false;
@@ -142,6 +142,56 @@ namespace CasusZuydFitV0._1
                 }
 
             }
+
+            void DisplayAllAthletes()
+            {
+                Console.Clear();
+
+                AthleteDAL athleteDAL = new AthleteDAL();
+                athleteDAL.GetAthlets();
+
+                Console.WriteLine("Total Users: ");
+                Console.WriteLine(User.GetUsers().Count());
+
+                Console.WriteLine("List of Athletes:");
+                foreach (var athlete in User.GetUsers())
+                {
+                    Console.WriteLine($"Athlete ID: {athlete.UserId}, Name: {athlete.UserName}, Email: {athlete.UserEmail}");
+                }
+
+                Console.WriteLine("Enter the name or ID of the athlete to search for:");
+                string searchedAthlete = Console.ReadLine();
+
+                Athlete foundAthlete = null;
+                foreach (var athlete in user)
+                {
+                    if (athlete.UserName.Equals(searchedAthlete, StringComparison.OrdinalIgnoreCase) ||
+                        athlete.UserId.ToString() == searchedAthlete)
+                    {
+                        foundAthlete = athlete;
+                        break; 
+                    }
+                }
+
+                if (foundAthlete != null)
+                {
+                    Console.WriteLine("Athlete found:");
+                    Console.WriteLine($"Athlete ID: {foundAthlete.UserId}, Name: {foundAthlete.UserName}, Email: {foundAthlete.UserEmail}");
+                }
+                else
+                {
+                    Console.WriteLine("Athlete not found.");
+                }
+            }
+
+            
+            User FindUser(string searchTerm)
+            {
+                int.TryParse(searchTerm, out int id);
+                var user = User.GetUsers().FirstOrDefault(u => u.UserName.Equals(searchTerm, StringComparison.OrdinalIgnoreCase) || u.UserId == id);
+                return user;
+            }
+
 
             void CreateNewUser()
             {
@@ -524,7 +574,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            void DisplayAllActivites()
+            void DisplayAllActivities()
             {
             Console.WriteLine("What Activities do you want to see?");
             Console.WriteLine("1: Events (Group activity)");
