@@ -9,7 +9,7 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
-            while (true)
+            /*while (true)
             {
                 Console.WriteLine("ZuydFit");
                 Console.WriteLine("Select Option:");
@@ -31,14 +31,17 @@ namespace CasusZuydFitV0._1
                         break;
                 }
             }
+            */
 
 
                 bool running = true;
                 while (running)
                 {
+                    Console.WriteLine("        ZUYDFIT        ");
+                    Console.WriteLine("=======================");
                     Console.WriteLine("Main Menu");
                     Console.WriteLine("1. View Profile");
-                    Console.WriteLine("2. Search Athlete");
+                    Console.WriteLine("2. View All Activities");
                     Console.WriteLine("3. View All Activities");
                     Console.WriteLine("Enter option (or 'exit' to close): ");
 
@@ -49,7 +52,7 @@ namespace CasusZuydFitV0._1
                             //ManageProfile(user);
                             break;
                         case "2":
-                            DisplayAllUsers();
+                            DisplayAllActivites();
                             break;
                         case "3":
                             //DisplayAllEvents(user);
@@ -486,7 +489,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            static void Login()
+            void Login()
             {
                 Console.WriteLine("\nZuydFit Login");
                 Console.Write("Enter email address: ");
@@ -499,7 +502,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("Login process (not actually implemented)");
             }
 
-            static void CreateAccount()
+            void CreateAccount()
             {
                 Console.WriteLine("\nZuydFit Create Account");
                 Console.Write("Enter email address: ");
@@ -519,6 +522,29 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("Passwords do not match, try again.");
                 }
+            }
+
+            void DisplayAllActivites()
+            {
+            Console.WriteLine("What Activities do you want to see?");
+            Console.WriteLine("1: Events (Group activity)");
+            Console.WriteLine("2: Workouts (Solo activity)");
+            Console.Write("Please enter your choice (1 or 2): ");
+            
+            string choice = Console.ReadLine();
+            
+            switch (choice)
+            {
+                case "1":
+                    DisplayAllEvents(user);
+                    break;
+                case "2":
+                    DisplayAllWorkouts();
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice, please enter 1 or 2.");
+                    break;
+            }
             }
         }
     }
