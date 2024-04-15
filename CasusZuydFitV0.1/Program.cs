@@ -492,22 +492,13 @@ namespace CasusZuydFitV0._1
                 }
 
                 // Create Event object
-                Event newEvent = new Event
-                {
-                    ActivityName = eventName,
-                    ActivityDurationMinutes = duration,
-                    ActivityStartingTime = startingTime.ToString("MM/dd/yyyy HH:mm:ss"),
-                    ActivityDescription = description,
-                    Trainer = new Trainer { UserId = trainerId },
-                    EventLocation = location,
-                    EventPatricipantLimit = participantLimit,
-                    Equipments = equipments.ToList()
-                };
+                Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = trainerId }, description, location, participantLimit, null);
+
 
                 // Call DAL function to create the event
                 DAL dal = new DAL();
-                DAL.EventDAL eventDal = new DAL.EventDAL();
-                eventDal.CreateEvent(newEvent);
+                DAL.EventDAL eventDAL = new EventDAL();
+                eventDAL.CreateEvent(newEvent);
 
                 Console.WriteLine("Event created successfully!");
             }
