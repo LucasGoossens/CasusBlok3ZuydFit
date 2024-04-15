@@ -22,6 +22,10 @@ namespace CasusZuydFitV0._1
             EquipmentAvailability = equipmentAvailability;
         }
 
+        public Equipment()
+        {
+        }
+
         static public List<Equipment> GetEquipment()
         {
             EquipmentDAL Dal = new EquipmentDAL();
@@ -43,5 +47,7 @@ namespace CasusZuydFitV0._1
             EquipmentDAL Dal = new EquipmentDAL();
             Dal.DeleteEquipment(this);
         }
+
+        
     }
 }

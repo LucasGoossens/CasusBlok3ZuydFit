@@ -9,6 +9,9 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
+             // Example usage
+            Program program = new Program();
+
             //User user = new Athlete(2, "test", "test", "test", new System.Collections.Generic.List<Activity>());
             User user = new Trainer(1, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
             while (true)
@@ -434,8 +437,7 @@ namespace CasusZuydFitV0._1
             }
 
 
-
-            void CreateEventFromUserInput()
+            void CreateEvent()
             {
                 Console.WriteLine("Enter event details:");
 
@@ -481,29 +483,19 @@ namespace CasusZuydFitV0._1
                     Console.Write("Participant Limit: ");
                 }
 
-                // Assuming user can add multiple equipments
-                Console.WriteLine("Add Equipment (Y/N)?");
-                string addEquipment = Console.ReadLine().Trim().ToLower();
-
-                Equipment[] equipments = new Equipment[0];
-                if (addEquipment == "y")
-                {
-                    equipments = GatherEquipments();
-                }
+                List<Equipment> equipments = GatherEquipments();
 
                 // Create Event object
-                Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = trainerId }, description, location, participantLimit, null);
-
+                Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = trainerId }, description, equipments, location, participantLimit);
 
                 // Call DAL function to create the event
                 DAL dal = new DAL();
-                DAL.EventDAL eventDAL = new EventDAL();
-                eventDAL.CreateEvent(newEvent);
-
+                DAL.EventDAL eventDal = new DAL.EventDAL();
+                eventDal.CreateEvent(newEvent);
                 Console.WriteLine("Event created successfully!");
             }
 
-            static Equipment[] GatherEquipments()
+            static List<Equipment> GatherEquipments()
             {
                 Console.WriteLine("Enter equipment details:");
                 Console.Write("Number of equipments: ");
@@ -514,7 +506,7 @@ namespace CasusZuydFitV0._1
                     Console.Write("Number of equipments: ");
                 }
 
-                Equipment[] equipments = new Equipment[count];
+                List<Equipment> equipments = new List<Equipment>();
                 for (int i = 0; i < count; i++)
                 {
                     Console.Write($"Equipment {i + 1} ID: ");
@@ -525,11 +517,14 @@ namespace CasusZuydFitV0._1
                         Console.Write($"Equipment {i + 1} ID: ");
                     }
 
-                    equipments[i] = new Equipment(equipmentId, "Default Name", "Defaulft Description", true); // Replace with actual equipment data!!
+                    equipments.Add(new Equipment { EquipmentId = equipmentId });
                 }
 
                 return equipments;
             }
+
+
+          
         }
     }
 }
