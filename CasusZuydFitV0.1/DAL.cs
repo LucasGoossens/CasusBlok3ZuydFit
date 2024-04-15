@@ -1,7 +1,4 @@
-using System.Data;
 using System.Data.SqlClient;
-using Microsoft.Data;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace CasusZuydFitV0._1
 {
     public class DAL
@@ -1049,13 +1046,15 @@ private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial C
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId) VALUES(@TrainerId, @AthleteId, @ActivityId);";
+                        string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId, FeedbackInfo) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo);";
 
+                        string emptyString = "";
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
                         Console.WriteLine(feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
                         dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
+                        dbCommand.Parameters.AddWithValue("@FeedbackInfo", emptyString);
 
                         dbCommand.ExecuteNonQuery();
                     }
