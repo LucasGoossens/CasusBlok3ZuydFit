@@ -9,7 +9,6 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
- 103-createevent-in-programcs
              // Example usage
             Program program = new Program();
 
@@ -73,7 +72,7 @@ namespace CasusZuydFitV0._1
             }
 
             //User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
- main
+ 
             User user = new Trainer(1, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
             while (true)
             {
@@ -298,11 +297,10 @@ namespace CasusZuydFitV0._1
 
                 Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
                 newWorkout.CreateNewWorkout();
- 103-createevent-in-programcs
                 int workoutIdToAddToExercise = newWorkout.ActivityId;                
 
                 int workoutIdToAddToExercise = newWorkout.ActivityId;
- main
+ 
                 LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
                 newLogFeedback.CreateFeedback();
 
@@ -556,7 +554,6 @@ namespace CasusZuydFitV0._1
                 }
             }
 
- 103-createevent-in-programcs
 
             void CreateEvent(User user)
             {
@@ -708,7 +705,7 @@ namespace CasusZuydFitV0._1
                         break;
                 }
             }
- main
+ 
         }
     }
 }
