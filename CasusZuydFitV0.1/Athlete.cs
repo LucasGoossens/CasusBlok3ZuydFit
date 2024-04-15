@@ -31,10 +31,6 @@ namespace CasusZuydFitV0._1
 
         }
 
-        public void CreateExercise()
-        {
-
-        }
 
         public void DeleteExercise()
         {
