@@ -8,6 +8,8 @@ namespace CasusZuydFitV0._1
 {
     public class Trainer : User
     {
+
+
         public List<Activity> ActivityList { get; set; }
 
         public Trainer(int userId, string userName, string userEmail, string userPassword, List<Activity> activitylist) : base(userId, userName, userEmail, userPassword)
@@ -17,6 +19,11 @@ namespace CasusZuydFitV0._1
         public Trainer(string userName, string userEmail, string userPassword, List<Activity> activitylist) : base(userName, userEmail, userPassword)
         {
             ActivityList = activitylist;
+        }
+
+        public Trainer()
+        {
+
         }
     }
 }

@@ -9,6 +9,12 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
+ 103-createevent-in-programcs
+             // Example usage
+            Program program = new Program();
+
+            //User user = new Athlete(2, "test", "test", "test", new System.Collections.Generic.List<Activity>());
+
             /*while (true)
             {
                 Console.WriteLine("ZuydFit");
@@ -67,6 +73,7 @@ namespace CasusZuydFitV0._1
             }
 
             //User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
+ main
             User user = new Trainer(1, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
             while (true)
             {
@@ -82,6 +89,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("4. Show all events");
                 Console.WriteLine("5. Show all workouts");
                 Console.WriteLine("6. Manage profile");
+                Console.WriteLine("7. Create Event");
 
                 // Trainer functies
                 Console.WriteLine("7. Trainer gives feedback");
@@ -122,6 +130,9 @@ namespace CasusZuydFitV0._1
                         break;
                     case 7:
                         TrainerGivesFeedback(user);
+                        break;
+                    case 8:
+                        CreateEvent(user);
                         break;
                 }
             }
@@ -287,7 +298,11 @@ namespace CasusZuydFitV0._1
 
                 Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
                 newWorkout.CreateNewWorkout();
+ 103-createevent-in-programcs
+                int workoutIdToAddToExercise = newWorkout.ActivityId;                
+
                 int workoutIdToAddToExercise = newWorkout.ActivityId;
+ main
                 LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
                 newLogFeedback.CreateFeedback();
 
@@ -541,6 +556,88 @@ namespace CasusZuydFitV0._1
                 }
             }
 
+ 103-createevent-in-programcs
+
+            void CreateEvent(User user)
+            {
+                Console.WriteLine("Enter event details:");
+
+                // Gather event details from the user
+                Console.Write("Event Name: ");
+                string eventName = Console.ReadLine();
+
+                Console.Write("Duration (minutes): ");
+                int duration;
+                while (!int.TryParse(Console.ReadLine(), out duration) || duration <= 0)
+                {
+                    Console.WriteLine("Duration must be a positive integer.");
+                    Console.Write("Duration (minutes): ");
+                }
+
+                Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
+                DateTime startingTime;
+                while (!DateTime.TryParse(Console.ReadLine(), out startingTime))
+                {
+                    Console.WriteLine("Invalid date format. Please use YYYY-MM-DD HH:MM.");
+                    Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
+                }
+
+                Console.Write("Description: ");
+                string description = Console.ReadLine();
+
+                int trainerId = user.UserId;
+
+                Console.Write("Location: ");
+                string location = Console.ReadLine();
+
+                Console.Write("Participant Limit: ");
+                int participantLimit;
+                while (!int.TryParse(Console.ReadLine(), out participantLimit) || participantLimit <= 0)
+                {
+                    Console.WriteLine("Participant Limit must be a positive integer.");
+                    Console.Write("Participant Limit: ");
+                }
+
+                List<Equipment> equipments = GatherEquipments();
+
+                // Create Event object
+                Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = trainerId }, description, equipments, location, participantLimit);
+
+                newEvent.AddEvent();
+                Console.WriteLine("Event created successfully!");
+            }
+
+            static List<Equipment> GatherEquipments()
+            {
+                Console.WriteLine("Enter equipment details:");
+                Console.Write("Number of equipments: ");
+                int count;
+                while (!int.TryParse(Console.ReadLine(), out count) || count < 0)
+                {
+                    Console.WriteLine("Number of equipments must be a positive integer.");
+                    Console.Write("Number of equipments: ");
+                }
+
+                List<Equipment> equipments = new List<Equipment>();
+                for (int i = 0; i < count; i++)
+                {
+                    Console.Write($"Equipment {i + 1} ID: ");
+                    int equipmentId;
+                    while (!int.TryParse(Console.ReadLine(), out equipmentId) || equipmentId <= 0)
+                    {
+                        Console.WriteLine("Equipment ID must be a positive integer.");
+                        Console.Write($"Equipment {i + 1} ID: ");
+                    }
+
+                    equipments.Add(new Equipment { EquipmentId = equipmentId });
+                }
+
+                return equipments;
+            }
+
+
+          
+
             void CheckFeedback(User user, Activity activity)
             {
                 LogFeedback? logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activity.ActivityId && feedback.FeedbackAthleteId == user.UserId);
@@ -611,6 +708,7 @@ namespace CasusZuydFitV0._1
                         break;
                 }
             }
+ main
         }
     }
 }
@@ -648,16 +746,16 @@ namespace CasusZuydFitV0._1
             {
                 try
                 {
-                    Console.WriteLine("Als je een terugkerende gebruiker bent, voer je username in.");
-                    Console.WriteLine("Als je een nieuwe gebruiker bent, voer -1 in");
+                    Console.WriteLine("If you already have a account, Enter your username");
+                    Console.WriteLine("If you don't have a account, enter -1");
                     string inputUserName = Console.ReadLine() ?? string.Empty;
                     Console.Clear();
                     if (inputUserName != "-1")
                     {
-                        Console.WriteLine("Voer je wachtwoord in: ");
+                        Console.WriteLine("Enter your password: ");
                         string inputPassword = Console.ReadLine() ?? string.Empty;
                         Console.Clear();
-                        // Verwijzing naar class/dal nodig
+                        User user = 
                     }
                     else
                     {
