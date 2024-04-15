@@ -464,13 +464,10 @@ namespace CasusZuydFitV0._1
                 Console.Write("Description: ");
                 string description = Console.ReadLine();
 
-                Console.Write("Trainer User ID: ");
-                int trainerId;
-                while (!int.TryParse(Console.ReadLine(), out trainerId) || trainerId <= 0)
-                {
-                    Console.WriteLine("Trainer ID must be a positive integer.");
-                    Console.Write("Trainer User ID: ");
-                }
+                
+                 // Use the logged-in trainer's ID
+                int trainerId = loggedInTrainerId;
+
 
                 Console.Write("Location: ");
                 string location = Console.ReadLine();
