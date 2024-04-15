@@ -7,7 +7,7 @@ namespace CasusZuydFitV0._1
     public class DAL
     {
         //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        private static readonly string dbConString = "data source = LUCAS; initial catalog = ZuydFitFinal; trusted_connection=true;MultipleActiveResultSets=True;";
+private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
         public class UserDAL
         {
             public List<User> users = new List<User>();
@@ -974,8 +974,18 @@ namespace CasusZuydFitV0._1
                             {
                                 insertedId = Convert.ToInt32(result);
                             }
+                            else
+                            {
+                                // Log error if the result is null
+                                Console.WriteLine("Failed to get inserted ID from the database.");
+                            }
                         }
                     }
+                }
+                 catch (SqlException sqlEx)
+                {
+                    // Log SQL exceptions
+                    Console.WriteLine($"SQL Exception occurred: {sqlEx.Message}");
                 }
                 catch (Exception ex)
                 {
@@ -1016,16 +1026,9 @@ namespace CasusZuydFitV0._1
                                     int trainerId = reader.GetInt32(1);
                                     int athleteId = reader.GetInt32(2);
                                     int activityId = reader.GetInt32(3);
-                                    string feedbackInfo = reader.GetString(4);
-
-
-                                    Trainer trainer = userDal.users.Find(x => x.UserId == trainerId) as Trainer;
-                                    Athlete athlete = userDal.users.Find(x => x.UserId == athleteId) as Athlete;
-
-
-                                    Activity activity = activityDal.activities.Find(x => x.ActivityId == activityId);
-
-                                    LogFeedback feedback = new LogFeedback(logFeedbackId, trainer, athlete, activity, feedbackInfo);
+                                    string feedbackInfo = reader.GetString(4);                                                                     
+                                    
+                                    LogFeedback feedback = new LogFeedback(logFeedbackId, trainerId, athleteId, activityId, feedbackInfo);
                                     logFeedbacks.Add(feedback);
                                 }
                             }
@@ -1046,39 +1049,38 @@ namespace CasusZuydFitV0._1
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId, FeedbackInfo) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo);";
+                        string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId) VALUES(@TrainerId, @AthleteId, @ActivityId);";
 
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
-
-                        dbCommand.Parameters.AddWithValue("@TrainerId", feedback.Trainer.UserId);
-                        dbCommand.Parameters.AddWithValue("@AthleteId", feedback.Athlete.UserId);
-                        dbCommand.Parameters.AddWithValue("@ActivityId", feedback.Activity.ActivityId);
-                        dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo);
+                        Console.WriteLine(feedback.FeedbackTrainerId);
+                        dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
+                        dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
+                        dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
 
                         dbCommand.ExecuteNonQuery();
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                    Console.WriteLine($"Er is een fout opgedreden met het aanmaken van logbook in de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
 
 
-            public void UpdateLogFeedback(LogFeedback feedback) // dit klopt niet?
+            public void UpdateLogFeedback(LogFeedback feedback)
             {
                 try
                 {
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "UPDATE [LogFeedback] SET TrainerId = @TrainerId, AthleteId = @AthleteId, ActivityId = @ActivityId, FeedbackInfo = @FeedbackInfo WHERE LogFeedbackId = @LogFeedbackId;";
+                        string query = "UPDATE [LogFeedback] SET TrainerId = @TrainerId, AthleteId = @AthleteId, ActivityId = @ActivityId, FeedbackInfo = @FeedbackInfo WHERE FeedbackId = @LogFeedbackId;";
 
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
 
-                        dbCommand.Parameters.AddWithValue("@TrainerId", feedback.Trainer.UserId);
-                        dbCommand.Parameters.AddWithValue("@AthleteId", feedback.Athlete.UserId);
-                        dbCommand.Parameters.AddWithValue("@ActivityId", feedback.Activity.ActivityId);
+                        dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
+                        dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
+                        dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
                         dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo);
                         dbCommand.Parameters.AddWithValue("@LogFeedbackId", feedback.FeedbackId);
 
