@@ -58,5 +58,10 @@ namespace CasusZuydFitV0._1
             UserDAL Dal = new UserDAL();
             Dal.DeleteUser(this);
         }
+
+        public User()
+        {
+
+        }
     }
 }

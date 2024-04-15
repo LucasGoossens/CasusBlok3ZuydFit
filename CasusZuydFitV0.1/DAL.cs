@@ -559,7 +559,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                         connection.Open();
 
                         // Insert event data into the Activity table
-                        string insertQuery = "INSERT INTO [Activity] (Name, Duration, StartingTime, Description, TrainerId, Location, ParticipantsLimit, Type) " +
+                        string insertQuery = "INSERT INTO [Activity] (ActivityName, ActivityDuration, ActivityStartingTime, ActivityDescription, TrainerId, EventLocation, EventParticipantLimit, Type) " +
                                             "VALUES (@Name, @Duration, @StartingTime, @Description, @TrainerId, @Location, @ParticipantsLimit, @Type); " +
                                             "SELECT SCOPE_IDENTITY();"; // Retrieve the ID of the inserted event
 

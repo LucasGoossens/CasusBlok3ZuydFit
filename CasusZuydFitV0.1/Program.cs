@@ -9,6 +9,11 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
+            // Example usage
+            Program program = new Program();
+
+            //User user = new Athlete(2, "test", "test", "test", new System.Collections.Generic.List<Activity>());
+
             /*while (true)
             {
                 Console.WriteLine("ZuydFit");
@@ -167,7 +172,7 @@ namespace CasusZuydFitV0._1
                         athlete.UserId.ToString() == searchedAthlete)
                     {
                         foundAthlete = (Athlete)athlete;
-                        break; 
+                        break;
                     }
                 }
 
@@ -182,7 +187,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            
+
             User FindUser(string searchTerm)
             {
                 int.TryParse(searchTerm, out int id);
@@ -284,7 +289,8 @@ namespace CasusZuydFitV0._1
 
                 Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
                 newWorkout.CreateNewWorkout();
-                int workoutIdToAddToExercise = newWorkout.ActivityId;                
+                int workoutIdToAddToExercise = newWorkout.ActivityId;
+
                 LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
                 newLogFeedback.CreateFeedback();
 
@@ -314,7 +320,7 @@ namespace CasusZuydFitV0._1
 
             void DisplayAllEvents(User user)
             {
-                
+
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
 
@@ -420,8 +426,8 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("This workout has no exercises listed.");
                 }
-                
-                
+
+
             }
 
             void ManageProfile(User user)
@@ -476,7 +482,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            
+
             void TrainerGivesFeedback(User user)
             {
                 try
@@ -524,7 +530,7 @@ namespace CasusZuydFitV0._1
                         Console.WriteLine("Enter the feedback you want to give: ");
                         string NewFeedback = Console.ReadLine();
                         logFeedback.UpdateFeedback(NewFeedback);
-                        
+
                     }
                     else
                     {
@@ -536,6 +542,100 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("Invalid input given.");
                 }
+            }
+
+
+            void CreateEvent(User user)
+            {
+                Console.WriteLine("Enter event details:");
+
+                // Gather event details from the user
+                Console.Write("Event Name: ");
+                string eventName = Console.ReadLine();
+
+                Console.Write("Duration (minutes): ");
+                int duration;
+                while (!int.TryParse(Console.ReadLine(), out duration) || duration <= 0)
+                {
+                    Console.WriteLine("Duration must be a positive integer.");
+                    Console.Write("Duration (minutes): ");
+                }
+
+                Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
+                DateTime startingTime;
+                while (!DateTime.TryParse(Console.ReadLine(), out startingTime))
+                {
+                    Console.WriteLine("Invalid date format. Please use YYYY-MM-DD HH:MM.");
+                    Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
+                }
+
+                Console.Write("Description: ");
+                string description = Console.ReadLine();
+
+                int trainerId = user.UserId;
+
+                Console.Write("Location: ");
+                string location = Console.ReadLine();
+
+                Console.Write("Participant Limit: ");
+                int participantLimit;
+                while (!int.TryParse(Console.ReadLine(), out participantLimit) || participantLimit <= 0)
+                {
+                    Console.WriteLine("Participant Limit must be a positive integer.");
+                    Console.Write("Participant Limit: ");
+                }
+
+                List<Equipment> equipments = GatherEquipments();
+
+                // Create Event object
+                Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = trainerId }, description, equipments, location, participantLimit);
+
+                newEvent.AddEvent();
+                Console.WriteLine("Event created successfully!");
+            }
+
+            static List<Equipment> GatherEquipments()
+            {
+                Console.WriteLine("Enter equipment details:");
+                Console.Write("Number of equipments: ");
+                int count;
+                while (!int.TryParse(Console.ReadLine(), out count) || count < 0)
+                {
+                    Console.WriteLine("Number of equipments must be a positive integer.");
+                    Console.Write("Number of equipments: ");
+                }
+
+                List<Equipment> equipments = new List<Equipment>();
+                for (int i = 0; i < count; i++)
+                {
+                    Console.Write($"Equipment {i + 1} ID: ");
+                    int equipmentId;
+                    while (!int.TryParse(Console.ReadLine(), out equipmentId) || equipmentId <= 0)
+                    {
+                        Console.WriteLine("Equipment ID must be a positive integer.");
+                        Console.Write($"Equipment {i + 1} ID: ");
+                    }
+
+                    equipments.Add(new Equipment { EquipmentId = equipmentId });
+                }
+
+                return equipments;
+            }
+
+
+
+
+            void CheckFeedback(User user, Activity activity)
+            {
+                LogFeedback? logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activity.ActivityId && feedback.FeedbackAthleteId == user.UserId);
+                if (logFeedback.FeedbackInfo == "")
+                { Console.WriteLine("No feedback given yet."); }
+                else if (logFeedback != null)
+                {
+                    Console.WriteLine($"Feedback for {activity.ActivityName}: {logFeedback.FeedbackInfo}");
+                }
+                else { Console.WriteLine("Something went wrong, Please contact the Servicedesk"); }
+
             }
 
             void Login()
@@ -595,6 +695,49 @@ namespace CasusZuydFitV0._1
                     break;
             }
             }
+            void RegisterForEvent(User user)
+            {
+                foreach (Event events in Event.GetEvents())
+                {
+                    Console.WriteLine($"Event ID: {events.ActivityId}");
+                    Console.WriteLine($"Event Name: {events.ActivityName}");
+                    Console.WriteLine($"Event Location: {events.EventLocation}");
+                    Console.WriteLine($"Event Duration: {events.ActivityDurationMinutes}");
+                    Console.WriteLine($"Event Starting Time: {events.ActivityStartingTime}");
+                    Console.WriteLine($"Event Description: {events.ActivityDescription}");
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine("Enter the ID of the event you want to register for: ");
+                int registerID = Int32.Parse(Console.ReadLine());
+                Console.Clear();
+                Event? eventToRegister = Event.GetEvents().FirstOrDefault(registerEvent => registerEvent.ActivityId == registerID);
+                if (eventToRegister == null)
+                {
+                    Console.WriteLine("The entered ID does not match any event. press enter to go back to the menu");
+                    Console.ReadLine();
+                    Console.Clear();
+                }
+
+                else if (eventToRegister.EventParticipants.Count < eventToRegister.EventPatricipantLimit)
+                {
+                    LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister
+                        .ActivityId);
+
+                    newLogFeedback.CreateFeedback();
+                    Console.WriteLine("You have been registered for the event. press enter to go back to the menu");
+                    Console.ReadLine();
+                    Console.Clear();
+                }
+                else
+                {
+                    Console.WriteLine("The event is full, you cannot register. press enter to go back to the menu");
+                    Console.ReadLine();
+                    Console.Clear();
+
+
+                }
+            }
         }
     }
 }
@@ -632,16 +775,16 @@ namespace CasusZuydFitV0._1
             {
                 try
                 {
-                    Console.WriteLine("Als je een terugkerende gebruiker bent, voer je username in.");
-                    Console.WriteLine("Als je een nieuwe gebruiker bent, voer -1 in");
+                    Console.WriteLine("If you already have a account, Enter your username");
+                    Console.WriteLine("If you don't have a account, enter -1");
                     string inputUserName = Console.ReadLine() ?? string.Empty;
                     Console.Clear();
                     if (inputUserName != "-1")
                     {
-                        Console.WriteLine("Voer je wachtwoord in: ");
+                        Console.WriteLine("Enter your password: ");
                         string inputPassword = Console.ReadLine() ?? string.Empty;
                         Console.Clear();
-                        // Verwijzing naar class/dal nodig
+                        User user = 
                     }
                     else
                     {
