@@ -34,97 +34,97 @@ namespace CasusZuydFitV0._1
             */
 
 
-                bool running = true;
-                while (running)
+            bool running = true;
+            while (running)
+            {
+                Console.WriteLine("        ZUYDFIT        ");
+                Console.WriteLine("=======================");
+                Console.WriteLine("Main Menu");
+                Console.WriteLine("1. View Profile");
+                Console.WriteLine("2. View All Activities");
+                Console.WriteLine("3. View All Athletes (Trainers only!)");
+                Console.WriteLine("Enter option (or 'exit' to close): ");
+
+                string input = Console.ReadLine();
+                switch (input)
                 {
-                    Console.WriteLine("        ZUYDFIT        ");
-                    Console.WriteLine("=======================");
-                    Console.WriteLine("Main Menu");
-                    Console.WriteLine("1. View Profile");
-                    Console.WriteLine("2. View All Activities");
-                    Console.WriteLine("3. View All Athletes (Trainers only!)");
-                    Console.WriteLine("Enter option (or 'exit' to close): ");
-
-                    string input = Console.ReadLine();
-                    switch (input)
-                    {
-                        case "1":
-                            //ManageProfile(user);
-                            break;
-                        case "2":
-                            //DisplayAllActivities(user);
-                            break;
-                        case "3":
-                            DisplayAllUsers();
-                            break;
-                        case "exit":
-                            running = false;
-                            break;
-                        default:
-                            Console.WriteLine("Invalid option.");
-                            break;
-                    }
-                }
-                
-                //User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
-                User user = new Trainer(1, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
-                while (true)
-                {
-                    Console.WriteLine("=======================");
-                    Console.WriteLine("Kies optie:");
-                    Console.WriteLine("-----------------------");
-                    Console.WriteLine("1: Display all users");
-                    Console.WriteLine("2: Create new user");
-                    Console.WriteLine("-----------------------");
-                    //Console.WriteLine("3. Create new Exercise");
-                    //Console.WriteLine("4. Display all Exercises");
-                    Console.WriteLine("3. Create new Workout");
-                    Console.WriteLine("4. Show all events");
-                    Console.WriteLine("5. Show all workouts");
-                    Console.WriteLine("6. Manage profile");
-
-                    // Trainer functies
-                    Console.WriteLine("7. Trainer gives feedback");
-
-                    int option;
-
-                    try
-                    {
-                        option = Convert.ToInt32(Console.ReadLine());
-                    }
-                    catch (Exception e)
-                    {
-                        Console.Clear();
+                    case "1":
+                        //ManageProfile(user);
+                        break;
+                    case "2":
+                        //DisplayAllActivities(user);
+                        break;
+                    case "3":
+                        DisplayAllUsers();
+                        break;
+                    case "exit":
+                        running = false;
+                        break;
+                    default:
                         Console.WriteLine("Invalid option.");
-                        continue;
-                    }
-
-
-                    switch (option)
-                    {
-                        case 1:
-                            DisplayAllUsers();
-                            break;
-                        case 2:
-                            CreateNewUser();
-                            break;
-                        case 3:
-                            CreateNewWorkout();
-                            break;
-                        case 4:
-                            DisplayAllEvents(user);
-                            break;
-                        case 5:
-                            DisplayAllWorkouts();
-                            break;
-                        case 6:
-                            ManageProfile(user);
-                            break;
-                        case 7:
-                            TrainerGivesFeedback(user);
-                            break;
-                    }
+                        break;
                 }
+            }
+
+            //User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
+            User user = new Trainer(1, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
+            while (true)
+            {
+                Console.WriteLine("=======================");
+                Console.WriteLine("Kies optie:");
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("1: Display all users");
+                Console.WriteLine("2: Create new user");
+                Console.WriteLine("-----------------------");
+                //Console.WriteLine("3. Create new Exercise");
+                //Console.WriteLine("4. Display all Exercises");
+                Console.WriteLine("3. Create new Workout");
+                Console.WriteLine("4. Show all events");
+                Console.WriteLine("5. Show all workouts");
+                Console.WriteLine("6. Manage profile");
+
+                // Trainer functies
+                Console.WriteLine("7. Trainer gives feedback");
+
+                int option;
+
+                try
+                {
+                    option = Convert.ToInt32(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Invalid option.");
+                    continue;
+                }
+
+
+                switch (option)
+                {
+                    case 1:
+                        DisplayAllUsers();
+                        break;
+                    case 2:
+                        CreateNewUser();
+                        break;
+                    case 3:
+                        CreateNewWorkout();
+                        break;
+                    case 4:
+                        DisplayAllEvents(user);
+                        break;
+                    case 5:
+                        DisplayAllWorkouts();
+                        break;
+                    case 6:
+                        ManageProfile(user);
+                        break;
+                    case 7:
+                        TrainerGivesFeedback(user);
+                        break;
+                }
+            }
 
             void DisplayAllUsers()
             {
@@ -170,7 +170,7 @@ namespace CasusZuydFitV0._1
                         athlete.UserId.ToString() == searchedAthlete)
                     {
                         foundAthlete = (Athlete)athlete;
-                        break; 
+                        break;
                     }
                 }
 
@@ -185,7 +185,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            
+
             User FindUser(string searchTerm)
             {
                 int.TryParse(searchTerm, out int id);
@@ -287,7 +287,7 @@ namespace CasusZuydFitV0._1
 
                 Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
                 newWorkout.CreateNewWorkout();
-                int workoutIdToAddToExercise = newWorkout.ActivityId;                
+                int workoutIdToAddToExercise = newWorkout.ActivityId;
                 LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
                 newLogFeedback.CreateFeedback();
 
@@ -317,7 +317,7 @@ namespace CasusZuydFitV0._1
 
             void DisplayAllEvents(User user)
             {
-                
+
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Which events do you want to see?");
 
@@ -423,8 +423,8 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("This workout has no exercises listed.");
                 }
-                
-                
+
+
             }
 
             void ManageProfile(User user)
@@ -479,7 +479,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            
+
             void TrainerGivesFeedback(User user)
             {
                 try
@@ -527,7 +527,7 @@ namespace CasusZuydFitV0._1
                         Console.WriteLine("Enter the feedback you want to give: ");
                         string NewFeedback = Console.ReadLine();
                         logFeedback.UpdateFeedback(NewFeedback);
-                        
+
                     }
                     else
                     {
@@ -539,6 +539,19 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("Invalid input given.");
                 }
+            }
+
+            void CheckFeedback(User user, Activity activity)
+            {
+                LogFeedback? logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activity.ActivityId && feedback.FeedbackAthleteId == user.UserId);
+                if (logFeedback.FeedbackInfo == "")
+                { Console.WriteLine("No feedback given yet."); }
+                else if (logFeedback != null)
+                {
+                    Console.WriteLine($"Feedback for {activity.ActivityName}: {logFeedback.FeedbackInfo}");
+                }
+                else { Console.WriteLine("Something went wrong, Please contact the Servicedesk"); }
+
             }
 
             void Login()
@@ -578,25 +591,25 @@ namespace CasusZuydFitV0._1
 
             void DisplayAllActivities()
             {
-            Console.WriteLine("What Activities do you want to see?");
-            Console.WriteLine("1: Events (Group activity)");
-            Console.WriteLine("2: Workouts (Solo activity)");
-            Console.Write("Please enter your choice (1 or 2): ");
-            
-            string choice = Console.ReadLine();
-            
-            switch (choice)
-            {
-                case "1":
-                    DisplayAllEvents(user);
-                    break;
-                case "2":
-                    DisplayAllWorkouts();
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice, please enter 1 or 2.");
-                    break;
-            }
+                Console.WriteLine("What Activities do you want to see?");
+                Console.WriteLine("1: Events (Group activity)");
+                Console.WriteLine("2: Workouts (Solo activity)");
+                Console.Write("Please enter your choice (1 or 2): ");
+
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DisplayAllEvents(user);
+                        break;
+                    case "2":
+                        DisplayAllWorkouts();
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice, please enter 1 or 2.");
+                        break;
+                }
             }
         }
     }
