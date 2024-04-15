@@ -150,11 +150,12 @@ namespace CasusZuydFitV0._1
                 AthleteDAL athleteDAL = new AthleteDAL();
                 athleteDAL.GetAthlets();
 
+                List<User> allUsers = User.GetUsers();
                 Console.WriteLine("Total Users: ");
-                Console.WriteLine(User.GetUsers().Count());
+                Console.WriteLine(allUsers.Count());
 
                 Console.WriteLine("List of Athletes:");
-                foreach (var athlete in User.GetUsers())
+                foreach (var athlete in allUsers)
                 {
                     Console.WriteLine($"Athlete ID: {athlete.UserId}, Name: {athlete.UserName}, Email: {athlete.UserEmail}");
                 }
@@ -163,12 +164,12 @@ namespace CasusZuydFitV0._1
                 string searchedAthlete = Console.ReadLine();
 
                 Athlete foundAthlete = null;
-                foreach (var athlete in user)
+                foreach (var athlete in allUsers)
                 {
                     if (athlete.UserName.Equals(searchedAthlete, StringComparison.OrdinalIgnoreCase) ||
                         athlete.UserId.ToString() == searchedAthlete)
                     {
-                        foundAthlete = athlete;
+                        foundAthlete = (Athlete)athlete;
                         break; 
                     }
                 }
