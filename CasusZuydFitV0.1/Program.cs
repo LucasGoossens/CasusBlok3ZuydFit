@@ -9,7 +9,7 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
-             // Example usage
+            // Example usage
             Program program = new Program();
 
             //User user = new Athlete(2, "test", "test", "test", new System.Collections.Generic.List<Activity>());
@@ -39,6 +39,7 @@ namespace CasusZuydFitV0._1
             */
 
 
+            User user = new Trainer(2, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
             bool running = true;
             while (running)
             {
@@ -72,8 +73,8 @@ namespace CasusZuydFitV0._1
             }
 
             //User user = new Athlete(1, "test", "test", "test", new System.Collections.Generic.List<Activity>());
- 
-            User user = new Trainer(1, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
+
+
             while (true)
             {
                 Console.WriteLine("=======================");
@@ -297,10 +298,8 @@ namespace CasusZuydFitV0._1
 
                 Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
                 newWorkout.CreateNewWorkout();
-                int workoutIdToAddToExercise = newWorkout.ActivityId;                
-
                 int workoutIdToAddToExercise = newWorkout.ActivityId;
- 
+
                 LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
                 newLogFeedback.CreateFeedback();
 
@@ -633,7 +632,7 @@ namespace CasusZuydFitV0._1
             }
 
 
-          
+
 
             void CheckFeedback(User user, Activity activity)
             {
@@ -705,7 +704,49 @@ namespace CasusZuydFitV0._1
                         break;
                 }
             }
- 
+            void RegisterForEvent(User user)
+            {
+                foreach (Event events in Event.GetEvents())
+                {
+                    Console.WriteLine($"Event ID: {events.ActivityId}");
+                    Console.WriteLine($"Event Name: {events.ActivityName}");
+                    Console.WriteLine($"Event Location: {events.EventLocation}");
+                    Console.WriteLine($"Event Duration: {events.ActivityDurationMinutes}");
+                    Console.WriteLine($"Event Starting Time: {events.ActivityStartingTime}");
+                    Console.WriteLine($"Event Description: {events.ActivityDescription}");
+                    Console.WriteLine();
+                }
+
+                Console.WriteLine("Enter the ID of the event you want to register for: ");
+                int registerID = Int32.Parse(Console.ReadLine());
+                Console.Clear();
+                Event? eventToRegister = Event.GetEvents().FirstOrDefault(registerEvent => registerEvent.ActivityId == registerID);
+                if (eventToRegister == null)
+                {
+                    Console.WriteLine("The entered ID does not match any event. press enter to go back to the menu");
+                    Console.ReadLine();
+                    Console.Clear();
+                }
+
+                else if (eventToRegister.EventParticipants.Count < eventToRegister.EventPatricipantLimit)
+                {
+                    LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister
+                        .ActivityId);
+
+                    newLogFeedback.CreateFeedback();
+                    Console.WriteLine("You have been registered for the event. press enter to go back to the menu");
+                    Console.ReadLine();
+                    Console.Clear();
+                }
+                else
+                {
+                    Console.WriteLine("The event is full, you cannot register. press enter to go back to the menu");
+                    Console.ReadLine();
+                    Console.Clear();
+
+
+                }
+            }
         }
     }
 }

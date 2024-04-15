@@ -13,12 +13,6 @@ namespace CasusZuydFitV0._1
         public string EventLocation { get; set; }
         public int EventPatricipantLimit { get; set; }
 
-        public string ActivityName { get; set; }
-        public int ActivityDurationMinutes { get; set; }
-        public string ActivityStartingTime { get; set; }
-        public Trainer Trainer { get; set; }
-        public string ActivityDescription { get; set; }
-        public List<Equipment> Equipments { get; set; }
         
         public Event(int activityId, string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, List<Equipment> equipents, List<Athlete> eventParticipants, string eventLocation, int eventPatricipantLimit)
             : base(activityId, activityName, activityDuration, startingTime, trainer, activityDescription, equipents)
