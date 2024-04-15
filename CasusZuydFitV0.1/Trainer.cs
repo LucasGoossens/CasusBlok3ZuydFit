@@ -20,5 +20,10 @@ namespace CasusZuydFitV0._1
         {
             ActivityList = activitylist;
         }
+
+        public Trainer()
+        {
+
+        }
     }
 }

@@ -525,7 +525,7 @@ namespace CasusZuydFitV0._1
                         Console.Write($"Equipment {i + 1} ID: ");
                     }
 
-                    equipments[i] = new Equipment { EquipmentId = equipmentId };
+                    equipments[i] = new Equipment(equipmentId, "Default Name", "Defaulft Description", true); // Replace with actual equipment data!!
                 }
 
                 return equipments;
