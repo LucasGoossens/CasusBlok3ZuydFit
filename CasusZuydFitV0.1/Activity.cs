@@ -15,7 +15,7 @@ namespace CasusZuydFitV0._1
         public string ActivityStartingTime { get; set; }
         public Trainer Trainer { get; set; }
         public string ActivityDescription { get; set; }
-        public List<Equipment> Equipments { get; set; }
+        public List<Equipment> Equipments { get; set; } = new List<Equipment>();
 
         public Activity()
         {
