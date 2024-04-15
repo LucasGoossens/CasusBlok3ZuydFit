@@ -432,6 +432,113 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("Invalid input given.");
                 }
             }
+
+
+
+            void CreateEventFromUserInput()
+            {
+                Console.WriteLine("Enter event details:");
+
+                // Gather event details from the user
+                Console.Write("Event Name: ");
+                string eventName = Console.ReadLine();
+
+                Console.Write("Duration (minutes): ");
+                int duration;
+                while (!int.TryParse(Console.ReadLine(), out duration) || duration <= 0)
+                {
+                    Console.WriteLine("Duration must be a positive integer.");
+                    Console.Write("Duration (minutes): ");
+                }
+
+                Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
+                DateTime startingTime;
+                while (!DateTime.TryParse(Console.ReadLine(), out startingTime))
+                {
+                    Console.WriteLine("Invalid date format. Please use YYYY-MM-DD HH:MM.");
+                    Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
+                }
+
+                Console.Write("Description: ");
+                string description = Console.ReadLine();
+
+                Console.Write("Trainer User ID: ");
+                int trainerId;
+                while (!int.TryParse(Console.ReadLine(), out trainerId) || trainerId <= 0)
+                {
+                    Console.WriteLine("Trainer ID must be a positive integer.");
+                    Console.Write("Trainer User ID: ");
+                }
+
+                Console.Write("Location: ");
+                string location = Console.ReadLine();
+
+                Console.Write("Participant Limit: ");
+                int participantLimit;
+                while (!int.TryParse(Console.ReadLine(), out participantLimit) || participantLimit <= 0)
+                {
+                    Console.WriteLine("Participant Limit must be a positive integer.");
+                    Console.Write("Participant Limit: ");
+                }
+
+                // Assuming user can add multiple equipments
+                Console.WriteLine("Add Equipment (Y/N)?");
+                string addEquipment = Console.ReadLine().Trim().ToLower();
+
+                Equipment[] equipments = new Equipment[0];
+                if (addEquipment == "y")
+                {
+                    equipments = GatherEquipments();
+                }
+
+                // Create Event object
+                Event newEvent = new Event
+                {
+                    ActivityName = eventName,
+                    ActivityDurationMinutes = duration,
+                    ActivityStartingTime = startingTime.ToString("MM/dd/yyyy HH:mm:ss"),
+                    ActivityDescription = description,
+                    Trainer = new Trainer { UserId = trainerId },
+                    EventLocation = location,
+                    EventPatricipantLimit = participantLimit,
+                    Equipments = equipments.ToList()
+                };
+
+                // Call DAL function to create the event
+                DAL dal = new DAL();
+                DAL.EventDAL eventDal = new DAL.EventDAL();
+                eventDal.CreateEvent(newEvent);
+
+                Console.WriteLine("Event created successfully!");
+            }
+
+            static Equipment[] GatherEquipments()
+            {
+                Console.WriteLine("Enter equipment details:");
+                Console.Write("Number of equipments: ");
+                int count;
+                while (!int.TryParse(Console.ReadLine(), out count) || count <= 0)
+                {
+                    Console.WriteLine("Number of equipments must be a positive integer.");
+                    Console.Write("Number of equipments: ");
+                }
+
+                Equipment[] equipments = new Equipment[count];
+                for (int i = 0; i < count; i++)
+                {
+                    Console.Write($"Equipment {i + 1} ID: ");
+                    int equipmentId;
+                    while (!int.TryParse(Console.ReadLine(), out equipmentId) || equipmentId <= 0)
+                    {
+                        Console.WriteLine("Equipment ID must be a positive integer.");
+                        Console.Write($"Equipment {i + 1} ID: ");
+                    }
+
+                    equipments[i] = new Equipment { EquipmentId = equipmentId };
+                }
+
+                return equipments;
+            }
         }
     }
 }
