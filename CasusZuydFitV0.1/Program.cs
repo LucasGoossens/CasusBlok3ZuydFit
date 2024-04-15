@@ -28,6 +28,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("4. Show all events");
                 Console.WriteLine("5. Show all workouts");
                 Console.WriteLine("6. Manage profile");
+                Console.WriteLine("7. Create Event");
 
                 // Trainer functies
                 Console.WriteLine("7. Trainer gives feedback");
@@ -68,6 +69,9 @@ namespace CasusZuydFitV0._1
                         break;
                     case 7:
                         TrainerGivesFeedback(user);
+                        break;
+                    case 8:
+                        CreateEvent(user);
                         break;
                 }
             }
@@ -437,7 +441,7 @@ namespace CasusZuydFitV0._1
             }
 
 
-            void CreateEvent()
+            void CreateEvent(User user)
             {
                 Console.WriteLine("Enter event details:");
 
@@ -464,13 +468,7 @@ namespace CasusZuydFitV0._1
                 Console.Write("Description: ");
                 string description = Console.ReadLine();
 
-                Console.Write("Trainer User ID: ");
-                int trainerId;
-                while (!int.TryParse(Console.ReadLine(), out trainerId) || trainerId <= 0)
-                {
-                    Console.WriteLine("Trainer ID must be a positive integer.");
-                    Console.Write("Trainer User ID: ");
-                }
+                int trainerId = user.UserId;
 
                 Console.Write("Location: ");
                 string location = Console.ReadLine();
@@ -488,10 +486,7 @@ namespace CasusZuydFitV0._1
                 // Create Event object
                 Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = trainerId }, description, equipments, location, participantLimit);
 
-                // Call DAL function to create the event
-                DAL dal = new DAL();
-                DAL.EventDAL eventDal = new DAL.EventDAL();
-                eventDal.CreateEvent(newEvent);
+                newEvent.AddEvent();
                 Console.WriteLine("Event created successfully!");
             }
 
@@ -500,7 +495,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("Enter equipment details:");
                 Console.Write("Number of equipments: ");
                 int count;
-                while (!int.TryParse(Console.ReadLine(), out count) || count <= 0)
+                while (!int.TryParse(Console.ReadLine(), out count) || count < 0)
                 {
                     Console.WriteLine("Number of equipments must be a positive integer.");
                     Console.Write("Number of equipments: ");
@@ -562,16 +557,16 @@ namespace CasusZuydFitV0._1
             {
                 try
                 {
-                    Console.WriteLine("Als je een terugkerende gebruiker bent, voer je username in.");
-                    Console.WriteLine("Als je een nieuwe gebruiker bent, voer -1 in");
+                    Console.WriteLine("If you already have a account, Enter your username");
+                    Console.WriteLine("If you don't have a account, enter -1");
                     string inputUserName = Console.ReadLine() ?? string.Empty;
                     Console.Clear();
                     if (inputUserName != "-1")
                     {
-                        Console.WriteLine("Voer je wachtwoord in: ");
+                        Console.WriteLine("Enter your password: ");
                         string inputPassword = Console.ReadLine() ?? string.Empty;
                         Console.Clear();
-                        // Verwijzing naar class/dal nodig
+                        User user = 
                     }
                     else
                     {

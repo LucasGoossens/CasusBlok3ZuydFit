@@ -83,5 +83,10 @@ namespace CasusZuydFitV0._1
             eventDal.GetEvents();
             return eventDal.events;
         }
+        public void AddEvent()
+        {
+            DAL.EventDAL eventDal = new DAL.EventDAL();
+            eventDal.CreateEvent(this);
+        }
     }
 }
