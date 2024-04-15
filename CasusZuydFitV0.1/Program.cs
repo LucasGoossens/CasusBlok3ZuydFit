@@ -417,6 +417,7 @@ namespace CasusZuydFitV0._1
                         Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}, Athlete to give feedback on: {logFeedback.Athlete.UserName}");
                         Console.WriteLine("Enter the feedback you want to give: ");
                         string NewFeedback = Console.ReadLine();
+                        logFeedback.UpdateFeedback(NewFeedback);
                         
                     }
                     else
