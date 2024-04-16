@@ -28,7 +28,7 @@ namespace CasusZuydFitV0._1
                         loggedIn = Login();
                         break;
                     case "2":
-                        CreateAccount();
+                        CreateNewUser();
                         break;
                     default:
                         Console.WriteLine("Invalid option, please try again.");
@@ -143,8 +143,20 @@ namespace CasusZuydFitV0._1
                 string UserName = Console.ReadLine();
                 Console.WriteLine("Enter user email:");
                 string UserEmail = Console.ReadLine();
-                Console.WriteLine("Enter user password:");
-                string UserPassword = Console.ReadLine();
+                string password = "1";
+                string confirmedPassword = "2";
+
+                while (password != confirmedPassword)
+                {
+                    Console.Write("Enter new password: ");
+                    password = Console.ReadLine();
+                    Console.Write("confirm password: ");
+                    confirmedPassword = Console.ReadLine();
+                    if (password != confirmedPassword)
+                    {
+                        Console.WriteLine("Invalid password confirmation. Try again");
+                    }
+                }
 
                 int UserType = 0;
 
@@ -157,23 +169,36 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("2. Trainer");
                     UserType = Convert.ToInt32(Console.ReadLine());
                     Console.Clear();
-                } while (UserType < 1 || UserType > 2);
 
+                    if (UserType == 2)
+                    {
+                        // Hardcoded validation password for creating a trainer
+                        string ValidationPassword = "123";
+                        string InputValidationPassword = "1";
+                        while (ValidationPassword != InputValidationPassword)
+                        {
+                            Console.WriteLine("Enter the validation password: ");
+                            InputValidationPassword = Console.ReadLine();
+                        }
+                    }
+
+                } while (UserType < 1 || UserType > 2);
+                Console.Clear();
                 User user;
 
                 switch (UserType)
                 {
                     case 1:
-                        user = new Athlete(UserName, UserEmail, UserPassword, new List<Activity>());
+                        user = new Athlete(UserName, UserEmail, password, new List<Activity>());
                         user.CreateNewUser();
                         break;
                     case 2:
-                        user = new Trainer(UserName, UserEmail, UserPassword, new List<Activity>());
+                        user = new Trainer(UserName, UserEmail, password, new List<Activity>());
                         user.CreateNewUser();
                         break;
                 }
 
-                Console.WriteLine("New user " + UserName + "succesfully created.");
+                Console.WriteLine("New user " + UserName + " succesfully created.");
             }
 
             Exercise CreateNewExercise(int workoutId) // dit moet waarschijnlijk in Exercise.cs
@@ -427,7 +452,8 @@ namespace CasusZuydFitV0._1
                         Console.Clear();
                         user.UpdateUser(newUserName, newUserEmail, newUserPassword);
                         Console.WriteLine("Profile updated.");
-                        Console.WriteLine();
+                        Console.ReadLine();
+                        Environment.Exit(0);
                         break;
                     case 2:
                         Console.WriteLine("Are you sure you wanna delete your profile?");
@@ -439,7 +465,8 @@ namespace CasusZuydFitV0._1
                         {
                             user.DeleteUser();
                             Console.WriteLine("Profile deleted.");
-                            Console.WriteLine();
+                            Console.ReadLine();
+                            Environment.Exit(0);
                         }
                         break;
                 }
@@ -752,113 +779,10 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            //User AuthenticateUser()
-            //{
-            //    UserDAL dal = new UserDAL();
-            //    while (true)
-            //    {
-            //        Console.WriteLine("ZuydFit");
-            //        Console.WriteLine("Select Option:");
-            //        Console.WriteLine("1. Login");
-            //        Console.WriteLine("2. Create Account");
-            //        Console.Write("> ");
 
-            //        string option = Console.ReadLine();
-            //        switch (option)
-            //        {
-            //            case "1":
-            //                User user = Login(dal);
-            //                if (user != null)
-            //                {
-            //                    return user;
-            //                }
-            //                break;
-            //            case "2":
-            //                CreateAccount(dal);
-            //                break;
-            //            default:
-            //                Console.WriteLine("Invalid option, please try again.");
-            //                break;
-            //        }
-            //    }
-            //}
 
         }
     }
 }
 
-
-// Om users uit db te printen te testen.
-
-//// Console.WriteLine("Welkom bij de ZuydFit Apllicatie");
-//// Console.WriteLine("Kies een UserId om in te loggen");
-//// int gebruikerKeuze = int.Parse(Console.ReadLine() ?? string.Empty);
-
-//// Instantiate DAL to access user data
-//DAL dal = new DAL();
-
-//// Instantiate UserDAL to access user data
-//DAL.UserDAL userDAL = new DAL.UserDAL();
-
-//// Get all users from the database
-//userDAL.GetUsers();
-
-//Console.WriteLine (userDAL.users.Count());
-
-//// Display user information
-//Console.WriteLine("List of Users:");
-//foreach (var user in userDAL.users)
-//{
-//    Console.WriteLine($"User ID: {user.UserId}, Name: {user.UserName}, Email: {user.UserEmail}");
-//}
-
-
-/*
-            // Inlog systeem begoonnen niet af
-            bool loginSucceeded = false;
-            while (!loginSucceeded)
-            {
-                try
-                {
-                    Console.WriteLine("If you already have a account, Enter your username");
-                    Console.WriteLine("If you don't have a account, enter -1");
-                    string inputUserName = Console.ReadLine() ?? string.Empty;
-                    Console.Clear();
-                    if (inputUserName != "-1")
-                    {
-                        Console.WriteLine("Enter your password: ");
-                        string inputPassword = Console.ReadLine() ?? string.Empty;
-                        Console.Clear();
-                        User user = 
-                    }
-                    else
-                    {
-                        Console.WriteLine("Voer je niewew gebruikersnaam in: ");
-                        string username = Console.ReadLine() ?? string.Empty;
-                        //verwijzing naar dal nodig
-                        Console.Clear();
-                        Console.WriteLine("Kies een wachtwoord: ");
-                        string password = Console.ReadLine() ?? string.Empty;
-                        Console.Clear();
-                        Console.WriteLine("Voer je email in: ");
-                        string email = Console.ReadLine() ?? string.Empty;
-                        Console.Clear();
-                        int parttimeUserId = 0;
-                        int keuzeRol = 0;
-                        while (keuzeRol < 1 || keuzeRol > 3)
-                        {
-                            Console.WriteLine("Kies een rol: ");
-                            Console.WriteLine("1. Sporter");
-                            Console.WriteLine("2. Trainer");
-                            Console.WriteLine("3. Eventorganiser");
-                            keuzeRol = int.Parse(Console.ReadLine() ?? string.Empty);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.Clear();
-                    Console.WriteLine($"Er is een foute invoerwaarde ingevoerd + {ex.Message}");
-                }
-            }
-*/
+   
