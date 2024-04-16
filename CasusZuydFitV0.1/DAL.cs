@@ -1144,7 +1144,7 @@ private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial C
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "DELETE FROM [LogFeedback] WHERE LogFeedbackId = @LogFeedbackId;";
+                        string query = "DELETE FROM [LogFeedback] WHERE FeedbackId = @LogFeedbackId;";
 
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
                         dbCommand.Parameters.AddWithValue("@LogFeedbackId", feedback.FeedbackId);

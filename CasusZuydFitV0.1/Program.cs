@@ -36,7 +36,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            
+
             bool running = true;
             while (running)
             {
@@ -724,12 +724,19 @@ namespace CasusZuydFitV0._1
                     Console.Clear();
                 }
 
+                else if (eventToRegister.EventParticipants.Exists(a => a.UserId == user.UserId))
+                {
+                    Console.WriteLine("You are already registered for this event. press enter to go back to the menu");
+                    Console.ReadLine();
+                    Console.Clear();
+                }
                 else if (eventToRegister.EventParticipants.Count < eventToRegister.EventPatricipantLimit)
                 {
                     LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister
                         .ActivityId);
 
                     newLogFeedback.CreateFeedback();
+                    Console.Clear();
                     Console.WriteLine("You have been registered for the event. press enter to go back to the menu");
                     Console.ReadLine();
                     Console.Clear();
@@ -772,6 +779,53 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("Invalid input given.");
 
                 }
+            }
+
+            void RemoveRegistration(User user)
+            {
+                Athlete athlete = (Athlete)user;
+                foreach (Activity activity in athlete.ActivityList)
+                {
+                    if (activity is Event)
+                    {
+                        Event events = (Event)activity;
+                        Console.WriteLine($"Event ID: {events.ActivityId}");
+                        Console.WriteLine($"Event Name: {events.ActivityName}");
+                        Console.WriteLine($"Event Location: {events.EventLocation}");
+                        Console.WriteLine($"Event Duration: {events.ActivityDurationMinutes}");
+                        Console.WriteLine($"Event Starting Time: {events.ActivityStartingTime}");
+                        Console.WriteLine($"Event Description: {events.ActivityDescription}");
+                        Console.WriteLine();
+                    }
+                }
+
+                Console.WriteLine("Enter the ID of the event you want to unregister for: ");
+                int unregisterID = Int32.Parse(Console.ReadLine());
+                Console.Clear();
+                Event? eventToUnregister = Event.GetEvents().FirstOrDefault(unregisterEvent => unregisterEvent.ActivityId == unregisterID);
+                if (eventToUnregister == null)
+                {
+                    Console.WriteLine("The entered ID does not match any event. press enter to go back to the menu");
+                    Console.ReadLine();
+                    Console.Clear();
+                }
+                else
+                {
+                    LogFeedback logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToUnregister.ActivityId && feedback.FeedbackAthleteId == user.UserId);
+                    if (logFeedback == null)
+                    {
+                        Console.WriteLine("You are not registered for this event. press enter to go back to the menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        logFeedback.DeleteFeedback();
+                        Console.WriteLine("You have been unregistered for the event. press enter to go back to the menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
+                }   
             }
 
 
