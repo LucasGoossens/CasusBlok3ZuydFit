@@ -15,7 +15,7 @@ namespace CasusZuydFitV0._1
 
             //User user = new Athlete(2, "test", "test", "test", new System.Collections.Generic.List<Activity>());
 
-            /*while (true)
+            while (true)
             {
                 Console.WriteLine("ZuydFit");
                 Console.WriteLine("Select Option:");
@@ -37,7 +37,7 @@ namespace CasusZuydFitV0._1
                         break;
                 }
             }
-            */
+            
 
 
             User user = new Trainer(2, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
@@ -648,40 +648,43 @@ namespace CasusZuydFitV0._1
 
             }
 
-            void Login()
+            User Login(UserDAL dal)
             {
-                Console.WriteLine("\nZuydFit Login");
-                Console.Write("Enter email address: ");
-                string email = Console.ReadLine();
+                UserDAL UserDAL = new UserDAL();
+                Console.Write("Enter username: ");
+                string username = Console.ReadLine();
                 Console.Write("Enter password: ");
                 string password = Console.ReadLine();
 
-                // Here you would handle the authentication
-                // This is just a placeholder for the process
-                Console.WriteLine("Login process (not actually implemented)");
-            }
-
-            void CreateAccount()
-            {
-                Console.WriteLine("\nZuydFit Create Account");
-                Console.Write("Enter email address: ");
-                string email = Console.ReadLine();
-                Console.Write("Enter password: ");
-                string password = Console.ReadLine();
-                Console.Write("Confirm password: ");
-                string confirmPassword = Console.ReadLine();
-
-                // Here you would handle account creation
-                // This is just a placeholder for the process
-                if (password == confirmPassword)
+                User user = dal.GetUser(username, password);
+                if (user != null)
                 {
-                    Console.WriteLine("Account creation process (not actually implemented)");
+                    Console.WriteLine("Login successful!");
+                    return user;
                 }
                 else
                 {
-                    Console.WriteLine("Passwords do not match, try again.");
+                    Console.WriteLine("Invalid username or password.");
+                    return null;
                 }
             }
+
+            void CreateAccount(UserDAL dal)
+            {
+                
+                Console.Write("Enter new username: ");
+                string username = Console.ReadLine();
+                Console.Write("Enter new email: ");
+                string email = Console.ReadLine();
+                Console.Write("Enter new password: ");
+                string password = Console.ReadLine();
+
+                Athlete newAthlete = new Athlete(username, email, password);
+                dal.CreateNewUser(newAthlete);
+
+                Console.WriteLine("Account created successfully!");
+            }
+
 
             void DisplayAllActivities()
             {
@@ -778,6 +781,38 @@ namespace CasusZuydFitV0._1
 
                 }
             }
+
+            User AuthenticateUser()
+            {
+                UserDAL dal = new UserDAL();
+                while (true)
+                {
+                    Console.WriteLine("ZuydFit");
+                    Console.WriteLine("Select Option:");
+                    Console.WriteLine("1. Login");
+                    Console.WriteLine("2. Create Account");
+                    Console.Write("> ");
+
+                    string option = Console.ReadLine();
+                    switch (option)
+                    {
+                        case "1":
+                            User user = Login(dal);
+                            if (user != null)
+                            {
+                                return user;
+                            }
+                            break;
+                        case "2":
+                            CreateAccount(dal);
+                            break;
+                        default:
+                            Console.WriteLine("Invalid option, please try again.");
+                            break;
+                    }
+                }
+            }
+
         }
     }
 }

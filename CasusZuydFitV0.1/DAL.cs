@@ -8,6 +8,12 @@ private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial C
         public class UserDAL
         {
             public List<User> users = new List<User>();
+            
+            public User GetUser(string username, string password)
+            {
+                return users.FirstOrDefault(u => u.UserName.Equals(username, StringComparison.OrdinalIgnoreCase) && u.UserPassword == password);
+            }
+            
             public void GetUsers()
             {
                 users.Clear();
@@ -74,6 +80,7 @@ private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial C
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
+            
 
             // nu gebruiken we UserDAL om alle soorten Users aan te maken in SQL,
             // mogelijk dit dan opsplitsen zodat alle subclass-specific dingen apart worden uitgevoerd bij het aanmaken
