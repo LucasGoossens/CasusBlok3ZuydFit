@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static CasusZuydFitV0._1.DAL;
 
 namespace CasusZuydFitV0._1
 {
@@ -37,6 +38,11 @@ namespace CasusZuydFitV0._1
 
         }
 
+        public List<Workout> GetAllWorkouts()
+        {
+            WorkoutDAL allWorkoutsDal = new WorkoutDAL();
+            return allWorkoutsDal.GetAllWorkoutsByAthleteId(this.UserId);
+        }
 
         public void DeleteExercise()
         {

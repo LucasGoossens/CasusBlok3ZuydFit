@@ -332,7 +332,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 }
             }
 
-
+      
         }
 
         public class EquipmentDAL
@@ -1001,6 +1001,41 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
 
                 return insertedId;
             }
+
+            public List<Workout> GetAllWorkoutsByAthleteId(int athleteId)
+            {
+                TrainerDAL allTrainers = new TrainerDAL();
+                allTrainers.GetTrainers();
+
+                List<Workout> WorkoutsToReturn = new List<Workout>();
+
+                string query = $"SELECT Activity.ActivityId, ActivityName, ActivityDuration, ActivityStartingTime, ActivityDescription, Activity.TrainerId FROM LogFeedback INNER JOIN Activity ON LogFeedback.ActivityId = Activity.ActivityId WHERE Activity.Type = 'workout' AND LogFeedback.AthleteId = {athleteId}" ;
+                using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                {
+                    connection.Open();
+                    using (SqlCommand athleteCommand = new SqlCommand(query, connection))
+                    {
+                        using (SqlDataReader reader = athleteCommand.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                int activityId = reader.GetInt32(0);
+                                string activityName = reader.GetString(1);
+                                int activityDuration = reader.GetInt32(2);
+                                string activityStartingTime = reader.GetString(3);
+                                string activityDescription = reader.GetString(4);
+                                Trainer activityTrainer = allTrainers.trainers.FirstOrDefault(trainer => trainer.UserId == reader.GetInt32(5));
+                                // worden geen Equipments meegegeven, niet nodig voor gebruik
+
+                                Workout newWorkout = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription);
+
+                                WorkoutsToReturn.Add(newWorkout);
+                            }
+                        }
+                    }
+                }
+                return WorkoutsToReturn;
+            }
         }
 
 
@@ -1161,7 +1196,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 {
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
-            }
+            }       
         }
     }
 }
