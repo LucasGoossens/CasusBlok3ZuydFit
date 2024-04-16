@@ -1,4 +1,5 @@
 ﻿using Microsoft.Identity.Client;
+using Microsoft.IdentityModel.Protocols;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 using static CasusZuydFitV0._1.DAL;
@@ -9,13 +10,10 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
-            DeleteEquipment();
-            // Example usage
-            Program program = new Program();
 
-            //User user = new Athlete(2, "test", "test", "test", new System.Collections.Generic.List<Activity>());
-
-            /*while (true)
+            User loggedInUser = new Athlete("NOUSERLOGGEDIN", "NOUSERLOGGEDIN", "NOUSERLOGGEDIN");
+            bool loggedIn = false;
+            while (!loggedIn)
             {
                 Console.WriteLine("ZuydFit");
                 Console.WriteLine("Select Option:");
@@ -27,7 +25,7 @@ namespace CasusZuydFitV0._1
                 switch (option)
                 {
                     case "1":
-                        Login();
+                        loggedIn = Login();
                         break;
                     case "2":
                         CreateAccount();
@@ -37,100 +35,40 @@ namespace CasusZuydFitV0._1
                         break;
                 }
             }
-            */
 
-                
-                User user = new Trainer(13, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
-                bool running = true;
-                while (running)
+            
+            bool running = true;
+            while (running)
+            {
+                Console.WriteLine("        ZUYDFIT        ");
+                Console.WriteLine("=======================");
+                Console.WriteLine("Main Menu");
+                Console.WriteLine("1. View Profile");
+                Console.WriteLine("2. View All Activities");
+                Console.WriteLine("3. View All Athletes (Trainers only!)");
+                Console.WriteLine("Enter option (or 'exit' to close): ");
+
+                string input = Console.ReadLine();
+                switch (input)
                 {
-                    Console.WriteLine("        ZUYDFIT        ");
-                    Console.WriteLine("=======================");
-                    Console.WriteLine("Main Menu");
-                    Console.WriteLine("1. View Profile");
-                    Console.WriteLine("2. View All Activities");
-                    Console.WriteLine("3. View All Athletes (Trainers only!)");
-                    Console.WriteLine("Enter option (or 'exit' to close): ");
-
-                    string input = Console.ReadLine();
-                    switch (input)
-                    {
-                        case "1":
-                            ManageProfile(user);
-                            break;
-                        case "2":
-                            DisplayAllActivities();
-                            break;
-                        case "3":
-                            DisplayAllAthletes();
-                            break;
-                        case "exit":
-                            running = false;
-                            break;
-                        default:
-                            Console.WriteLine("Invalid option.");
-                            break;
-                    }
+                    case "1":
+                        ManageProfile(loggedInUser);
+                        break;
+                    case "2":
+                        DisplayAllActivities();
+                        break;
+                    case "3":
+                        DisplayAllUsers();
+                        break;
+                    case "exit":
+                        running = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option.");
+                        break;
                 }
-              
-               
-                //while (true)
-                //{
-                //    Console.WriteLine("=======================");
-                //    Console.WriteLine("Kies optie:");
-                //    Console.WriteLine("-----------------------");
-                //    Console.WriteLine("1: Display all users");
-                //    Console.WriteLine("2: Create new user");
-                //    Console.WriteLine("-----------------------");
-                //    //Console.WriteLine("3. Create new Exercise");
-                //    //Console.WriteLine("4. Display all Exercises");
-                //    Console.WriteLine("3. Create new Workout");
-                //    Console.WriteLine("4. Show all events");
-                //    Console.WriteLine("5. Show all workouts");
-                //    Console.WriteLine("6. Manage profile");
+            }
 
-                //    // Trainer functies
-                //    Console.WriteLine("7. Trainer gives feedback");
-
-                //    int option;
-
-                //    try
-                //    {
-                //        option = Convert.ToInt32(Console.ReadLine());
-                //    }
-                //    catch (Exception e)
-                //    {
-                //        Console.Clear();
-                //        Console.WriteLine("Invalid option.");
-                //        continue;
-                //    }
-
-
-                //    switch (option)
-                //    {
-                //        case 1:
-                //            DisplayAllUsers();
-                //            break;
-                //        case 2:
-                //            CreateNewUser();
-                //            break;
-                //        case 3:
-                //            CreateNewWorkout();
-                //            break;
-                //        case 4:
-                //            DisplayAllEvents(user);
-                //            break;
-                //        case 5:
-                //            DisplayAllWorkouts();
-                //            break;
-                //        case 6:
-                //            ManageProfile(user);
-                //            break;
-                //        case 7:
-                //            TrainerGivesFeedback(user);
-                //            break;
-                //    }
-                //}
 
             void DisplayAllUsers()
             {
@@ -377,9 +315,8 @@ namespace CasusZuydFitV0._1
 
                 AthleteDAL athleteDAL = new AthleteDAL();
                 athleteDAL.GetAthlets();
-
-                int MockAthleteId = user.UserId; // dit dan uiteindelijk de ingelogde athlete
-                Athlete currentAthlete = athleteDAL.athletes.Find(athlete => athlete.UserId == MockAthleteId);
+                                
+                Athlete currentAthlete = athleteDAL.athletes.Find(athlete => athlete.UserId == loggedInUser.UserId);
 
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("All Workouts:\n");
@@ -664,62 +601,82 @@ namespace CasusZuydFitV0._1
 
             }
 
-            void Login()
+            bool Login()
             {
-                Console.WriteLine("\nZuydFit Login");
-                Console.Write("Enter email address: ");
-                string email = Console.ReadLine();
+                UserDAL UserDAL = new UserDAL();
+                List<User> allUsers = User.GetUsers();
+
+                Console.Write("Enter username: ");
+                string username = Console.ReadLine();
                 Console.Write("Enter password: ");
                 string password = Console.ReadLine();
 
-                // Here you would handle the authentication
-                // This is just a placeholder for the process
-                Console.WriteLine("Login process (not actually implemented)");
+                (string, string) loginInfo = (username, password);
+
+                User user = allUsers.Find(user => (user.UserName, user.UserPassword) == loginInfo);
+
+                if (user != null)
+                {
+                    Console.WriteLine("Login successful!");
+                    loggedInUser = user;
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid username or password.");
+                    return false;
+                }
             }
 
             void CreateAccount()
             {
-                Console.WriteLine("\nZuydFit Create Account");
-                Console.Write("Enter email address: ");
+                Console.Write("Enter new username: ");
+                string username = Console.ReadLine();
+                Console.Write("Enter new email: ");
                 string email = Console.ReadLine();
-                Console.Write("Enter password: ");
-                string password = Console.ReadLine();
-                Console.Write("Confirm password: ");
-                string confirmPassword = Console.ReadLine();
+                string password = "1";
+                string confirmedPassword = "2";
 
-                // Here you would handle account creation
-                // This is just a placeholder for the process
-                if (password == confirmPassword)
+                while (password != confirmedPassword)
                 {
-                    Console.WriteLine("Account creation process (not actually implemented)");
+                    Console.Write("Enter new password: ");
+                    password = Console.ReadLine();
+                    Console.Write("confirm password: ");
+                    confirmedPassword = Console.ReadLine();
+                    if(password != confirmedPassword)
+                    {
+                        Console.WriteLine("Invalid password confirmation. Try again");
+                    }
                 }
-                else
-                {
-                    Console.WriteLine("Passwords do not match, try again.");
-                }
+
+                Athlete newAthlete = new Athlete(username, email, password);
+                newAthlete.CreateNewUser();
+
+                Console.WriteLine("Account created successfully!");
             }
+
 
             void DisplayAllActivities()
             {
-            Console.WriteLine("What Activities do you want to see?");
-            Console.WriteLine("1: Events (Group activity)");
-            Console.WriteLine("2: Workouts (Solo activity)");            
-            Console.Write("Please enter your choice (1 or 2): ");
-            
-            string choice = Console.ReadLine();
-            
-            switch (choice)
-            {
-                case "1":
-                    DisplayAllEvents(user);
-                    break;
-                case "2":
-                    DisplayAllWorkouts();
-                    break;
-                default:
-                    Console.WriteLine("Invalid choice, please enter 1 or 2.");
-                    break;
-            }
+                Console.WriteLine("What Activities do you want to see?");
+                Console.WriteLine("1: Events (Group activity)");
+                Console.WriteLine("2: Workouts (Solo activity)");
+                Console.Write("Please enter your choice (1 or 2): ");
+
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        DisplayAllEvents(loggedInUser);
+                        break;
+                    case "2":
+                        DisplayAllWorkouts();
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice, please enter 1 or 2.");
+                        break;
+                }
             }
             void RegisterForEvent(User user)
             {
@@ -794,6 +751,38 @@ namespace CasusZuydFitV0._1
 
                 }
             }
+
+            //User AuthenticateUser()
+            //{
+            //    UserDAL dal = new UserDAL();
+            //    while (true)
+            //    {
+            //        Console.WriteLine("ZuydFit");
+            //        Console.WriteLine("Select Option:");
+            //        Console.WriteLine("1. Login");
+            //        Console.WriteLine("2. Create Account");
+            //        Console.Write("> ");
+
+            //        string option = Console.ReadLine();
+            //        switch (option)
+            //        {
+            //            case "1":
+            //                User user = Login(dal);
+            //                if (user != null)
+            //                {
+            //                    return user;
+            //                }
+            //                break;
+            //            case "2":
+            //                CreateAccount(dal);
+            //                break;
+            //            default:
+            //                Console.WriteLine("Invalid option, please try again.");
+            //                break;
+            //        }
+            //    }
+            //}
+
         }
     }
 }

@@ -20,6 +20,12 @@ namespace CasusZuydFitV0._1
         {
             ActivityList = activity;
         }
+
+        public Athlete(string userName, string userEmail, string userPassword) : base(userName, userEmail, userPassword)
+        {
+            
+        }
+        
         
         public void EventRegisterAthlete(Event eventToRegisterAthlete)
         {
