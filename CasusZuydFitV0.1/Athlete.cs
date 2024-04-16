@@ -33,10 +33,7 @@ namespace CasusZuydFitV0._1
             ActivityList.Add(eventToRegisterAthlete);
         }
 
-        public void EventRemoveRegistration()
-        {
 
-        }
 
         public List<Workout> GetAllWorkouts()
         {
@@ -44,9 +41,11 @@ namespace CasusZuydFitV0._1
             return allWorkoutsDal.GetAllWorkoutsByAthleteId(this.UserId);
         }
 
-        public void DeleteExercise()
+        static public List<Athlete> GetAllAthletes()
         {
-
+            AthleteDAL allAthletesDal = new AthleteDAL();
+            allAthletesDal.GetAthlets();
+            return allAthletesDal.athletes;
         }
 
 
