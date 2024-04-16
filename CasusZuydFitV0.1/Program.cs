@@ -388,7 +388,7 @@ namespace CasusZuydFitV0._1
                 int selectedWorkoutId = Convert.ToInt32(Console.ReadLine());
                 Workout workoutToAddFeedback = allWorkoutsFromFoundAthlete.Find(workout => workout.ActivityId == selectedWorkoutId);
 
-                TrainerGivesFeedback(user, workoutToAddFeedback);
+                TrainerGivesFeedback(foundAthlete, workoutToAddFeedback);
                 // of verder menu maken
 
             }
