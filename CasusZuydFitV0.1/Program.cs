@@ -11,7 +11,7 @@ namespace CasusZuydFitV0._1
         static void Main(string[] args)
         {
 
-            User loggedInUser;
+            User loggedInUser = new Athlete("NOUSERLOGGEDIN", "NOUSERLOGGEDIN", "NOUSERLOGGEDIN");
             bool loggedIn = false;
             while (!loggedIn)
             {
@@ -36,9 +36,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-
-
-            User user = new Trainer(2, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
+            
             bool running = true;
             while (running)
             {
@@ -54,10 +52,10 @@ namespace CasusZuydFitV0._1
                 switch (input)
                 {
                     case "1":
-                        //ManageProfile(user);
+                        ManageProfile(loggedInUser);
                         break;
                     case "2":
-                        //DisplayAllActivities(user);
+                        DisplayAllActivities();
                         break;
                     case "3":
                         DisplayAllUsers();
@@ -71,68 +69,6 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-
-            while (true)
-            {
-                Console.WriteLine("=======================");
-                Console.WriteLine("Kies optie:");
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("1: Display all users");
-                Console.WriteLine("2: Create new user");
-                Console.WriteLine("-----------------------");
-                //Console.WriteLine("3. Create new Exercise");
-                //Console.WriteLine("4. Display all Exercises");
-                Console.WriteLine("3. Create new Workout");
-                Console.WriteLine("4. Show all events");
-                Console.WriteLine("5. Show all workouts");
-                Console.WriteLine("6. Manage profile");
-                Console.WriteLine("7. Create Event");
-
-                // Trainer functies
-                Console.WriteLine("7. Trainer gives feedback");
-
-                int option;
-
-                try
-                {
-                    option = Convert.ToInt32(Console.ReadLine());
-                }
-                catch (Exception e)
-                {
-                    Console.Clear();
-                    Console.WriteLine("Invalid option.");
-                    continue;
-                }
-
-
-                switch (option)
-                {
-                    case 1:
-                        DisplayAllUsers();
-                        break;
-                    case 2:
-                        CreateNewUser();
-                        break;
-                    case 3:
-                        CreateNewWorkout();
-                        break;
-                    case 4:
-                        DisplayAllEvents(user);
-                        break;
-                    case 5:
-                        DisplayAllWorkouts();
-                        break;
-                    case 6:
-                        ManageProfile(user);
-                        break;
-                    case 7:
-                        TrainerGivesFeedback(user);
-                        break;
-                    case 8:
-                        CreateEvent(user);
-                        break;
-                }
-            }
 
             void DisplayAllUsers()
             {
@@ -381,9 +317,8 @@ namespace CasusZuydFitV0._1
 
                 AthleteDAL athleteDAL = new AthleteDAL();
                 athleteDAL.GetAthlets();
-
-                int MockAthleteId = 6; // dit dan uiteindelijk de ingelogde athlete
-                Athlete currentAthlete = athleteDAL.athletes.Find(athlete => athlete.UserId == MockAthleteId);
+                                
+                Athlete currentAthlete = athleteDAL.athletes.Find(athlete => athlete.UserId == loggedInUser.UserId);
 
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("All Workouts:\n");
@@ -711,7 +646,7 @@ namespace CasusZuydFitV0._1
                 switch (choice)
                 {
                     case "1":
-                        DisplayAllEvents(user);
+                        DisplayAllEvents(loggedInUser);
                         break;
                     case "2":
                         DisplayAllWorkouts();
