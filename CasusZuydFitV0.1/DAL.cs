@@ -997,9 +997,12 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 TrainerDAL allTrainers = new TrainerDAL();
                 allTrainers.GetTrainers();
 
+                List<Workout> WorkoutsToReturn = new List<Workout>();
+
                 string query = $"SELECT Activity.ActivityId, ActivityName, ActivityDuration, ActivityStartingTime, ActivityDescription, Activity.TrainerId FROM LogFeedback INNER JOIN Activity ON LogFeedback.ActivityId = Activity.ActivityId WHERE Activity.Type = 'workout' AND LogFeedback.AthleteId = {athleteId}" ;
                 using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                 {
+                    connection.Open();
                     using (SqlCommand athleteCommand = new SqlCommand(query, connection))
                     {
                         using (SqlDataReader reader = athleteCommand.ExecuteReader())
@@ -1010,16 +1013,18 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                                 string activityName = reader.GetString(1);
                                 int activityDuration = reader.GetInt32(2);
                                 string activityStartingTime = reader.GetString(3);
-                                Trainer activityTrainer = allTrainers.trainers.FirstOrDefault(trainer => trainer.UserId == reader.GetInt32(4));
-                                string activityDescription = reader.GetString(5);
+                                string activityDescription = reader.GetString(4);
+                                Trainer activityTrainer = allTrainers.trainers.FirstOrDefault(trainer => trainer.UserId == reader.GetInt32(5));
+                                // worden geen Equipments meegegeven, niet nodig voor gebruik
 
+                                Workout newWorkout = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription);
+
+                                WorkoutsToReturn.Add(newWorkout);
                             }
-
-                            Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
-
                         }
                     }
                 }
+                return WorkoutsToReturn;
             }
         }
 

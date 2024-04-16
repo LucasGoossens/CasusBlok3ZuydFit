@@ -38,7 +38,7 @@ namespace CasusZuydFitV0._1
             }
             */
 
-
+                
                 User user = new Trainer(13, "testTrainer", "testTrainer", "testTrainer", new System.Collections.Generic.List<Activity>());
                 bool running = true;
                 while (running)
@@ -180,6 +180,7 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("Athlete found:");
                     Console.WriteLine($"Athlete ID: {foundAthlete.UserId}, Name: {foundAthlete.UserName}, Email: {foundAthlete.UserEmail}");
+                    DisplayFoundAthleteWorkouts(foundAthlete);
                 }
                 else
                 {
@@ -421,12 +422,36 @@ namespace CasusZuydFitV0._1
                         Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
                         Console.WriteLine($"  Result: {exercise.ExerciseResult}");
                     }
+                    CheckFeedback(currentAthlete, selectedWorkout);
                 }
                 else
                 {
                     Console.WriteLine("This workout has no exercises listed.");
                 }
+                
 
+            }
+
+            void DisplayFoundAthleteWorkouts(Athlete foundAthlete)
+            {
+                List<Workout> allWorkoutsFromFoundAthlete = foundAthlete.GetAllWorkouts();
+                
+                Console.WriteLine("Workouts of " + foundAthlete.UserName + ":");
+                foreach (Workout workout in allWorkoutsFromFoundAthlete)
+                {
+                    Console.WriteLine("-----------------------");
+                    Console.WriteLine($"Workout ID: {workout.ActivityId}");
+                    Console.WriteLine($"Workout name: {workout.ActivityName}");
+                    //Console.WriteLine($"Workout trainer ID: {workout.Trainer.UserId});
+                }
+                Console.WriteLine("-----------------------");
+                Console.WriteLine("Select Workout ID");
+                // error handling nog
+                int selectedWorkoutId = Convert.ToInt32(Console.ReadLine());
+                Workout workoutToAddFeedback = allWorkoutsFromFoundAthlete.Find(workout => workout.ActivityId == selectedWorkoutId);
+
+                TrainerGivesFeedback(user, workoutToAddFeedback);
+                // of verder menu maken
 
             }
 
@@ -483,31 +508,31 @@ namespace CasusZuydFitV0._1
             }
 
 
-            void TrainerGivesFeedback(User user)
+            void TrainerGivesFeedback(User user, Workout activityToAddFeedback)
             {
+                LogFeedback logFeedback = null;
                 try
                 {
-                    LogFeedback logFeedback = null;
-                    Console.WriteLine($"All activities where {user.UserName} is the trainer: ");
-                    foreach (Activity activity in Activity.GetActivities())
-                    {
-                        if (activity.Trainer.UserId == user.UserId)
-                        {
-                            Console.WriteLine($"Activity ID: {activity.ActivityId}, Name: {activity.ActivityName}");
-                        }
-                    }
-                    Console.WriteLine("Enter the ID of the activity you want to give feedback on: ");
-                    int activityId = Convert.ToInt32(Console.ReadLine());
+                    //Console.WriteLine($"All activities where {user.UserName} is the trainer: ");
+                    //foreach (Activity activity in Activity.GetActivities())
+                    //{
+                    //    if (activity.Trainer.UserId == user.UserId)
+                    //    {
+                    //        Console.WriteLine($"Activity ID: {activity.ActivityId}, Name: {activity.ActivityName}");
+                    //    }
+                    
+                    //Console.WriteLine("Enter the ID of the activity you want to give feedback on: ");
+                    //int activityId = Convert.ToInt32(Console.ReadLine());
                     Console.Clear();
-                    Activity activityToGiveFeedbackOn = Activity.GetActivities().FirstOrDefault(activity => activity.ActivityId == activityId);
+                    Activity activityToGiveFeedbackOn = activityToAddFeedback;
                     if (activityToGiveFeedbackOn == null)
                     {
-                        Console.WriteLine("A non-existing ID was given");
+                        Console.WriteLine("A non-existing workout was given"); // dit hoeft niet 
                         return;
                     }
                     else if (activityToGiveFeedbackOn.Trainer.UserId == user.UserId)
                     {
-                        if (activityToGiveFeedbackOn is Event)
+                        if (activityToGiveFeedbackOn is Event) // werkt nu alleen nog voor workout 
                         {
                             Event eventToGiveFeedback = activityToGiveFeedbackOn as Event;
                             Console.WriteLine("All users that are signed up for this event: ");
@@ -518,12 +543,12 @@ namespace CasusZuydFitV0._1
                             Console.WriteLine("Pick a UserID for the user you wanna give feedback on");
                             int pickedUserId = Convert.ToInt32(Console.ReadLine());
                             User? userToGiveFeedbackOn = User.GetUsers().FirstOrDefault(user => user.UserId == pickedUserId);
-                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activityId && feedback.FeedbackAthleteId == pickedUserId);
+                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToGiveFeedback.ActivityId && feedback.FeedbackAthleteId == pickedUserId);
                         }
                         else
                         {
                             Workout WorkoutToGiveFeedbackOn = activityToGiveFeedbackOn as Workout;
-                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activityId && feedback.FeedbackAthleteId == WorkoutToGiveFeedbackOn.WorkoutParticipant.UserId);
+                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == WorkoutToGiveFeedbackOn.ActivityId && feedback.FeedbackAthleteId == WorkoutToGiveFeedbackOn.WorkoutParticipant.UserId);
                         }
                         Console.Clear();
                         Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName} Current Feedaback: {logFeedback.FeedbackInfo}");
