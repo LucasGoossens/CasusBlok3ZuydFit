@@ -372,7 +372,7 @@ private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial C
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "INSERT INTO [Equipment](EquipmentName, EquipmentDescription, EquipmentAvailability) VALUES(@EquipmentName, @EquipmentDescription, @EquipmentAvailability);";
+                        string query = "INSERT INTO [Equipment](EquipmentName, EquipmentDescription, EquipmentAvailability) VALUES(@EquipmentName, @EquipmentDescription, @EquipmentAvailability); SELECT SCOPE_IDENTITY();";
 
                         SqlCommand dbCommand = new SqlCommand(query, connection);
 
@@ -380,8 +380,11 @@ private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial C
                         dbCommand.Parameters.AddWithValue("@EquipmentDescription", equipment.EquipmentDescription);
                         dbCommand.Parameters.AddWithValue("@EquipmentAvailability", equipment.EquipmentAvailability);
 
+                        // ExecuteScalar is used to retrieve the single value from the query
+                        int insertedEquipmentId = Convert.ToInt32(dbCommand.ExecuteScalar());
 
-                        dbCommand.ExecuteNonQuery();
+                        // Now you can use the insertedEquipmentId as needed
+                        Console.WriteLine($"New EquipmentId: {insertedEquipmentId}");
                     }
                 }
                 catch (Exception ex)

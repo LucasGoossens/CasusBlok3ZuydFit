@@ -9,6 +9,7 @@ namespace CasusZuydFitV0._1
     {
         static void Main(string[] args)
         {
+            DeleteEquipment();
             // Example usage
             Program program = new Program();
 
@@ -744,6 +745,36 @@ namespace CasusZuydFitV0._1
                     Console.ReadLine();
                     Console.Clear();
 
+
+                }
+            }
+            void DeleteEquipment()
+            {
+                try
+                {
+                    Console.WriteLine("Enter the ID of the equipment you want to delete: ");
+                    int equipmentId = Convert.ToInt32(Console.ReadLine());
+                    Equipment equipmentToDelete = Equipment.GetEquipment().FirstOrDefault(equipment => equipment.EquipmentId == equipmentId);
+                    if (equipmentToDelete == null)
+                    {
+                        Console.WriteLine("The entered ID does not match any equipment.");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Are you sure you want to delete {equipmentToDelete.EquipmentName}?, Make sure you inform all trainers about this.");
+                        Console.WriteLine("1. Yes");
+                        Console.WriteLine("2. No");
+                        int deleteChoice = Convert.ToInt32(Console.ReadLine());
+                        if (deleteChoice == 1)
+                        {
+                            equipmentToDelete.DeleteEquipment();
+                            Console.WriteLine("Equipment deleted successfully.");
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Invalid input given.");
 
                 }
             }
