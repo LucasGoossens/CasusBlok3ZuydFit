@@ -335,19 +335,15 @@ namespace CasusZuydFitV0._1
 
             void DisplayAllWorkouts()
             {
-                WorkoutDAL workoutDAL = new WorkoutDAL();
-                workoutDAL.GetWorkouts();
 
-                AthleteDAL athleteDAL = new AthleteDAL();
-                athleteDAL.GetAthlets();
                                 
-                Athlete currentAthlete = athleteDAL.athletes.Find(athlete => athlete.UserId == loggedInUser.UserId);
+                Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUser.UserId);
 
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("All Workouts:\n");
                 Console.WriteLine("-----------------------");
                 int workoutNumber = 1;
-                foreach (Workout workout in workoutDAL.workouts)
+                foreach (Workout workout in Workout.GetWorkouts())
                 {
                     workoutNumber++;
                     if (currentAthlete.ActivityList.Contains(workout))
@@ -361,14 +357,14 @@ namespace CasusZuydFitV0._1
                 }
 
                 Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
-                if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > workoutDAL.workouts.Count)
+                if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > Workout.GetWorkouts().Count)
                 {
                     Console.WriteLine("Invalid selection. Please restart and enter a valid workout number.");
                     return;
                 }
 
                 selectedNumber--;
-                Workout selectedWorkout = workoutDAL.workouts[selectedNumber];
+                Workout selectedWorkout = Workout.GetWorkouts()[selectedNumber];
 
                 Console.WriteLine($"\nSelected Workout: {selectedWorkout.ActivityName}");
                 Console.WriteLine($"Duration (minutes): {selectedWorkout.ActivityDurationMinutes}");
@@ -630,8 +626,7 @@ namespace CasusZuydFitV0._1
 
             bool Login()
             {
-                UserDAL UserDAL = new UserDAL();
-                List<User> allUsers = User.GetUsers();
+                
 
                 Console.Write("Enter username: ");
                 string username = Console.ReadLine();
@@ -640,7 +635,7 @@ namespace CasusZuydFitV0._1
 
                 (string, string) loginInfo = (username, password);
 
-                User user = allUsers.Find(user => (user.UserName, user.UserPassword) == loginInfo);
+                User user = User.GetUsers().Find(user => (user.UserName, user.UserPassword) == loginInfo);
 
                 if (user != null)
                 {
