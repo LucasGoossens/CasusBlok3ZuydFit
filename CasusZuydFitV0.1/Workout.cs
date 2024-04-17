@@ -45,7 +45,7 @@ namespace CasusZuydFitV0._1
         public static List<Workout> GetWorkouts()
         {
             DAL.WorkoutDAL workoutdal = new DAL.WorkoutDAL();
-            GetWorkouts();
+            workoutdal.GetWorkouts();
             return workoutdal.workouts;
         }
 
