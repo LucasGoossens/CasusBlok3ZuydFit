@@ -731,13 +731,7 @@ namespace CasusZuydFitV0._1
             {
                 foreach (Event events in Event.GetEvents())
                 {
-                    Console.WriteLine($"Event ID: {events.ActivityId}");
-                    Console.WriteLine($"Event Name: {events.ActivityName}");
-                    Console.WriteLine($"Event Location: {events.EventLocation}");
-                    Console.WriteLine($"Event Duration: {events.ActivityDurationMinutes}");
-                    Console.WriteLine($"Event Starting Time: {events.ActivityStartingTime}");
-                    Console.WriteLine($"Event Description: {events.ActivityDescription}");
-                    Console.WriteLine();
+                    events.ShowEvent();
                 }
 
                 Console.WriteLine("Enter the ID of the event you want to register for: ");
