@@ -1,6 +1,8 @@
 ﻿using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Protocols;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Common;
+using System.Diagnostics.Metrics;
 using System.Runtime.InteropServices;
 using static CasusZuydFitV0._1.DAL;
 
@@ -58,7 +60,8 @@ namespace CasusZuydFitV0._1
                         DisplayAllActivities();
                         break;
                     case "3":
-                        DisplayAllUsers();
+                        //DisplayAllUsers();
+                        DisplayAllAthletes();
                         break;
                     case "exit":
                         running = false;
@@ -98,7 +101,9 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("List of Athletes:");
                 foreach (var athlete in allUsers)
                 {
-                    Console.WriteLine($"Athlete ID: {athlete.UserId}, Name: {athlete.UserName}, Email: {athlete.UserEmail}");
+                    if (athlete is Athlete){
+                        Console.WriteLine($"Athlete ID: {athlete.UserId}, Name: {athlete.UserName}, Email: {athlete.UserEmail}");
+                    }
                 }
 
                 Console.WriteLine("Enter the name or ID of the athlete to search for:");
@@ -119,7 +124,29 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("Athlete found:");
                     Console.WriteLine($"Athlete ID: {foundAthlete.UserId}, Name: {foundAthlete.UserName}, Email: {foundAthlete.UserEmail}");
-                    DisplayFoundAthleteWorkouts(foundAthlete);
+                    int optionChoice;
+                    do
+                    {
+                        Console.WriteLine("1. View all Workouts for this Athlete");
+                        Console.WriteLine("2. Create new Workout for this Athlete");
+                        optionChoice = Convert.ToInt32(Console.ReadLine());
+                        if(optionChoice != 1 && optionChoice != 2)
+                        {
+                            Console.WriteLine("Invalid entry.");
+                        }
+                    } while (optionChoice != 1 && optionChoice != 2);
+
+                    switch (optionChoice)
+                    {
+                        case 1:
+                            DisplayFoundAthleteWorkouts(foundAthlete);
+                            break;
+                        case 2:
+                            CreateNewWorkout(foundAthlete);
+                            break;
+
+                    }
+                        
                 }
                 else
                 {
@@ -228,7 +255,7 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            void CreateNewWorkout()
+            void CreateNewWorkout(Athlete newWorkOutAthlete)
             {
                 Console.Clear();
 
@@ -241,16 +268,9 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("Workout starting time:");
                 string newWorkoutStartingTime = Console.ReadLine();
                 Console.WriteLine("Workout description:");
-                string newWorkoutDescription = Console.ReadLine();
-                Console.WriteLine("Workout Athlete ID:"); // dit is foutgevoelig voor nu, uiteindelijk misschien eerst lijst van alle Athlete Id's geven
-                int newAthleteParticipantId = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Workout Trainer ID:"); // dit is foutgevoelig voor nu, uiteindelijk misschien eerst lijst van alle Trainer Id's geven
-                int newTrainerParticipantId = Convert.ToInt32(Console.ReadLine());
-
-                List<User> allUsers = User.GetUsers();
-
-                Athlete newWorkOutAthlete = (Athlete)allUsers.FirstOrDefault(athlete => athlete.UserId == newAthleteParticipantId);
-                Trainer newWorkOutTrainer = (Trainer)allUsers.FirstOrDefault(trainer => trainer.UserId == newTrainerParticipantId);
+                string newWorkoutDescription = Console.ReadLine();                
+                               
+                Trainer newWorkOutTrainer = (Trainer)loggedInUser;
 
                 Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
                 newWorkout.CreateNewWorkout();
@@ -338,7 +358,7 @@ namespace CasusZuydFitV0._1
 
                                 
                 Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUser.UserId);
-
+               
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("All Workouts:\n");
                 Console.WriteLine("-----------------------");
@@ -394,14 +414,18 @@ namespace CasusZuydFitV0._1
             void DisplayFoundAthleteWorkouts(Athlete foundAthlete)
             {
                 List<Workout> allWorkoutsFromFoundAthlete = foundAthlete.GetAllWorkouts();
-                
+
+                if (allWorkoutsFromFoundAthlete.Count < 1)
+                {
+                    Console.WriteLine("No Workouts registered.");
+                    return;
+                }
+
                 Console.WriteLine("Workouts of " + foundAthlete.UserName + ":");
                 foreach (Workout workout in allWorkoutsFromFoundAthlete)
                 {
                     Console.WriteLine("-----------------------");
-                    Console.WriteLine($"Workout ID: {workout.ActivityId}");
-                    Console.WriteLine($"Workout name: {workout.ActivityName}");
-                    //Console.WriteLine($"Workout trainer ID: {workout.Trainer.UserId});
+                    Console.WriteLine($"Workout ID: {workout.ActivityId} Workout name: {workout.ActivityName}");       
                 }
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Select Workout ID");
@@ -491,7 +515,7 @@ namespace CasusZuydFitV0._1
                         Console.WriteLine("A non-existing workout was given"); // dit hoeft niet 
                         return;
                     }
-                    else if (activityToGiveFeedbackOn.Trainer.UserId == user.UserId)
+                    else if (activityToGiveFeedbackOn.Trainer.UserId == loggedInUser.UserId)
                     {
                         if (activityToGiveFeedbackOn is Event) // werkt nu alleen nog voor workout 
                         {
@@ -506,15 +530,18 @@ namespace CasusZuydFitV0._1
                             User? userToGiveFeedbackOn = User.GetUsers().FirstOrDefault(user => user.UserId == pickedUserId);
                             logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToGiveFeedback.ActivityId && feedback.FeedbackAthleteId == pickedUserId);
                         }
-                        else
+                        else // hier loop ik vast, snap niet wat de bedoeling is
                         {
                             Workout WorkoutToGiveFeedbackOn = activityToGiveFeedbackOn as Workout;
+                            // Wat als er nog geen logbooks bestaan?
                             logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == WorkoutToGiveFeedbackOn.ActivityId && feedback.FeedbackAthleteId == WorkoutToGiveFeedbackOn.WorkoutParticipant.UserId);
                         }
                         Console.Clear();
-                        Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName} Current Feedaback: {logFeedback.FeedbackInfo}");
+                        Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}" + (logFeedback != null ? $"Current Feedback: {logFeedback.FeedbackInfo}" : "."));
+                        
                         Console.WriteLine("Enter the feedback you want to give: ");
                         string NewFeedback = Console.ReadLine();
+                        // Wat als er nog geen logbooks bestaan?
                         logFeedback.UpdateFeedback(NewFeedback);
 
                     }
