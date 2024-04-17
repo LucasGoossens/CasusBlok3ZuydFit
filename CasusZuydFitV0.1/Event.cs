@@ -71,6 +71,17 @@ namespace CasusZuydFitV0._1
             EventPatricipantLimit = eventPatricipantLimit;
         }
 
+        public void ShowEvent()
+        {
+            Console.WriteLine($"Event ID: {ActivityId}");
+            Console.WriteLine($"Event Name: {ActivityName}");
+            Console.WriteLine($"Event Location: {EventLocation}");
+            Console.WriteLine($"Event Duration: {ActivityDurationMinutes}");
+            Console.WriteLine($"Event Starting Time: {ActivityStartingTime}");
+            Console.WriteLine($"Event Description: {ActivityDescription}");
+            Console.WriteLine();
+        }   
+
         static public List<Event> GetEvents()
         {
             DAL.EventDAL eventDal = new DAL.EventDAL();
