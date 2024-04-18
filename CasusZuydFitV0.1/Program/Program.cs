@@ -51,7 +51,10 @@ namespace CasusZuydFitV0._1.Program
                 Console.WriteLine("Main Menu");
                 Console.WriteLine("1. View Profile");
                 Console.WriteLine("2. View All Activities");
-                Console.WriteLine("3. View All Athletes (Trainers only!)");
+                if (loggedInUser is Trainer)  // Check if the user is a Trainer
+                {
+                    Console.WriteLine("3. View All Athletes (Trainers only!)");
+                }
                 Console.WriteLine("Enter your option (or 'exit' to close): ");
 
                 string input = Console.ReadLine();
@@ -64,8 +67,14 @@ namespace CasusZuydFitV0._1.Program
                         DisplayAllActivities(loggedInUser);
                         break;
                     case "3":
-                        //DisplayAllUsers();
-                        DisplayAllAthletes();
+                        if (loggedInUser is Trainer)
+                        {
+                            DisplayAllAthletes();  // Only call this method if the user is a Trainer
+                        }
+                        else
+                        {
+                            Console.WriteLine("Access denied.");
+                        }
                         break;
                     case "exit":
                         running = false;
@@ -75,7 +84,6 @@ namespace CasusZuydFitV0._1.Program
                         break;
                 }
             }
-
 
             void DisplayAllUsers()
             {
