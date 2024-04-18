@@ -49,7 +49,7 @@ namespace CasusZuydFitV0._1
             Console.WriteLine("-----------------------");
             Console.WriteLine("All Workouts:\n");
             Console.WriteLine("-----------------------");
-            int workoutNumber = 1;
+            int workoutNumber = 0;
             foreach (Workout workout in GetWorkouts())
             {
                 workoutNumber++;
