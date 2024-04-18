@@ -62,11 +62,6 @@ namespace CasusZuydFitV0._1
             ActivityDescription = activityDescription;
             
         }
-        public static List<Activity> GetActivities()
-        {
-            ActivityDAL activityDal = new ActivityDAL();
-            activityDal.GetActivities();
-            return activityDal.activities;
-        }
+      
     }
 }

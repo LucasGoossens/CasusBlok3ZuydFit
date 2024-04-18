@@ -12,17 +12,8 @@ namespace CasusZuydFitV0._1
         public Athlete WorkoutParticipant { get; set; }
         public List<Exercise> WorkoutExercises = new List<Exercise>();
 
-        public Workout(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, List<Equipment> equipments, Athlete exerciseParticipant)
-              : base(activityId, activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription, equipments)
-        {
-            WorkoutParticipant = exerciseParticipant;
-        }
+    
 
-        public Workout(string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, List<Equipment> equipments, Athlete exerciseParticipant)
-           : base(activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription, equipments)
-        {
-            WorkoutParticipant = exerciseParticipant;
-        }
 
         public Workout(string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, Athlete exerciseParticipant)
          : base(activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription)
