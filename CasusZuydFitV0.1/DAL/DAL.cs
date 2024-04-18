@@ -7,7 +7,7 @@ namespace CasusZuydFitV0._1.DAL
     public class DAL
     {
         //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
+        private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
         public class UserDAL
         {
             public List<User> users = new List<User>();
@@ -904,7 +904,7 @@ namespace CasusZuydFitV0._1.DAL
                                     Trainer activityTrainer = getTrainerDal.trainers.Find(trainer => trainer.UserId == activityTrainerId);
 
 
-
+                                    // hier klopt t niet
 
                                     string athleteQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
                                     using (SqlCommand athleteCommand = new SqlCommand(athleteQuery, connection))
@@ -915,7 +915,7 @@ namespace CasusZuydFitV0._1.DAL
                                         if (athlete != null)
                                         {
                                             Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
-                                            workouts.Add(workoutToAdd);
+                                            workouts.Add(workoutToAdd); 
 
                                             foreach (Exercise exercise in getExerciseDal.Exercises)
                                             {
@@ -1096,13 +1096,12 @@ namespace CasusZuydFitV0._1.DAL
                         connection.Open();
                         string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId, FeedbackInfo) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo);";
 
-                        string emptyString = "";
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
                         Console.WriteLine(feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
                         dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
-                        dbCommand.Parameters.AddWithValue("@FeedbackInfo", emptyString);
+                        dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo); // hier een soort string van maken die te printen is
 
                         dbCommand.ExecuteNonQuery();
                     }

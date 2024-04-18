@@ -25,6 +25,13 @@ namespace CasusZuydFitV0._1.RemainingClasses
             FeedbackActivityId = activityId;
             FeedbackInfo = feedbackInfo;
         }
+        public LogFeedback(int trainerId, int athleteId, int activityId, string feedbackInfo)
+        {            
+            FeedbackTrainerId = trainerId;
+            FeedbackAthleteId = athleteId;
+            FeedbackActivityId = activityId;
+            FeedbackInfo = feedbackInfo;
+        }
         public LogFeedback(int trainerId, int athleteId, int activityId)
         {
             FeedbackTrainerId = trainerId;
