@@ -41,6 +41,19 @@ namespace CasusZuydFitV0._1
             ExerciseDescription = exerciseDescription;
             WorkoutId = workoutId;
         }
+
+        public static Exercise CreateNewExercise(int workoutId)
+        {
+            Console.Clear();
+            Console.WriteLine("Enter Exercise Name:");
+            string exerciseName = Console.ReadLine();
+            Console.WriteLine("Enter Exercise Description:");
+            string exerciseDescription = Console.ReadLine();
+
+            return new Exercise(exerciseName, "exerciseresult", exerciseDescription, workoutId);
+        }
+
+
         static public List<Exercise> GetExercises()
         {
             ExerciseDAL dal = new ExerciseDAL();
