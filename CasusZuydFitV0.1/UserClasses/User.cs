@@ -60,9 +60,6 @@ namespace CasusZuydFitV0._1.UserClasses
             Dal.DeleteUser(this);
         }
 
-        public User()
-        {
 
-        }
     }
 }
