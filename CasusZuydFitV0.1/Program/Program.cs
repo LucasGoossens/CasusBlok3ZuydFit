@@ -741,53 +741,6 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
-            void CreateAccount()
-            {
-                try
-                {
-                    Console.Write("Enter new username: ");
-                    string username = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(username))
-                    {
-                        throw new ArgumentException("Username cannot be empty.");
-                    }
-
-                    Console.Write("Enter new email address: ");
-                    string email = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(email))
-                    {
-                        throw new ArgumentException("Email address cannot be empty.");
-                    }
-
-                    string password = "1";
-                    string confirmedPassword = "2";
-
-                    while (password != confirmedPassword)
-                    {
-                        Console.Write("Enter new password: ");
-                        password = Console.ReadLine();
-                        Console.Write("Confirm password: ");
-                        confirmedPassword = Console.ReadLine();
-                        if (password != confirmedPassword)
-                        {
-                            Console.WriteLine("Invalid password confirmation. Please try again");
-                        }
-                    }
-
-                    Athlete newAthlete = new Athlete(username, email, password);
-                    newAthlete.CreateNewUser();
-
-                    Console.WriteLine("Account successfully created!");
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine("Error: " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("An error occurred while creating the account: " + ex.Message);
-                }
-            }
 
             void DisplayAllActivities(User user)
             {
@@ -906,6 +859,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
+            // not implemented in flow besause of time there is no Create equipment method yet. 
             void DeleteEquipment()
             {
                 try
