@@ -375,7 +375,7 @@ namespace CasusZuydFitV0._1
                 int selectedWorkoutId = Convert.ToInt32(Console.ReadLine());
                 Workout workoutToAddFeedback = allWorkoutsFromFoundAthlete.Find(workout => workout.ActivityId == selectedWorkoutId);
 
-                TrainerGivesFeedback(foundAthlete, workoutToAddFeedback);
+                TrainerGivesFeedback(foundAthlete, workoutToAddFeedback, selectedWorkoutId);
                 // of verder menu maken
 
             }
@@ -435,7 +435,7 @@ namespace CasusZuydFitV0._1
             }
 
 
-            void TrainerGivesFeedback(User user, Workout activityToAddFeedback)
+            void TrainerGivesFeedback(User user, Workout activityToAddFeedback, int idReceiver)
             {
                 LogFeedback logFeedback = null;
                 try
@@ -472,18 +472,16 @@ namespace CasusZuydFitV0._1
                             User? userToGiveFeedbackOn = User.GetUsers().FirstOrDefault(user => user.UserId == pickedUserId);
                             logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToGiveFeedback.ActivityId && feedback.FeedbackAthleteId == pickedUserId);
                         }
-                        else // hier loop ik vast, snap niet wat de bedoeling is
+                        else
                         {
                             Workout WorkoutToGiveFeedbackOn = activityToGiveFeedbackOn as Workout;
-                            // Wat als er nog geen logbooks bestaan?
-                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == WorkoutToGiveFeedbackOn.ActivityId && feedback.FeedbackAthleteId == WorkoutToGiveFeedbackOn.WorkoutParticipant.UserId);
+                            logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == WorkoutToGiveFeedbackOn.ActivityId && feedback.FeedbackAthleteId == idReceiver);
                         }
                         Console.Clear();
-                        Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}" + (logFeedback != null ? $"Current Feedback: {logFeedback.FeedbackInfo}" : "."));
+                        Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}" + (logFeedback != null ? $" Current Feedback: {logFeedback.FeedbackInfo}" : "."));
 
                         Console.WriteLine("Enter the feedback you want to give: ");
                         string NewFeedback = Console.ReadLine();
-                        // Wat als er nog geen logbooks bestaan?
                         logFeedback.UpdateFeedback(NewFeedback);
 
                     }
