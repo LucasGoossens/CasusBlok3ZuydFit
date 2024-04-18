@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -48,6 +49,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
             Console.WriteLine($"Event Duration: {ActivityDurationMinutes}");
             Console.WriteLine($"Event Starting Time: {ActivityStartingTime}");
             Console.WriteLine($"Event Description: {ActivityDescription}");
+            Console.WriteLine($"Event places taken: {EventParticipants.Count}/{EventPatricipantLimit}");
             Console.WriteLine();
         }
 
@@ -93,6 +95,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
                     {
                         if (eventItem.EventParticipants.Exists(a => a.UserId == user.UserId))
                         {
+                            LogFeedback.CheckFeedback(user, eventItem);
                             eventItem.ShowEvent();
                         }
                     }

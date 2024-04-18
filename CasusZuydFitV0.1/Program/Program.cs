@@ -824,7 +824,6 @@ namespace CasusZuydFitV0._1.Program
                                     TrainerGivesFeedbackOnEvent(loggedInUser, eventToAddFeedback);
                                 }
                             }
-                            Console.Clear();
                             break;
                         case "2":
                             Workout.DisplayAllWorkouts(loggedInUser.UserId);
