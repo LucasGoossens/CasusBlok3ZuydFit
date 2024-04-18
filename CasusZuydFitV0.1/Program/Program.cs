@@ -61,7 +61,7 @@ namespace CasusZuydFitV0._1.Program
                         ManageProfile(loggedInUser);
                         break;
                     case "2":
-                        DisplayAllActivities();
+                        DisplayAllActivities(loggedInUser);
                         break;
                     case "3":
                         //DisplayAllUsers();
@@ -815,37 +815,58 @@ namespace CasusZuydFitV0._1.Program
             }
 
 
-
-            void DisplayAllActivities()
+            void DisplayAllActivities(User user)
             {
-                try
+                Console.WriteLine("What Activities do you want to see?");
+                Console.WriteLine("1: Events (Group activity)");
+                Console.WriteLine("2: Workouts (Solo activity)");
+                if (user is Trainer)
                 {
-                    Console.WriteLine("Welke activiteiten wilt u zien?");
-                    Console.WriteLine("1: Evenementen (Groepsactiviteit)");
-                    Console.WriteLine("2: Workouts (Individuele activiteit)");
-                    Console.Write("Voer uw keuze in (1 of 2): ");
+                    Console.WriteLine("3: Create new Event");
+                }
+                if (user is Athlete)
+                {
+                    Console.WriteLine("3: Register for Event");
+                    Console.WriteLine("4: Unregister for Event");
+                }
+                Console.Write("Please enter your choice: ");
 
                     string choice = Console.ReadLine();
 
-                    switch (choice)
-                    {
-                        case "1":
-                            Event.DisplayAllEvents(loggedInUser);
-                            break;
-                        case "2":
-                            Workout.DisplayAllWorkouts(loggedInUser.UserId);
-                            break;
-                        default:
-                            Console.WriteLine("Ongeldige keuze, voer alstublieft 1 of 2 in.");
-                            break;
-                    }
-                }
-                catch (Exception ex)
+                switch (choice)
                 {
-                    Console.WriteLine("Er is een fout opgetreden bij het weergeven van activiteiten: " + ex.Message);
+                    case "1":
+                        Event.DisplayAllEvents(loggedInUser);
+                        break;
+                    case "2":
+                        Workout.DisplayAllWorkouts(loggedInUser.UserId);
+                        break;
+                    case "3":
+                        if (user is Trainer)
+                        {
+                            CreateEvent(user);
+                        }
+                        else
+                        {
+                            ShowEvents();
+                            RegisterForEvent(user);
+                        }
+                        break;
+                    case "4":
+                        if (user is Athlete)
+                        {
+                            RemoveRegistration(user);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid choice.");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice.");
+                        break;
                 }
             }
-
             void ShowEvents()
             {
                 foreach (Event events in Event.GetEvents())

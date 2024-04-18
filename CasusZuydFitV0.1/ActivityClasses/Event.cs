@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using CasusZuydFitV0._1.RemainingClasses;
@@ -92,7 +93,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
                     {
                         if (eventItem.EventParticipants.Exists(a => a.UserId == user.UserId))
                         {
-                            Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
+                            eventItem.ShowEvent();
                         }
                     }
                     break;
@@ -101,7 +102,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
                     Console.WriteLine("These are all the events:");
                     foreach (var eventItem in GetEvents())
                     {
-                        Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
+                        eventItem.ShowEvent();
                     }
                     break;
                 default:
