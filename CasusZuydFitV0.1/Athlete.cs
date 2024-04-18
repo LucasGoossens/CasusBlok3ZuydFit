@@ -27,11 +27,6 @@ namespace CasusZuydFitV0._1
         }
         
         
-        public void EventRegisterAthlete(Event eventToRegisterAthlete)
-        {
-            eventToRegisterAthlete.EventParticipants.Add(this);
-            ActivityList.Add(eventToRegisterAthlete);
-        }
 
 
 
