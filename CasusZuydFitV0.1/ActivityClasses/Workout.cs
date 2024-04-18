@@ -34,14 +34,14 @@ namespace CasusZuydFitV0._1
 
         public static List<Workout> GetWorkouts()
         {
-            DAL.WorkoutDAL workoutdal = new DAL.WorkoutDAL();
+            DAL.DAL.WorkoutDAL workoutdal = new DAL.DAL.WorkoutDAL();
             workoutdal.GetWorkouts();
             return workoutdal.workouts;
         }
 
         public void CreateNewWorkout()
         {
-            DAL.WorkoutDAL workoutdal = new DAL.WorkoutDAL();
+            DAL.DAL.WorkoutDAL workoutdal = new DAL.DAL.WorkoutDAL();
             this.ActivityId = workoutdal.CreateNewWorkout(this);
         }
 
