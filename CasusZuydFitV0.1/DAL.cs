@@ -328,7 +328,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de gebruikers uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
 
@@ -422,7 +422,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de informatie uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
 
@@ -444,7 +444,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de informatie uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
         }
