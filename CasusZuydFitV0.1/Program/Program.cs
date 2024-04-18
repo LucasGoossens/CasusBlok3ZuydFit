@@ -181,46 +181,59 @@ namespace CasusZuydFitV0._1.Program
             void CreateNewUser()
             {
                 Console.Clear();
-                Console.WriteLine("Enter user name:");
+                Console.WriteLine("Voer gebruikersnaam in:");
                 string UserName = Console.ReadLine();
-                Console.WriteLine("Enter user email:");
+                Console.WriteLine("Voer gebruikerse-mail in:");
                 string UserEmail = Console.ReadLine();
                 string password = "1";
                 string confirmedPassword = "2";
 
                 while (password != confirmedPassword)
                 {
-                    Console.Write("Enter new password: ");
+                    Console.Write("Voer nieuw wachtwoord in: ");
                     password = Console.ReadLine();
-                    Console.Write("confirm password: ");
+                    Console.Write("Bevestig wachtwoord: ");
                     confirmedPassword = Console.ReadLine();
                     if (password != confirmedPassword)
                     {
-                        Console.WriteLine("Invalid password confirmation. Try again");
+                        Console.WriteLine("Ongeldige wachtwoordbevestiging. Probeer opnieuw");
                     }
                 }
 
                 int UserType = 0;
 
-                // uiteindelijk zijn er andere schermen voor verschillende gebruikers aanmaken,
+                // Uiteindelijk zijn er andere schermen voor verschillende gebruikers aanmaken,
                 // dit is om te testen
                 do
                 {
-                    Console.WriteLine("Enter user type:");
-                    Console.WriteLine("1. Athlete");
+                    Console.WriteLine("Voer het gebruikerstype in:");
+                    Console.WriteLine("1. Atleet");
                     Console.WriteLine("2. Trainer");
                     UserType = Convert.ToInt32(Console.ReadLine());
                     Console.Clear();
 
                     if (UserType == 2)
                     {
-                        // Hardcoded validation password for creating a trainer
+                        // Hardcoded validatie wachtwoord voor het maken van een trainer
                         string ValidationPassword = "123";
                         string InputValidationPassword = "1";
-                        while (ValidationPassword != InputValidationPassword)
+
+                        try
                         {
-                            Console.WriteLine("Enter the validation password: ");
-                            InputValidationPassword = Console.ReadLine();
+                            while (ValidationPassword != InputValidationPassword)
+                            {
+                                Console.WriteLine("Voer het validatiewachtwoord in: ");
+                                InputValidationPassword = Console.ReadLine();
+
+                                if (ValidationPassword != InputValidationPassword)
+                                {
+                                    Console.WriteLine("Ongeldig validatiewachtwoord. Probeer opnieuw.");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("Er is een fout opgetreden bij het verifiëren van het validatiewachtwoord: " + ex.Message);
                         }
                     }
 
@@ -240,8 +253,9 @@ namespace CasusZuydFitV0._1.Program
                         break;
                 }
 
-                Console.WriteLine("New user " + UserName + " succesfully created.");
+                Console.WriteLine("Nieuwe gebruiker " + UserName + " succesvol aangemaakt.");
             }
+
 
 
             void DisplayAllExercises()
@@ -263,189 +277,281 @@ namespace CasusZuydFitV0._1.Program
             {
                 Console.Clear();
 
-                Console.WriteLine("      New workout");
+                Console.WriteLine("      Nieuwe training");
                 Console.WriteLine("-----------------------");
-                Console.WriteLine("New Workout Name:");
-                string newWorkoutName = Console.ReadLine();
-                Console.WriteLine("Workout duration in minutes:");
-                int newWorkoutDuration = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Workout starting time:");
-                string newWorkoutStartingTime = Console.ReadLine();
-                Console.WriteLine("Workout description:");
-                string newWorkoutDescription = Console.ReadLine();
 
-                Trainer newWorkOutTrainer = (Trainer)loggedInUser;
-
-                Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
-                newWorkout.CreateNewWorkout();
-                int workoutIdToAddToExercise = newWorkout.ActivityId;
-
-                LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
-                newLogFeedback.CreateLog();
-
-                int addExerciseOption = 1;
-                while (addExerciseOption == 1)
+                try
                 {
-                    Console.WriteLine("-----------------------");
-                    Console.WriteLine("1. Add new Exercise to Workout");
-                    Console.WriteLine("2. Save Workout");
+                    Console.WriteLine("Nieuwe training naam:");
+                    string newWorkoutName = Console.ReadLine();
 
-                    addExerciseOption = Convert.ToInt32(Console.ReadLine());
-
-                    switch (addExerciseOption)
+                    if (string.IsNullOrWhiteSpace(newWorkoutName))
                     {
-                        case 1:
-                            Console.WriteLine("-----------------------");
-                            Exercise testExercise = Exercise.CreateNewExercise(workoutIdToAddToExercise); // dit is een Program.method
-                            testExercise.CreateExercise();              // dit is een object.method
-                            break;
-                        case 2:
-                            addExerciseOption = 2;
-                            break;
+                        throw new ArgumentException("De trainingsnaam mag niet leeg zijn.");
+                    }
+
+                    Console.WriteLine("Duur van de training in minuten:");
+                    int newWorkoutDuration = Convert.ToInt32(Console.ReadLine());
+
+                    if (newWorkoutDuration <= 0)
+                    {
+                        throw new ArgumentException("De duur van de training moet een positief getal zijn.");
+                    }
+
+                    Console.WriteLine("Starttijd van de training:");
+                    string newWorkoutStartingTime = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(newWorkoutStartingTime))
+                    {
+                        throw new ArgumentException("De starttijd van de training mag niet leeg zijn.");
+                    }
+
+                    Console.WriteLine("Beschrijving van de training:");
+                    string newWorkoutDescription = Console.ReadLine();
+
+                    Trainer newWorkOutTrainer = (Trainer)loggedInUser;
+
+                    Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
+                    newWorkout.CreateNewWorkout();
+                    int workoutIdToAddToExercise = newWorkout.ActivityId;
+
+                    LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
+                    newLogFeedback.CreateLog();
+
+                    int addExerciseOption = 1;
+                    while (addExerciseOption == 1)
+                    {
+                        Console.WriteLine("-----------------------");
+                        Console.WriteLine("1. Nieuwe Oefening toevoegen aan Training");
+                        Console.WriteLine("2. Training opslaan");
+
+                        addExerciseOption = Convert.ToInt32(Console.ReadLine());
+
+                        switch (addExerciseOption)
+                        {
+                            case 1:
+                                Console.WriteLine("-----------------------");
+                                Exercise testExercise = Exercise.CreateNewExercise(workoutIdToAddToExercise); // dit is een Program.method
+                                testExercise.CreateExercise();              // dit is een object.method
+                                break;
+                            case 2:
+                                addExerciseOption = 2;
+                                break;
+                        }
                     }
                 }
-
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine("Fout: " + ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Fout: Ongeldige invoer voor duur van de training.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Er is een fout opgetreden bij het verwerken van de training: " + ex.Message);
+                }
             }
+
 
 
             void DisplayAllWorkouts()
             {
-
-
-                Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUser.UserId);
-
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("All Workouts:\n");
-                Console.WriteLine("-----------------------");
-                int workoutNumber = 1;
-                foreach (Workout workout in Workout.GetWorkouts())
+                try
                 {
-                    workoutNumber++;
-                    if (currentAthlete.ActivityList.Contains(workout))
+                    Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUser.UserId);
+
+                    Console.WriteLine("-----------------------");
+                    Console.WriteLine("Alle Trainingen:\n");
+                    Console.WriteLine("-----------------------");
+                    int workoutNumber = 0;
+                    foreach (Workout workout in Workout.GetWorkouts())
                     {
-                        Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
-                        Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
-                        Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
-                        Console.WriteLine($"   Description: {workout.ActivityDescription}");
-                        Console.WriteLine("---------------------------------------------------------");
+                        workoutNumber++;
+                        if (currentAthlete.ActivityList.Contains(workout))
+                        {
+                            Console.WriteLine($"{workoutNumber}. Naam training: {workout.ActivityName}");
+                            Console.WriteLine($"   Duur (minuten): {workout.ActivityDurationMinutes}");
+                            Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
+                            Console.WriteLine($"   Beschrijving: {workout.ActivityDescription}");
+                            Console.WriteLine("---------------------------------------------------------");
+                        }
+                    }
+
+                    Console.WriteLine("\nVoer het nummer van de training in om de details en oefeningen te bekijken:");
+                    if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > Workout.GetWorkouts().Count)
+                    {
+                        Console.WriteLine("Ongeldige selectie. Start opnieuw en voer een geldig trainingsnummer in.");
+                        return;
+                    }
+
+                    selectedNumber--;
+                    Workout selectedWorkout = Workout.GetWorkouts()[selectedNumber];
+
+                    Console.WriteLine($"\nGeselecteerde training: {selectedWorkout.ActivityName}");
+                    Console.WriteLine($"Duur (minuten): {selectedWorkout.ActivityDurationMinutes}");
+                    Console.WriteLine($"Starttijd: {selectedWorkout.ActivityStartingTime}");
+                    Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
+                    Console.WriteLine($"Beschrijving: {selectedWorkout.ActivityDescription}");
+
+                    Console.WriteLine("\nOefeningen:");
+                    if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
+                    {
+                        foreach (Exercise exercise in selectedWorkout.WorkoutExercises)
+                        {
+                            Console.WriteLine($"- Oefening Naam: {exercise.ExerciseName}");
+                            Console.WriteLine($"  Beschrijving: {exercise.ExerciseDescription}");
+                            Console.WriteLine($"  Resultaat: {exercise.ExerciseResult}");
+                        }
+                        LogFeedback.CheckFeedback(currentAthlete, selectedWorkout);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Deze training heeft geen oefeningen vermeld.");
                     }
                 }
-
-                Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
-                if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > Workout.GetWorkouts().Count)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Invalid selection. Please restart and enter a valid workout number.");
-                    return;
+                    Console.WriteLine("Er is een fout opgetreden bij het weergeven van de trainingen: " + ex.Message);
                 }
-
-                selectedNumber--;
-                Workout selectedWorkout = Workout.GetWorkouts()[selectedNumber];
-
-                Console.WriteLine($"\nSelected Workout: {selectedWorkout.ActivityName}");
-                Console.WriteLine($"Duration (minutes): {selectedWorkout.ActivityDurationMinutes}");
-                Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
-                Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
-                Console.WriteLine($"Description: {selectedWorkout.ActivityDescription}");
-
-                Console.WriteLine("\nExercises:");
-                if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
-                {
-                    foreach (Exercise exercise in selectedWorkout.WorkoutExercises)
-                    {
-                        Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
-                        Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
-                        Console.WriteLine($"  Result: {exercise.ExerciseResult}");
-                    }
-                    LogFeedback.CheckFeedback(currentAthlete, selectedWorkout);
-                }
-                else
-                {
-                    Console.WriteLine("This workout has no exercises listed.");
-                }
-
-
             }
+
 
             void DisplayFoundAthleteWorkouts(Athlete foundAthlete)
             {
-                List<Workout> allWorkoutsFromFoundAthlete = foundAthlete.GetAllWorkouts();
-
-                if (allWorkoutsFromFoundAthlete.Count < 1)
+                try
                 {
-                    Console.WriteLine("No Workouts registered.");
-                    return;
-                }
+                    List<Workout> allWorkoutsFromFoundAthlete = foundAthlete.GetAllWorkouts();
 
-                Console.WriteLine("Workouts of " + foundAthlete.UserName + ":");
-                foreach (Workout workout in allWorkoutsFromFoundAthlete)
-                {
+                    if (allWorkoutsFromFoundAthlete.Count < 1)
+                    {
+                        Console.WriteLine("Geen trainingen geregistreerd.");
+                        return;
+                    }
+
+                    Console.WriteLine("Trainingen van " + foundAthlete.UserName + ":");
+                    foreach (Workout workout in allWorkoutsFromFoundAthlete)
+                    {
+                        Console.WriteLine("-----------------------");
+                        Console.WriteLine($"Training ID: {workout.ActivityId} Training naam: {workout.ActivityName}");
+                    }
                     Console.WriteLine("-----------------------");
-                    Console.WriteLine($"Workout ID: {workout.ActivityId} Workout name: {workout.ActivityName}");
+                    Console.WriteLine("Selecteer Training ID");
+
+                    int selectedWorkoutId;
+                    if (!int.TryParse(Console.ReadLine(), out selectedWorkoutId))
+                    {
+                        Console.WriteLine("Ongeldige invoer voor training ID. Voer alstublieft een geldig nummer in.");
+                        return;
+                    }
+
+                    Workout workoutToAddFeedback = allWorkoutsFromFoundAthlete.Find(workout => workout.ActivityId == selectedWorkoutId);
+                    if (workoutToAddFeedback == null)
+                    {
+                        Console.WriteLine("Geen training gevonden met het opgegeven ID.");
+                        return;
+                    }
+
+                    TrainerGivesFeedback(foundAthlete, workoutToAddFeedback, selectedWorkoutId);
+                    // Of ga verder met het maken van het menu
                 }
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("Select Workout ID");
-                // error handling nog
-                int selectedWorkoutId = Convert.ToInt32(Console.ReadLine());
-                Workout workoutToAddFeedback = allWorkoutsFromFoundAthlete.Find(workout => workout.ActivityId == selectedWorkoutId);
-
-                TrainerGivesFeedback(foundAthlete, workoutToAddFeedback, selectedWorkoutId);
-                // of verder menu maken
-
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Er is een fout opgetreden bij het weergeven van de trainingen: " + ex.Message);
+                }
             }
+
 
             void ManageProfile(User user)
             {
-
-
-                Console.Clear();
-                Console.WriteLine($"Profile:");
-                Console.WriteLine("-----------------------");
-                Console.WriteLine($"Name: {user.UserName}");
-                Console.WriteLine($"Email: {user.UserEmail}");
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("1. Edit profile");
-                Console.WriteLine("2. Delete profiel");
-                Console.WriteLine("3. Main menu");
-                int profileChoice = Convert.ToInt32(Console.ReadLine());
-                Console.Clear();
-                switch (profileChoice)
+                try
                 {
-                    case 1:
-                        Console.WriteLine("Enter a new username:");
-                        string newUserName = Console.ReadLine();
-                        Console.Clear();
-                        while (User.GetUsers().Any(existingUser => existingUser.UserName == newUserName && newUserName != user.UserName))
-                        {
-                            Console.WriteLine("This username is already taken, please enter a new one.");
-                            newUserName = Console.ReadLine() ?? string.Empty;
+                    Console.Clear();
+                    Console.WriteLine($"Profiel:");
+                    Console.WriteLine("-----------------------");
+                    Console.WriteLine($"Naam: {user.UserName}");
+                    Console.WriteLine($"E-mail: {user.UserEmail}");
+                    Console.WriteLine("-----------------------");
+                    Console.WriteLine("1. Profiel bewerken");
+                    Console.WriteLine("2. Profiel verwijderen");
+                    Console.WriteLine("3. Hoofdmenu");
+                    int profileChoice;
+                    if (!int.TryParse(Console.ReadLine(), out profileChoice) || profileChoice < 1 || profileChoice > 3)
+                    {
+                        Console.WriteLine("Ongeldige keuze. Start opnieuw en voer een geldige optie in.");
+                        return;
+                    }
+                    Console.Clear();
+                    switch (profileChoice)
+                    {
+                        case 1:
+                            Console.WriteLine("Voer een nieuwe gebruikersnaam in:");
+                            string newUserName = Console.ReadLine();
+                            if (string.IsNullOrWhiteSpace(newUserName))
+                            {
+                                throw new ArgumentException("Gebruikersnaam mag niet leeg zijn.");
+                            }
+
                             Console.Clear();
-                        }
-                        Console.WriteLine("enter a new email:");
-                        string newUserEmail = Console.ReadLine();
-                        Console.WriteLine("enter a new password:");
-                        string newUserPassword = Console.ReadLine();
-                        Console.Clear();
-                        user.UpdateUser(newUserName, newUserEmail, newUserPassword);
-                        Console.WriteLine("Profile updated.");
-                        Console.ReadLine();
-                        Environment.Exit(0);
-                        break;
-                    case 2:
-                        Console.WriteLine("Are you sure you wanna delete your profile?");
-                        Console.WriteLine("1. Yes");
-                        Console.WriteLine("2. No");
-                        int deleteProfileChoice = Convert.ToInt32(Console.ReadLine());
-                        Console.Clear();
-                        if (deleteProfileChoice == 1)
-                        {
-                            user.DeleteUser();
-                            Console.WriteLine("Profile deleted.");
+                            while (User.GetUsers().Any(existingUser => existingUser.UserName == newUserName && newUserName != user.UserName))
+                            {
+                                Console.WriteLine("Deze gebruikersnaam is al in gebruik, voer een nieuwe in.");
+                                newUserName = Console.ReadLine() ?? string.Empty;
+                                Console.Clear();
+                            }
+
+                            Console.WriteLine("Voer een nieuwe e-mailadres in:");
+                            string newUserEmail = Console.ReadLine();
+                            if (string.IsNullOrWhiteSpace(newUserEmail))
+                            {
+                                throw new ArgumentException("E-mailadres mag niet leeg zijn.");
+                            }
+
+                            Console.WriteLine("Voer een nieuw wachtwoord in:");
+                            string newUserPassword = Console.ReadLine();
+                            if (string.IsNullOrWhiteSpace(newUserPassword))
+                            {
+                                throw new ArgumentException("Wachtwoord mag niet leeg zijn.");
+                            }
+
+                            Console.Clear();
+                            user.UpdateUser(newUserName, newUserEmail, newUserPassword);
+                            Console.WriteLine("Profiel bijgewerkt.");
                             Console.ReadLine();
                             Environment.Exit(0);
-                        }
-                        break;
+                            break;
+                        case 2:
+                            Console.WriteLine("Weet je zeker dat je je profiel wilt verwijderen?");
+                            Console.WriteLine("1. Ja");
+                            Console.WriteLine("2. Nee");
+                            int deleteProfileChoice;
+                            if (!int.TryParse(Console.ReadLine(), out deleteProfileChoice) || (deleteProfileChoice != 1 && deleteProfileChoice != 2))
+                            {
+                                Console.WriteLine("Ongeldige keuze. Start opnieuw en voer een geldige optie in.");
+                                return;
+                            }
+                            Console.Clear();
+                            if (deleteProfileChoice == 1)
+                            {
+                                user.DeleteUser();
+                                Console.WriteLine("Profiel verwijderd.");
+                                Console.ReadLine();
+                                Environment.Exit(0);
+                            }
+                            break;
+                    }
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine("Fout: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Er is een fout opgetreden bij het beheren van het profiel: " + ex.Message);
                 }
             }
+
 
 
             void TrainerGivesFeedback(User user, Workout activityToAddFeedback, int idReceiver)
