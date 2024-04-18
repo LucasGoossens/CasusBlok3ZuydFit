@@ -229,17 +229,6 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("New user " + UserName + " succesfully created.");
             }
 
-            Exercise CreateNewExercise(int workoutId) // dit moet waarschijnlijk in Exercise.cs
-            {
-                Console.Clear();
-                Console.WriteLine("Enter Exercise Name:");
-                string ExerciseName = Console.ReadLine();
-                Console.WriteLine("Enter Exercise description:");
-                string ExerciseDescription = Console.ReadLine();
-
-                Exercise testExercise = new Exercise(ExerciseName, "exerciseresult", ExerciseDescription, workoutId);
-                return testExercise;
-            }
 
             void DisplayAllExercises()
             {
@@ -293,7 +282,7 @@ namespace CasusZuydFitV0._1
                     {
                         case 1:
                             Console.WriteLine("-----------------------");
-                            Exercise testExercise = CreateNewExercise(workoutIdToAddToExercise); // dit is een Program.method
+                            Exercise testExercise = Exercise.CreateNewExercise(workoutIdToAddToExercise); // dit is een Program.method
                             testExercise.CreateExercise();              // dit is een object.method
                             break;
                         case 2:
