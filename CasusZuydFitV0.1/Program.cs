@@ -354,64 +354,6 @@ namespace CasusZuydFitV0._1
                 }
             }
 
-            // void DisplayAllWorkouts()
-            // {
-
-
-            //     Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUser.UserId);
-
-            //     Console.WriteLine("-----------------------");
-            //     Console.WriteLine("All Workouts:\n");
-            //     Console.WriteLine("-----------------------");
-            //     int workoutNumber = 1;
-            //     foreach (Workout workout in Workout.GetWorkouts())
-            //     {
-            //         workoutNumber++;
-            //         if (currentAthlete.ActivityList.Contains(workout))
-            //         {
-            //             Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
-            //             Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
-            //             Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
-            //             Console.WriteLine($"   Description: {workout.ActivityDescription}");
-            //             Console.WriteLine("---------------------------------------------------------");
-            //         }
-            //     }
-
-            //     Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
-            //     if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > Workout.GetWorkouts().Count)
-            //     {
-            //         Console.WriteLine("Invalid selection. Please restart and enter a valid workout number.");
-            //         return;
-            //     }
-
-            //     selectedNumber--;
-            //     Workout selectedWorkout = Workout.GetWorkouts()[selectedNumber];
-
-            //     Console.WriteLine($"\nSelected Workout: {selectedWorkout.ActivityName}");
-            //     Console.WriteLine($"Duration (minutes): {selectedWorkout.ActivityDurationMinutes}");
-            //     Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
-            //     Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
-            //     Console.WriteLine($"Description: {selectedWorkout.ActivityDescription}");
-
-            //     Console.WriteLine("\nExercises:");
-            //     if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
-            //     {
-            //         foreach (Exercise exercise in selectedWorkout.WorkoutExercises)
-            //         {
-            //             Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
-            //             Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
-            //             Console.WriteLine($"  Result: {exercise.ExerciseResult}");
-            //         }
-            //         CheckFeedback(currentAthlete, selectedWorkout);
-            //     }
-            //     else
-            //     {
-            //         Console.WriteLine("This workout has no exercises listed.");
-            //     }
-
-
-            // }
-
             void DisplayFoundAthleteWorkouts(Athlete foundAthlete)
             {
                 List<Workout> allWorkoutsFromFoundAthlete = foundAthlete.GetAllWorkouts();
@@ -635,12 +577,7 @@ namespace CasusZuydFitV0._1
 
                 return equipments;
             }
-
-
-
-
-          
-
+            
             bool Login()
             {
 
