@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CasusZuydFitV0._1.ActivityClasses;
+using CasusZuydFitV0._1.UserClasses;
 using static CasusZuydFitV0._1.DAL.DAL;
 
 namespace CasusZuydFitV0._1.RemainingClasses
@@ -75,5 +77,18 @@ namespace CasusZuydFitV0._1.RemainingClasses
             LogFeedbackDAL Dal = new LogFeedbackDAL();
             Dal.DeleteLogFeedback(this);
         }
+
+         public static void CheckFeedback(User user, Activity activity)
+            {
+                LogFeedback? logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activity.ActivityId && feedback.FeedbackAthleteId == user.UserId);
+                if (logFeedback.FeedbackInfo == "")
+                { Console.WriteLine("No feedback given yet."); }
+                else if (logFeedback != null)
+                {
+                    Console.WriteLine($"Feedback for {activity.ActivityName}: {logFeedback.FeedbackInfo}");
+                }
+                else { Console.WriteLine("Something went wrong, Please contact the Servicedesk"); }
+
+            }
     }
 }
