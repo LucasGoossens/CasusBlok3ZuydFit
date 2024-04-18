@@ -437,7 +437,8 @@ namespace CasusZuydFitV0._1.Program
                         Console.WriteLine($"Workout ID: {workout.ActivityId}, Workout Name: {workout.ActivityName}");
                     }
                     Console.WriteLine("-----------------------");
-                    Console.WriteLine("Select Workout ID");
+                    Console.WriteLine("Enter the ID of the workout you want to give feedback on: ");
+                    Console.WriteLine("If you don't want to give feedback, enter 0.");
 
                     int selectedWorkoutId;
                     if (!int.TryParse(Console.ReadLine(), out selectedWorkoutId))
@@ -446,15 +447,19 @@ namespace CasusZuydFitV0._1.Program
                         return;
                     }
 
-                    Workout workoutToAddFeedback = allWorkoutsFromFoundAthlete.Find(workout => workout.ActivityId == selectedWorkoutId);
-                    if (workoutToAddFeedback == null)
+                    if (selectedWorkoutId != 0)
                     {
-                        Console.WriteLine("No workout found with the specified ID.");
-                        return;
+                        Workout workoutToAddFeedback = allWorkoutsFromFoundAthlete.Find(workout => workout.ActivityId == selectedWorkoutId);
+                        if (workoutToAddFeedback == null)
+                        {
+                            Console.WriteLine("No workout found with the specified ID.");
+                            return;
+                        }
+
+                        TrainerGivesFeedbackOnWorkout(foundAthlete, workoutToAddFeedback, foundAthlete);
                     }
 
-                    TrainerGivesFeedbackOnWorkout(foundAthlete, workoutToAddFeedback, selectedWorkoutId);
-                    // Or continue with creating the menu
+                    
                 }
                 catch (Exception ex)
                 {
@@ -551,7 +556,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
-            void TrainerGivesFeedbackOnWorkout(User user, Workout activityToAddFeedback, int idReceiver)
+            void TrainerGivesFeedbackOnWorkout(User user, Workout activityToAddFeedback, Athlete athlete)
             {
                 LogFeedback logFeedback = null;
                 try
@@ -568,7 +573,7 @@ namespace CasusZuydFitV0._1.Program
 
 
                         Workout WorkoutToGiveFeedbackOn = activityToGiveFeedbackOn as Workout;
-                        logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == WorkoutToGiveFeedbackOn.ActivityId && feedback.FeedbackAthleteId == idReceiver);
+                        logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == WorkoutToGiveFeedbackOn.ActivityId && feedback.FeedbackAthleteId == athlete.UserId);
 
                         Console.Clear();
                         Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}" + (logFeedback != null ? $" Current Feedback: {logFeedback.FeedbackInfo}" : "."));
