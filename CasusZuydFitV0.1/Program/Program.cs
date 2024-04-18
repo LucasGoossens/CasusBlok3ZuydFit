@@ -61,7 +61,7 @@ namespace CasusZuydFitV0._1.Program
                         ManageProfile(loggedInUser);
                         break;
                     case "2":
-                        DisplayAllActivities();
+                        DisplayAllActivities(loggedInUser);
                         break;
                     case "3":
                         //DisplayAllUsers();
@@ -637,12 +637,21 @@ namespace CasusZuydFitV0._1.Program
             }
 
 
-            void DisplayAllActivities()
+            void DisplayAllActivities(User user)
             {
                 Console.WriteLine("What Activities do you want to see?");
                 Console.WriteLine("1: Events (Group activity)");
                 Console.WriteLine("2: Workouts (Solo activity)");
-                Console.Write("Please enter your choice (1 or 2): ");
+                if (user is Trainer)
+                {
+                    Console.WriteLine("3: Create new Event");
+                }
+                if (user is Athlete)
+                {
+                    Console.WriteLine("3: Register for Event");
+                    Console.WriteLine("4: Unregister for Event");
+                }
+                Console.Write("Please enter your choice: ");
 
                 string choice = Console.ReadLine();
 
@@ -654,8 +663,29 @@ namespace CasusZuydFitV0._1.Program
                     case "2":
                         Workout.DisplayAllWorkouts(loggedInUser.UserId);
                         break;
+                    case "3":
+                        if (user is Trainer)
+                        {
+                            CreateEvent(user);
+                        }
+                        else
+                        {
+                            ShowEvents();
+                            RegisterForEvent(user);
+                        }
+                        break;
+                    case "4":
+                        if (user is Athlete)
+                        {
+                            RemoveRegistration(user);
+                        }
+                        else
+                        {
+                            Console.WriteLine("Invalid choice.");
+                        }
+                        break;
                     default:
-                        Console.WriteLine("Invalid choice, please enter 1 or 2.");
+                        Console.WriteLine("Invalid choice.");
                         break;
                 }
             }
