@@ -58,14 +58,14 @@ namespace CasusZuydFitV0._1
             int workoutNumber = 0;
 
             foreach (Workout workout in allAthleteWorkouts.GetAllWorkoutsByAthleteId(loggedInUserid))
-            {                
-                    workoutNumber++;
-                    Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
-                    Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
-                    Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
-                    Console.WriteLine($"   Description: {workout.ActivityDescription}");
-                    Console.WriteLine("---------------------------------------------------------");
-             
+            {
+                workoutNumber++;
+                Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
+                Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
+                Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
+                Console.WriteLine($"   Description: {workout.ActivityDescription}");
+                Console.WriteLine("---------------------------------------------------------");
+
             }
 
             Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
@@ -116,13 +116,26 @@ namespace CasusZuydFitV0._1
         void LogNewWorkout()
         {
             string feedbackResult = "";
+            string workoutDate;
+            do
+            {
+                Console.WriteLine("Enter Workout date (DD/MM/YYYY)");
+                workoutDate = Console.ReadLine();
+                if (workoutDate.Length != 10)
+                {
+                    Console.WriteLine("Enter a valid date.");
+                }
+            }
+            while (workoutDate.Length != 10);
+
+            feedbackResult += "Workout Date: " + workoutDate;
 
             foreach (Exercise exercise in this.WorkoutExercises)
             {
                 Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
                 Console.WriteLine("What was the result for this exercise?");
                 string exerciseResult = Console.ReadLine();
-                feedbackResult += $"Exercise Name: {exercise.ExerciseName}\nResult: {exerciseResult}";                                             
+                feedbackResult += $"\nExercise Name: {exercise.ExerciseName}\nResult: {exerciseResult}";
             }
 
             LogFeedback newLogFeedback = new LogFeedback(this.Trainer.UserId, this.WorkoutParticipant.UserId, this.ActivityId, feedbackResult);
