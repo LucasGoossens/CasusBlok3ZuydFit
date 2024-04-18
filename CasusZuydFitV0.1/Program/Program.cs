@@ -22,9 +22,9 @@ namespace CasusZuydFitV0._1.Program
             while (!loggedIn)
             {
                 Console.WriteLine("ZuydFit");
-                Console.WriteLine("Select Option:");
+                Console.WriteLine("Select an Option:");
                 Console.WriteLine("1. Login");
-                Console.WriteLine("2. Create Account");
+                Console.WriteLine("2. Create an Account");
                 Console.Write(">");
 
                 string option = Console.ReadLine();
@@ -51,8 +51,11 @@ namespace CasusZuydFitV0._1.Program
                 Console.WriteLine("Main Menu");
                 Console.WriteLine("1. View Profile");
                 Console.WriteLine("2. View All Activities");
-                Console.WriteLine("3. View All Athletes (Trainers only!)");
-                Console.WriteLine("Enter option (or 'exit' to close): ");
+                if (loggedInUser is Trainer)  // Check if the user is a Trainer
+                {
+                    Console.WriteLine("3. View All Athletes (Trainers only!)");
+                }
+                Console.WriteLine("Enter your option (or 'exit' to close): ");
 
                 string input = Console.ReadLine();
                 switch (input)
@@ -61,11 +64,17 @@ namespace CasusZuydFitV0._1.Program
                         ManageProfile(loggedInUser);
                         break;
                     case "2":
-                        DisplayAllActivities();
+                        DisplayAllActivities(loggedInUser);
                         break;
                     case "3":
-                        //DisplayAllUsers();
-                        DisplayAllAthletes();
+                        if (loggedInUser is Trainer)
+                        {
+                            DisplayAllAthletes();  // Only call this method if the user is a Trainer
+                        }
+                        else
+                        {
+                            Console.WriteLine("Access denied.");
+                        }
                         break;
                     case "exit":
                         running = false;
@@ -75,7 +84,6 @@ namespace CasusZuydFitV0._1.Program
                         break;
                 }
             }
-
 
             void DisplayAllUsers()
             {
@@ -99,10 +107,10 @@ namespace CasusZuydFitV0._1.Program
                 Console.Clear();
 
                 List<User> allUsers = User.GetUsers();
-                Console.WriteLine("Total Users: ");
+                Console.WriteLine("Total number of users: ");
                 Console.WriteLine(allUsers.Count());
 
-                Console.WriteLine("List of Athletes:");
+                Console.WriteLine("List of athletes:");
                 foreach (var athlete in allUsers)
                 {
                     if (athlete is Athlete)
@@ -111,54 +119,62 @@ namespace CasusZuydFitV0._1.Program
                     }
                 }
 
-                Console.WriteLine("Enter the name or ID of the athlete to search for:");
+                Console.WriteLine("Enter the name or ID of the athlete to search:");
                 string searchedAthlete = Console.ReadLine();
 
                 Athlete foundAthlete = null;
-                foreach (var athlete in allUsers)
+                try
                 {
-                    if (athlete.UserName.Equals(searchedAthlete, StringComparison.OrdinalIgnoreCase) ||
-                        athlete.UserId.ToString() == searchedAthlete)
+                    foreach (var athlete in allUsers)
                     {
-                        foundAthlete = (Athlete)athlete;
-                        break;
-                    }
-                }
-
-                if (foundAthlete != null)
-                {
-                    Console.WriteLine("Athlete found:");
-                    Console.WriteLine($"Athlete ID: {foundAthlete.UserId}, Name: {foundAthlete.UserName}, Email: {foundAthlete.UserEmail}");
-                    int optionChoice;
-                    do
-                    {
-                        Console.WriteLine("1. View all Workouts for this Athlete");
-                        Console.WriteLine("2. Create new Workout for this Athlete");
-                        optionChoice = Convert.ToInt32(Console.ReadLine());
-                        if (optionChoice != 1 && optionChoice != 2)
+                        if (athlete.UserName.Equals(searchedAthlete, StringComparison.OrdinalIgnoreCase) ||
+                            athlete.UserId.ToString() == searchedAthlete)
                         {
-                            Console.WriteLine("Invalid entry.");
+                            foundAthlete = (Athlete)athlete;
+                            break;
                         }
-                    } while (optionChoice != 1 && optionChoice != 2);
-
-                    switch (optionChoice)
-                    {
-                        case 1:
-                            DisplayFoundAthleteWorkouts(foundAthlete);
-                            break;
-                        case 2:
-                            CreateNewWorkout(foundAthlete);
-                            break;
-
                     }
 
+                    if (foundAthlete != null)
+                    {
+                        Console.WriteLine("Athlete found:");
+                        Console.WriteLine($"Athlete ID: {foundAthlete.UserId}, Name: {foundAthlete.UserName}, Email: {foundAthlete.UserEmail}");
+                        int optionChoice;
+                        do
+                        {
+                            Console.WriteLine("1. View all workouts for this athlete");
+                            Console.WriteLine("2. Create a new workout for this athlete");
+                            optionChoice = Convert.ToInt32(Console.ReadLine());
+                            if (optionChoice != 1 && optionChoice != 2)
+                            {
+                                Console.WriteLine("Invalid input.");
+                            }
+                        } while (optionChoice != 1 && optionChoice != 2);
+
+                        switch (optionChoice)
+                        {
+                            case 1:
+                                DisplayFoundAthleteWorkouts(foundAthlete);
+                                break;
+                            case 2:
+                                CreateNewWorkout(foundAthlete);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Athlete not found.");
+                    }
                 }
-                else
+                catch (ArgumentNullException)
                 {
-                    Console.WriteLine("Athlete not found.");
+                    Console.WriteLine("Error: Input cannot be empty.");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error: Invalid input. Please enter a valid number.");
                 }
             }
-
 
             User FindUser(string searchTerm)
             {
@@ -167,11 +183,10 @@ namespace CasusZuydFitV0._1.Program
                 return user;
             }
 
-
             void CreateNewUser()
             {
                 Console.Clear();
-                Console.WriteLine("Enter user name:");
+                Console.WriteLine("Enter username:");
                 string UserName = Console.ReadLine();
                 Console.WriteLine("Enter user email:");
                 string UserEmail = Console.ReadLine();
@@ -182,7 +197,7 @@ namespace CasusZuydFitV0._1.Program
                 {
                     Console.Write("Enter new password: ");
                     password = Console.ReadLine();
-                    Console.Write("confirm password: ");
+                    Console.Write("Confirm password: ");
                     confirmedPassword = Console.ReadLine();
                     if (password != confirmedPassword)
                     {
@@ -192,11 +207,11 @@ namespace CasusZuydFitV0._1.Program
 
                 int UserType = 0;
 
-                // uiteindelijk zijn er andere schermen voor verschillende gebruikers aanmaken,
-                // dit is om te testen
+                // Eventually, there will be different screens for creating different types of users,
+                // this is for testing purposes
                 do
                 {
-                    Console.WriteLine("Enter user type:");
+                    Console.WriteLine("Enter the user type:");
                     Console.WriteLine("1. Athlete");
                     Console.WriteLine("2. Trainer");
                     UserType = Convert.ToInt32(Console.ReadLine());
@@ -204,13 +219,26 @@ namespace CasusZuydFitV0._1.Program
 
                     if (UserType == 2)
                     {
-                        // Hardcoded validation password for creating a trainer
+                        // Hardcoded password validation for creating a trainer
                         string ValidationPassword = "123";
                         string InputValidationPassword = "1";
-                        while (ValidationPassword != InputValidationPassword)
+
+                        try
                         {
-                            Console.WriteLine("Enter the validation password: ");
-                            InputValidationPassword = Console.ReadLine();
+                            while (ValidationPassword != InputValidationPassword)
+                            {
+                                Console.WriteLine("Enter the validation password: ");
+                                InputValidationPassword = Console.ReadLine();
+
+                                if (ValidationPassword != InputValidationPassword)
+                                {
+                                    Console.WriteLine("Invalid validation password. Try again.");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("An error occurred while verifying the validation password: " + ex.Message);
                         }
                     }
 
@@ -230,9 +258,8 @@ namespace CasusZuydFitV0._1.Program
                         break;
                 }
 
-                Console.WriteLine("New user " + UserName + " succesfully created.");
+                Console.WriteLine("New user " + UserName + " created successfully.");
             }
-
 
             void DisplayAllExercises()
             {
@@ -253,216 +280,292 @@ namespace CasusZuydFitV0._1.Program
             {
                 Console.Clear();
 
-                Console.WriteLine("      New workout");
+                Console.WriteLine("      New Workout");
                 Console.WriteLine("-----------------------");
-                Console.WriteLine("New Workout Name:");
-                string newWorkoutName = Console.ReadLine();
-                Console.WriteLine("Workout duration in minutes:");
-                int newWorkoutDuration = Convert.ToInt32(Console.ReadLine());
-                Console.WriteLine("Workout starting time:");
-                string newWorkoutStartingTime = Console.ReadLine();
-                Console.WriteLine("Workout description:");
-                string newWorkoutDescription = Console.ReadLine();
 
-                Trainer newWorkOutTrainer = (Trainer)loggedInUser;
+                try
+                {
+                    Console.WriteLine("New workout name:");
+                    string newWorkoutName = Console.ReadLine();
 
-                Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
-                newWorkout.CreateNewWorkout();
-                int workoutIdToAddToExercise = newWorkout.ActivityId;
+                    if (string.IsNullOrWhiteSpace(newWorkoutName))
+                    {
+                        throw new ArgumentException("The workout name cannot be empty.");
+                    }
+
+                    Console.WriteLine("Duration of the workout in minutes:");
+                    int newWorkoutDuration = Convert.ToInt32(Console.ReadLine());
+
+                    if (newWorkoutDuration <= 0)
+                    {
+                        throw new ArgumentException("The duration of the workout must be a positive number.");
+                    }
+
+                    Console.WriteLine("Start time of the workout:");
+                    string newWorkoutStartingTime = Console.ReadLine();
+
+                    if (string.IsNullOrWhiteSpace(newWorkoutStartingTime))
+                    {
+                        throw new ArgumentException("The start time of the workout cannot be empty.");
+                    }
+
+                    Console.WriteLine("Description of the workout:");
+                    string newWorkoutDescription = Console.ReadLine();
+
+                    Trainer newWorkOutTrainer = (Trainer)loggedInUser;
+
+                    Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
+                    newWorkout.CreateNewWorkout();
+                    int workoutIdToAddToExercise = newWorkout.ActivityId;
 
                 //LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
                 //newLogFeedback.CreateLog();
 
-                int addExerciseOption = 1;
-                while (addExerciseOption == 1)
-                {
-                    Console.WriteLine("-----------------------");
-                    Console.WriteLine("1. Add new Exercise to Workout");
-                    Console.WriteLine("2. Save Workout");
-
-                    addExerciseOption = Convert.ToInt32(Console.ReadLine());
-
-                    switch (addExerciseOption)
+                    int addExerciseOption = 1;
+                    while (addExerciseOption == 1)
                     {
-                        case 1:
-                            Console.WriteLine("-----------------------");
-                            Exercise testExercise = Exercise.CreateNewExercise(workoutIdToAddToExercise); // dit is een Program.method
-                            testExercise.CreateExercise();              // dit is een object.method
-                            break;
-                        case 2:
-                            addExerciseOption = 2;
-                            break;
+                        Console.WriteLine("-----------------------");
+                        Console.WriteLine("1. Add a New Exercise to Workout");
+                        Console.WriteLine("2. Save Workout");
+
+                        addExerciseOption = Convert.ToInt32(Console.ReadLine());
+
+                        switch (addExerciseOption)
+                        {
+                            case 1:
+                                Console.WriteLine("-----------------------");
+                                Exercise testExercise = Exercise.CreateNewExercise(workoutIdToAddToExercise); // This is a Program.method
+                                testExercise.CreateExercise();              // This is an object.method
+                                break;
+                            case 2:
+                                addExerciseOption = 2;
+                                break;
+                        }
                     }
                 }
-
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Error: Invalid input for workout duration.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred while processing the workout: " + ex.Message);
+                }
             }
-
 
             void DisplayAllWorkouts()
             {
-
-
-                Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUser.UserId);
-
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("All Workouts:\n");
-                Console.WriteLine("-----------------------");
-                int workoutNumber = 1;
-                foreach (Workout workout in Workout.GetWorkouts())
+                try
                 {
-                    workoutNumber++;
-                    if (currentAthlete.ActivityList.Contains(workout))
+                    Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUser.UserId);
+
+                    Console.WriteLine("-----------------------");
+                    Console.WriteLine("All Workouts:\n");
+                    Console.WriteLine("-----------------------");
+                    int workoutNumber = 0;
+                    foreach (Workout workout in Workout.GetWorkouts())
                     {
-                        Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
-                        Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
-                        Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
-                        Console.WriteLine($"   Description: {workout.ActivityDescription}");
-                        Console.WriteLine("---------------------------------------------------------");
+                        workoutNumber++;
+                        if (currentAthlete.ActivityList.Contains(workout))
+                        {
+                            Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
+                            Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
+                            Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
+                            Console.WriteLine($"   Description: {workout.ActivityDescription}");
+                            Console.WriteLine("---------------------------------------------------------");
+                        }
+                    }
+
+                    Console.WriteLine("\nEnter the number of the workout to view details and exercises:");
+                    if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > Workout.GetWorkouts().Count)
+                    {
+                        Console.WriteLine("Invalid selection. Restart and enter a valid workout number.");
+                        return;
+                    }
+
+                    selectedNumber--;
+                    Workout selectedWorkout = Workout.GetWorkouts()[selectedNumber];
+
+                    Console.WriteLine($"\nSelected Workout: {selectedWorkout.ActivityName}");
+                    Console.WriteLine($"Duration (minutes): {selectedWorkout.ActivityDurationMinutes}");
+                    Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
+                    Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
+                    Console.WriteLine($"Description: {selectedWorkout.ActivityDescription}");
+
+                    Console.WriteLine("\nExercises:");
+                    if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
+                    {
+                        foreach (Exercise exercise in selectedWorkout.WorkoutExercises)
+                        {
+                            Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
+                            Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
+                            Console.WriteLine($"  Result: {exercise.ExerciseResult}");
+                        }
+                        LogFeedback.CheckFeedback(currentAthlete, selectedWorkout);
+                    }
+                    else
+                    {
+                        Console.WriteLine("This workout has no listed exercises.");
                     }
                 }
-
-                Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
-                if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > Workout.GetWorkouts().Count)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Invalid selection. Please restart and enter a valid workout number.");
-                    return;
+                    Console.WriteLine("An error occurred while displaying workouts: " + ex.Message);
                 }
-
-                selectedNumber--;
-                Workout selectedWorkout = Workout.GetWorkouts()[selectedNumber];
-
-                Console.WriteLine($"\nSelected Workout: {selectedWorkout.ActivityName}");
-                Console.WriteLine($"Duration (minutes): {selectedWorkout.ActivityDurationMinutes}");
-                Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
-                Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
-                Console.WriteLine($"Description: {selectedWorkout.ActivityDescription}");
-
-                Console.WriteLine("\nExercises:");
-                if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
-                {
-                    foreach (Exercise exercise in selectedWorkout.WorkoutExercises)
-                    {
-                        Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
-                        Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
-                        Console.WriteLine($"  Result: {exercise.ExerciseResult}");
-                    }
-                    LogFeedback.CheckFeedback(currentAthlete, selectedWorkout);
-                }
-                else
-                {
-                    Console.WriteLine("This workout has no exercises listed.");
-                }
-
-
             }
 
             void DisplayFoundAthleteWorkouts(Athlete foundAthlete)
             {
-                List<Workout> allWorkoutsFromFoundAthlete = foundAthlete.GetAllWorkouts();
-
-                if (allWorkoutsFromFoundAthlete.Count < 1)
+                try
                 {
-                    Console.WriteLine("No Workouts registered.");
-                    return;
-                }
+                    List<Workout> allWorkoutsFromFoundAthlete = foundAthlete.GetAllWorkouts();
 
-                Console.WriteLine("Workouts of " + foundAthlete.UserName + ":");
-                foreach (Workout workout in allWorkoutsFromFoundAthlete)
-                {
+                    if (allWorkoutsFromFoundAthlete.Count < 1)
+                    {
+                        Console.WriteLine("No workouts registered.");
+                        return;
+                    }
+
+                    Console.WriteLine("Workouts of " + foundAthlete.UserName + ":");
+                    foreach (Workout workout in allWorkoutsFromFoundAthlete)
+                    {
+                        Console.WriteLine("-----------------------");
+                        Console.WriteLine($"Workout ID: {workout.ActivityId}, Workout Name: {workout.ActivityName}");
+                    }
                     Console.WriteLine("-----------------------");
-                    Console.WriteLine($"Workout ID: {workout.ActivityId} Workout name: {workout.ActivityName}");
+                    Console.WriteLine("Select Workout ID");
+
+                    int selectedWorkoutId;
+                    if (!int.TryParse(Console.ReadLine(), out selectedWorkoutId))
+                    {
+                        Console.WriteLine("Invalid input for workout ID. Please enter a valid number.");
+                        return;
+                    }
+
+                    Workout workoutToAddFeedback = allWorkoutsFromFoundAthlete.Find(workout => workout.ActivityId == selectedWorkoutId);
+                    if (workoutToAddFeedback == null)
+                    {
+                        Console.WriteLine("No workout found with the specified ID.");
+                        return;
+                    }
+
+                    TrainerGivesFeedback(foundAthlete, workoutToAddFeedback, selectedWorkoutId);
+                    // Or continue with creating the menu
                 }
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("Select Workout ID");
-                // error handling nog
-                int selectedWorkoutId = Convert.ToInt32(Console.ReadLine());
-                Workout workoutToAddFeedback = allWorkoutsFromFoundAthlete.Find(workout => workout.ActivityId == selectedWorkoutId);
-
-                TrainerGivesFeedback(foundAthlete, workoutToAddFeedback, selectedWorkoutId);
-                // of verder menu maken
-
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred while displaying workouts: " + ex.Message);
+                }
             }
 
             void ManageProfile(User user)
             {
-
-
-                Console.Clear();
-                Console.WriteLine($"Profile:");
-                Console.WriteLine("-----------------------");
-                Console.WriteLine($"Name: {user.UserName}");
-                Console.WriteLine($"Email: {user.UserEmail}");
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("1. Edit profile");
-                Console.WriteLine("2. Delete profiel");
-                Console.WriteLine("3. Main menu");
-                int profileChoice = Convert.ToInt32(Console.ReadLine());
-                Console.Clear();
-                switch (profileChoice)
+                try
                 {
-                    case 1:
-                        Console.WriteLine("Enter a new username:");
-                        string newUserName = Console.ReadLine();
-                        Console.Clear();
-                        while (User.GetUsers().Any(existingUser => existingUser.UserName == newUserName && newUserName != user.UserName))
-                        {
-                            Console.WriteLine("This username is already taken, please enter a new one.");
-                            newUserName = Console.ReadLine() ?? string.Empty;
+                    Console.Clear();
+                    Console.WriteLine($"Profile:");
+                    Console.WriteLine("-----------------------");
+                    Console.WriteLine($"Name: {user.UserName}");
+                    Console.WriteLine($"Email: {user.UserEmail}");
+                    Console.WriteLine("-----------------------");
+                    Console.WriteLine("1. Edit Profile");
+                    Console.WriteLine("2. Delete Profile");
+                    Console.WriteLine("3. Main Menu");
+                    int profileChoice;
+                    if (!int.TryParse(Console.ReadLine(), out profileChoice) || profileChoice < 1 || profileChoice > 3)
+                    {
+                        Console.WriteLine("Invalid choice. Restart and enter a valid option.");
+                        return;
+                    }
+                    Console.Clear();
+                    switch (profileChoice)
+                    {
+                        case 1:
+                            Console.WriteLine("Enter a new username:");
+                            string newUserName = Console.ReadLine();
+                            if (string.IsNullOrWhiteSpace(newUserName))
+                            {
+                                throw new ArgumentException("Username cannot be empty.");
+                            }
+
                             Console.Clear();
-                        }
-                        Console.WriteLine("enter a new email:");
-                        string newUserEmail = Console.ReadLine();
-                        Console.WriteLine("enter a new password:");
-                        string newUserPassword = Console.ReadLine();
-                        Console.Clear();
-                        user.UpdateUser(newUserName, newUserEmail, newUserPassword);
-                        Console.WriteLine("Profile updated.");
-                        Console.ReadLine();
-                        Environment.Exit(0);
-                        break;
-                    case 2:
-                        Console.WriteLine("Are you sure you wanna delete your profile?");
-                        Console.WriteLine("1. Yes");
-                        Console.WriteLine("2. No");
-                        int deleteProfileChoice = Convert.ToInt32(Console.ReadLine());
-                        Console.Clear();
-                        if (deleteProfileChoice == 1)
-                        {
-                            user.DeleteUser();
-                            Console.WriteLine("Profile deleted.");
+                            while (User.GetUsers().Any(existingUser => existingUser.UserName == newUserName && newUserName != user.UserName))
+                            {
+                                Console.WriteLine("This username is already in use, please enter a new one.");
+                                newUserName = Console.ReadLine() ?? string.Empty;
+                                Console.Clear();
+                            }
+
+                            Console.WriteLine("Enter a new email address:");
+                            string newUserEmail = Console.ReadLine();
+                            if (string.IsNullOrWhiteSpace(newUserEmail))
+                            {
+                                throw new ArgumentException("Email address cannot be empty.");
+                            }
+
+                            Console.WriteLine("Enter a new password:");
+                            string newUserPassword = Console.ReadLine();
+                            if (string.IsNullOrWhiteSpace(newUserPassword))
+                            {
+                                throw new ArgumentException("Password cannot be empty.");
+                            }
+
+                            Console.Clear();
+                            user.UpdateUser(newUserName, newUserEmail, newUserPassword);
+                            Console.WriteLine("Profile updated.");
                             Console.ReadLine();
                             Environment.Exit(0);
-                        }
-                        break;
+                            break;
+                        case 2:
+                            Console.WriteLine("Are you sure you want to delete your profile?");
+                            Console.WriteLine("1. Yes");
+                            Console.WriteLine("2. No");
+                            int deleteProfileChoice;
+                            if (!int.TryParse(Console.ReadLine(), out deleteProfileChoice) || (deleteProfileChoice != 1 && deleteProfileChoice != 2))
+                            {
+                                Console.WriteLine("Invalid choice. Restart and enter a valid option.");
+                                return;
+                            }
+                            Console.Clear();
+                            if (deleteProfileChoice == 1)
+                            {
+                                user.DeleteUser();
+                                Console.WriteLine("Profile deleted.");
+                                Console.ReadLine();
+                                Environment.Exit(0);
+                            }
+                            break;
+                    }
+                }
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred while managing the profile: " + ex.Message);
                 }
             }
-
 
             void TrainerGivesFeedback(User user, Workout activityToAddFeedback, int idReceiver)
             {
                 LogFeedback logFeedback = null;
                 try
                 {
-                    //Console.WriteLine($"All activities where {user.UserName} is the trainer: ");
-                    //foreach (Activity activity in Activity.GetActivities())
-                    //{
-                    //    if (activity.Trainer.UserId == user.UserId)
-                    //    {
-                    //        Console.WriteLine($"Activity ID: {activity.ActivityId}, Name: {activity.ActivityName}");
-                    //    }
-
-                    //Console.WriteLine("Enter the ID of the activity you want to give feedback on: ");
-                    //int activityId = Convert.ToInt32(Console.ReadLine());
                     Console.Clear();
                     Activity activityToGiveFeedbackOn = activityToAddFeedback;
                     if (activityToGiveFeedbackOn == null)
                     {
-                        Console.WriteLine("A non-existing workout was given"); // dit hoeft niet 
+                        Console.WriteLine("A non-existing workout was given");
                         return;
                     }
                     else if (activityToGiveFeedbackOn.Trainer.UserId == loggedInUser.UserId)
                     {
-                        if (activityToGiveFeedbackOn is Event) // werkt nu alleen nog voor workout 
+                        if (activityToGiveFeedbackOn is Event)
                         {
                             Event eventToGiveFeedback = activityToGiveFeedbackOn as Event;
                             Console.WriteLine("All users that are signed up for this event: ");
@@ -470,7 +573,7 @@ namespace CasusZuydFitV0._1.Program
                             {
                                 Console.WriteLine($"User ID: {athlete.UserId}, Name: {athlete.UserName}");
                             }
-                            Console.WriteLine("Pick a UserID for the user you wanna give feedback on");
+                            Console.WriteLine("Pick a UserID for the user you want to give feedback on");
                             int pickedUserId = Convert.ToInt32(Console.ReadLine());
                             User? userToGiveFeedbackOn = User.GetUsers().FirstOrDefault(user => user.UserId == pickedUserId);
                             logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToGiveFeedback.ActivityId && feedback.FeedbackAthleteId == pickedUserId);
@@ -500,165 +603,214 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
-
             void CreateEvent(User user)
             {
-                Console.WriteLine("Enter event details:");
-
-                // Gather event details from the user
-                Console.Write("Event Name: ");
-                string eventName = Console.ReadLine();
-
-                Console.Write("Duration (minutes): ");
-                int duration;
-                while (!int.TryParse(Console.ReadLine(), out duration) || duration <= 0)
+                try
                 {
-                    Console.WriteLine("Duration must be a positive integer.");
+                    Console.WriteLine("Enter event details:");
+
+                    // Gather event details from the user
+                    Console.Write("Event name: ");
+                    string eventName = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(eventName))
+                    {
+                        throw new ArgumentException("Event name cannot be empty.");
+                    }
+
                     Console.Write("Duration (minutes): ");
-                }
+                    if (!int.TryParse(Console.ReadLine(), out int duration) || duration <= 0)
+                    {
+                        throw new ArgumentException("Duration must be a positive integer.");
+                    }
 
-                Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
-                DateTime startingTime;
-                while (!DateTime.TryParse(Console.ReadLine(), out startingTime))
+                    Console.Write("Start time (YYYY-MM-DD HH:MM): ");
+                    if (!DateTime.TryParse(Console.ReadLine(), out DateTime startingTime))
+                    {
+                        throw new ArgumentException("Invalid date format. Use YYYY-MM-DD HH:MM.");
+                    }
+
+                    Console.Write("Description: ");
+                    string description = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(description))
+                    {
+                        throw new ArgumentException("Description cannot be empty.");
+                    }
+
+                    Console.Write("Location: ");
+                    string location = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(location))
+                    {
+                        throw new ArgumentException("Location cannot be empty.");
+                    }
+
+                    Console.Write("Participant limit: ");
+                    if (!int.TryParse(Console.ReadLine(), out int participantLimit) || participantLimit <= 0)
+                    {
+                        throw new ArgumentException("Participant limit must be a positive integer.");
+                    }
+
+                    List<Equipment> equipments = GatherEquipments();
+
+                    // Create Event object
+                    Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = user.UserId }, description, equipments, location, participantLimit);
+
+                    newEvent.AddEvent();
+                    Console.WriteLine("Event successfully created!");
+                }
+                catch (ArgumentException ex)
                 {
-                    Console.WriteLine("Invalid date format. Please use YYYY-MM-DD HH:MM.");
-                    Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
+                    Console.WriteLine("Error: " + ex.Message);
                 }
-
-                Console.Write("Description: ");
-                string description = Console.ReadLine();
-
-                int trainerId = user.UserId;
-
-                Console.Write("Location: ");
-                string location = Console.ReadLine();
-
-                Console.Write("Participant Limit: ");
-                int participantLimit;
-                while (!int.TryParse(Console.ReadLine(), out participantLimit) || participantLimit <= 0)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Participant Limit must be a positive integer.");
-                    Console.Write("Participant Limit: ");
+                    Console.WriteLine("An error occurred while creating the event: " + ex.Message);
                 }
-
-                List<Equipment> equipments = GatherEquipments();
-
-                // Create Event object
-                Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = trainerId }, description, equipments, location, participantLimit);
-
-                newEvent.AddEvent();
-                Console.WriteLine("Event created successfully!");
             }
 
             static List<Equipment> GatherEquipments()
             {
-                Console.WriteLine("Enter equipment details:");
-                Console.Write("Number of equipments: ");
-                int count;
-                while (!int.TryParse(Console.ReadLine(), out count) || count < 0)
+                try
                 {
-                    Console.WriteLine("Number of equipments must be a positive integer.");
+                    Console.WriteLine("Enter equipment details:");
                     Console.Write("Number of equipments: ");
-                }
-
-                List<Equipment> equipments = new List<Equipment>();
-                for (int i = 0; i < count; i++)
-                {
-                    Console.Write($"Equipment {i + 1} ID: ");
-                    int equipmentId;
-                    while (!int.TryParse(Console.ReadLine(), out equipmentId) || equipmentId <= 0)
+                    int count;
+                    while (!int.TryParse(Console.ReadLine(), out count) || count < 0)
                     {
-                        Console.WriteLine("Equipment ID must be a positive integer.");
-                        Console.Write($"Equipment {i + 1} ID: ");
+                        Console.WriteLine("Number of equipments must be a positive integer.");
+                        Console.Write("Number of equipments: ");
                     }
 
-                    equipments.Add(new Equipment { EquipmentId = equipmentId });
+                    List<Equipment> equipments = new List<Equipment>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        Console.Write($"Equipment {i + 1} ID: ");
+                        int equipmentId;
+                        while (!int.TryParse(Console.ReadLine(), out equipmentId) || equipmentId <= 0)
+                        {
+                            Console.WriteLine("Equipment ID must be a positive integer.");
+                            Console.Write($"Equipment {i + 1} ID: ");
+                        }
+
+                        equipments.Add(new Equipment { EquipmentId = equipmentId });
+                    }
+
+                    return equipments;
                 }
-
-                return equipments;
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred while gathering equipment details: " + ex.Message);
+                    return new List<Equipment>();
+                }
             }
-
-
-
-
-           
-
+            
             bool Login()
             {
-
-
-                Console.Write("Enter username: ");
-                string username = Console.ReadLine();
-                Console.Write("Enter password: ");
-                string password = Console.ReadLine();
-
-                (string, string) loginInfo = (username, password);
-
-                User user = User.GetUsers().Find(user => (user.UserName, user.UserPassword) == loginInfo);
-
-                if (user != null)
+                try
                 {
-                    Console.WriteLine("Login successful!");
-                    loggedInUser = user;
-                    return true;
+                    Console.Write("Enter username: ");
+                    string username = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(username))
+                    {
+                        throw new ArgumentException("Username cannot be empty.");
+                    }
+
+                    Console.Write("Enter password: ");
+                    string password = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(password))
+                    {
+                        throw new ArgumentException("Password cannot be empty.");
+                    }
+
+                    (string, string) loginInfo = (username, password);
+
+                    User user = User.GetUsers().Find(user => (user.UserName, user.UserPassword) == loginInfo);
+
+                    if (user != null)
+                    {
+                        Console.WriteLine("Login successful!");
+                        loggedInUser = user;
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid username or password.");
+                        return false;
+                    }
                 }
-                else
+                catch (ArgumentException ex)
                 {
-                    Console.WriteLine("Invalid username or password.");
+                    Console.WriteLine("Error: " + ex.Message);
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred while logging in: " + ex.Message);
                     return false;
                 }
             }
 
-            void CreateAccount()
-            {
-                Console.Write("Enter new username: ");
-                string username = Console.ReadLine();
-                Console.Write("Enter new email: ");
-                string email = Console.ReadLine();
-                string password = "1";
-                string confirmedPassword = "2";
 
-                while (password != confirmedPassword)
+            void DisplayAllActivities(User user)
+            {
+                try
                 {
-                    Console.Write("Enter new password: ");
-                    password = Console.ReadLine();
-                    Console.Write("confirm password: ");
-                    confirmedPassword = Console.ReadLine();
-                    if (password != confirmedPassword)
+                    Console.WriteLine("Which activities would you like to see?");
+                    Console.WriteLine("1: Events (Group Activity)");
+                    Console.WriteLine("2: Workouts (Individual Activity)");
+
+                    if (user is Trainer)
                     {
-                        Console.WriteLine("Invalid password confirmation. Try again");
+                        Console.WriteLine("3: Create New Event");
+                    }
+                    else if (user is Athlete)
+                    {
+                        Console.WriteLine("3: Register for Event");
+                        Console.WriteLine("4: Unregister from Event");
+                    }
+
+                    Console.Write("Enter your choice: ");
+                    string choice = Console.ReadLine();
+
+                    switch (choice)
+                    {
+                        case "1":
+                            Event.DisplayAllEvents(loggedInUser);
+                            break;
+                        case "2":
+                            Workout.DisplayAllWorkouts(loggedInUser.UserId);
+                            break;
+                        case "3":
+                            if (user is Trainer)
+                            {
+                                CreateEvent(user);
+                            }
+                            else if (user is Athlete)
+                            {
+                                ShowEvents();
+                                RegisterForEvent(user);
+                            }
+                            break;
+                        case "4":
+                            if (user is Athlete)
+                            {
+                                RemoveRegistration(user);
+                            }
+                            else
+                            {
+                                Console.WriteLine("Invalid choice.");
+                            }
+                            break;
+                        default:
+                            Console.WriteLine("Invalid choice.");
+                            break;
                     }
                 }
-
-                Athlete newAthlete = new Athlete(username, email, password);
-                newAthlete.CreateNewUser();
-
-                Console.WriteLine("Account created successfully!");
-            }
-
-
-            void DisplayAllActivities()
-            {
-                Console.WriteLine("What Activities do you want to see?");
-                Console.WriteLine("1: Events (Group activity)");
-                Console.WriteLine("2: Workouts (Solo activity)");
-                Console.Write("Please enter your choice (1 or 2): ");
-
-                string choice = Console.ReadLine();
-
-                switch (choice)
+                catch (Exception ex)
                 {
-                    case "1":
-                        Event.DisplayAllEvents(loggedInUser);
-                        break;
-                    case "2":
-                        Workout.DisplayAllWorkouts(loggedInUser.UserId);
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice, please enter 1 or 2.");
-                        break;
+                    Console.WriteLine("An error occurred while displaying activities: " + ex.Message);
                 }
             }
+
             void ShowEvents()
             {
                 foreach (Event events in Event.GetEvents())
@@ -667,53 +819,67 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
-
             void RegisterForEvent(User user)
             {
-
-                Console.WriteLine("Enter the ID of the event you want to register for: ");
-                int registerID = int.Parse(Console.ReadLine());
-                Console.Clear();
-                Event? eventToRegister = Event.GetEvents().FirstOrDefault(registerEvent => registerEvent.ActivityId == registerID);
-                if (eventToRegister == null)
+                try
                 {
-                    Console.WriteLine("The entered ID does not match any event. press enter to go back to the menu");
-                    Console.ReadLine();
+                    Console.WriteLine("Enter the ID of the event you want to register for: ");
+                    int registerID;
+                    while (!int.TryParse(Console.ReadLine(), out registerID))
+                    {
+                        Console.WriteLine("Invalid ID. Enter a whole number.");
+                        Console.WriteLine("Enter the ID of the event you want to register for: ");
+                    }
                     Console.Clear();
+
+                    Event? eventToRegister = Event.GetEvents().FirstOrDefault(registerEvent => registerEvent.ActivityId == registerID);
+                    if (eventToRegister == null)
+                    {
+                        Console.WriteLine("The entered ID does not match any event. Press enter to return to the menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
+                    else if (eventToRegister.EventParticipants.Exists(a => a.UserId == user.UserId))
+                    {
+                        Console.WriteLine("You are already registered for this event. Press enter to return to the menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
+                    else if (eventToRegister.EventParticipants.Count < eventToRegister.EventPatricipantLimit)
+                    {
+                        LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister.ActivityId);
+                        newLogFeedback.CreateLog();
+                        Console.Clear();
+                        Console.WriteLine("You are registered for the event. Press enter to return to the menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        Console.WriteLine("The event is full, you cannot register. Press enter to return to the menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
                 }
-
-                else if (eventToRegister.EventParticipants.Exists(a => a.UserId == user.UserId))
+                catch (Exception ex)
                 {
-                    Console.WriteLine("You are already registered for this event. press enter to go back to the menu");
-                    Console.ReadLine();
-                    Console.Clear();
-                }
-                else if (eventToRegister.EventParticipants.Count < eventToRegister.EventPatricipantLimit)
-                {
-                    LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister
-                        .ActivityId);
-                    newLogFeedback.CreateLog();
-                    Console.Clear();
-                    Console.WriteLine("You have been registered for the event. press enter to go back to the menu");
-                    Console.ReadLine();
-                    Console.Clear();
-                }
-                else
-                {
-                    Console.WriteLine("The event is full, you cannot register. press enter to go back to the menu");
-                    Console.ReadLine();
-                    Console.Clear();
-
-
+                    Console.WriteLine("An error occurred while registering for the event: " + ex.Message);
                 }
             }
 
+            // not implemented in flow besause of time there is no Create equipment method yet. 
             void DeleteEquipment()
             {
                 try
                 {
                     Console.WriteLine("Enter the ID of the equipment you want to delete: ");
-                    int equipmentId = Convert.ToInt32(Console.ReadLine());
+                    int equipmentId;
+                    while (!int.TryParse(Console.ReadLine(), out equipmentId))
+                    {
+                        Console.WriteLine("Invalid ID. Enter a whole number.");
+                        Console.WriteLine("Enter the ID of the equipment you want to delete: ");
+                    }
+
                     Equipment equipmentToDelete = Equipment.GetEquipment().FirstOrDefault(equipment => equipment.EquipmentId == equipmentId);
                     if (equipmentToDelete == null)
                     {
@@ -721,73 +887,96 @@ namespace CasusZuydFitV0._1.Program
                     }
                     else
                     {
-                        Console.WriteLine($"Are you sure you want to delete {equipmentToDelete.EquipmentName}?, Make sure you inform all trainers about this.");
+                        Console.WriteLine($"Are you sure you want to delete {equipmentToDelete.EquipmentName}? Make sure to inform all trainers about this.");
                         Console.WriteLine("1. Yes");
                         Console.WriteLine("2. No");
-                        int deleteChoice = Convert.ToInt32(Console.ReadLine());
+                        int deleteChoice;
+                        while (!int.TryParse(Console.ReadLine(), out deleteChoice) || (deleteChoice != 1 && deleteChoice != 2))
+                        {
+                            Console.WriteLine("Invalid choice. Enter 1 or 2.");
+                            Console.WriteLine("1. Yes");
+                            Console.WriteLine("2. No");
+                        }
                         if (deleteChoice == 1)
                         {
                             equipmentToDelete.DeleteEquipment();
-                            Console.WriteLine("Equipment deleted successfully.");
+                            Console.WriteLine("Equipment successfully deleted.");
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Invalid input given.");
-
+                    Console.WriteLine("An error occurred while deleting the equipment: " + ex.Message);
                 }
             }
 
             void RemoveRegistration(User user)
             {
-                Athlete athlete = (Athlete)user;
-                foreach (Activity activity in athlete.ActivityList)
+                try
                 {
-                    if (activity is Event)
+                    Athlete athlete = (Athlete)user;
+                    bool foundEvent = false;
+                    foreach (Activity activity in athlete.ActivityList)
                     {
-                        Event events = (Event)activity;
-                        Console.WriteLine($"Event ID: {events.ActivityId}");
-                        Console.WriteLine($"Event Name: {events.ActivityName}");
-                        Console.WriteLine($"Event Location: {events.EventLocation}");
-                        Console.WriteLine($"Event Duration: {events.ActivityDurationMinutes}");
-                        Console.WriteLine($"Event Starting Time: {events.ActivityStartingTime}");
-                        Console.WriteLine($"Event Description: {events.ActivityDescription}");
-                        Console.WriteLine();
+                        if (activity is Event)
+                        {
+                            Event events = (Event)activity;
+                            Console.WriteLine($"Event ID: {events.ActivityId}");
+                            Console.WriteLine($"Event Name: {events.ActivityName}");
+                            Console.WriteLine($"Event Location: {events.EventLocation}");
+                            Console.WriteLine($"Event Duration: {events.ActivityDurationMinutes}");
+                            Console.WriteLine($"Event Starting Time: {events.ActivityStartingTime}");
+                            Console.WriteLine($"Event Description: {events.ActivityDescription}");
+                            Console.WriteLine();
+                            foundEvent = true;
+                        }
                     }
-                }
 
-                Console.WriteLine("Enter the ID of the event you want to unregister for: ");
-                int unregisterID = int.Parse(Console.ReadLine());
-                Console.Clear();
-                Event? eventToUnregister = Event.GetEvents().FirstOrDefault(unregisterEvent => unregisterEvent.ActivityId == unregisterID);
-                if (eventToUnregister == null)
-                {
-                    Console.WriteLine("The entered ID does not match any event. press enter to go back to the menu");
-                    Console.ReadLine();
-                    Console.Clear();
-                }
-                else
-                {
-                    LogFeedback logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToUnregister.ActivityId && feedback.FeedbackAthleteId == user.UserId);
-                    if (logFeedback == null)
+                    if (!foundEvent)
                     {
-                        Console.WriteLine("You are not registered for this event. press enter to go back to the menu");
+                        Console.WriteLine("You are not registered for any event.");
+                        return;
+                    }
+
+                    Console.WriteLine("Enter the ID of the event you want to unregister from: ");
+                    int unregisterID;
+                    while (!int.TryParse(Console.ReadLine(), out unregisterID))
+                    {
+                        Console.WriteLine("Invalid ID. Enter a whole number.");
+                        Console.WriteLine("Enter the ID of the event you want to unregister from: ");
+                    }
+                    Console.Clear();
+
+                    Event? eventToUnregister = Event.GetEvents().FirstOrDefault(unregisterEvent => unregisterEvent.ActivityId == unregisterID);
+                    if (eventToUnregister == null)
+                    {
+                        Console.WriteLine("The entered ID does not match any event. Press enter to return to the menu");
                         Console.ReadLine();
                         Console.Clear();
                     }
                     else
                     {
-                        logFeedback.DeleteFeedback();
-                        Console.WriteLine("You have been unregistered for the event. press enter to go back to the menu");
-                        Console.ReadLine();
-                        Console.Clear();
+                        LogFeedback logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToUnregister.ActivityId && feedback.FeedbackAthleteId == user.UserId);
+                        if (logFeedback == null)
+                        {
+                            Console.WriteLine("You are not registered for this event. Press enter to return to the menu");
+                            Console.ReadLine();
+                            Console.Clear();
+                        }
+                        else
+                        {
+                            logFeedback.DeleteFeedback();
+                            Console.WriteLine("You are unregistered from the event. Press enter to return to the menu");
+                            Console.ReadLine();
+                            Console.Clear();
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("An error occurred while unregistering from the event: " + ex.Message);
+                }
             }
-
-
-
         }
     }
 }
