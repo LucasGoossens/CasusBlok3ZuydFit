@@ -7,7 +7,7 @@ namespace CasusZuydFitV0._1.DAL
     public class DAL
     {
         //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
+        private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
         public class UserDAL
         {
             public List<User> users = new List<User>();
@@ -250,7 +250,12 @@ namespace CasusZuydFitV0._1.DAL
                                             object executeScalarResult = athleteCommand.ExecuteScalar();
                                             int athleteId = Convert.ToInt32(executeScalarResult);
                                             Athlete athlete = getAthleteDal.athletes.Find(a => a.UserId == athleteId);
-                                            if (athlete != null)
+                                            if (athlete != null && !activities.Any(activity => activity.ActivityId == activityId)) 
+                                                // controleer of activity nog niet bestaat
+                                                // " !activities.Any(activity => activity.ActivityId == activityId)" 
+                                                // dit moet waarschijnlijk overal waar activities/workouts opgehaald worden dmv LogFeedback query,
+                                                // dit voorkomt dat je activities dubbel ophaalt. Kun je vgm ook in SQL een query maken dat alleen unieke teruggeeft maar FUCK HET
+
                                             {
                                                 Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
 
@@ -912,7 +917,7 @@ namespace CasusZuydFitV0._1.DAL
                                         object executeScalarResult = athleteCommand.ExecuteScalar();
                                         int athleteId = Convert.ToInt32(executeScalarResult);
                                         Athlete athlete = getAthleteDal.athletes.Find(a => a.UserId == athleteId);
-                                        if (athlete != null)
+                                        if (athlete != null && !workouts.Any(activity => activity.ActivityId == activityId))
                                         {
                                             Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
                                             workouts.Add(workoutToAdd); 
@@ -1023,6 +1028,9 @@ namespace CasusZuydFitV0._1.DAL
                             while (reader.Read())
                             {
                                 int activityId = reader.GetInt32(0);
+                                if (WorkoutsToReturn.Any(activity => activity.ActivityId == activityId)){
+                                    continue;
+                                }
                                 string activityName = reader.GetString(1);
                                 int activityDuration = reader.GetInt32(2);
                                 string activityStartingTime = reader.GetString(3);
