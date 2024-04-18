@@ -5,6 +5,7 @@ using CasusZuydFitV0._1.ActivityClasses;
 using CasusZuydFitV0._1.UserClasses;
 using CasusZuydFitV0._1.DAL;
 using CasusZuydFitV0._1.RemainingClasses;
+using System.Threading.Channels;
 
 
 namespace CasusZuydFitV0._1
@@ -36,6 +37,7 @@ namespace CasusZuydFitV0._1
         {
             DAL.DAL.WorkoutDAL workoutdal = new DAL.DAL.WorkoutDAL();
             workoutdal.GetWorkouts();
+            // hier dan GetWorkoutsByAthleteId(this.ActivityParticipant);
             return workoutdal.workouts;
         }
 
@@ -47,22 +49,23 @@ namespace CasusZuydFitV0._1
 
         public static void DisplayAllWorkouts(int loggedInUserid)
         {
-
             Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUserid);
-
 
             Console.WriteLine("-----------------------");
             Console.WriteLine("All Workouts:\n");
             Console.WriteLine("-----------------------");
+            DAL.DAL.WorkoutDAL allAthleteWorkouts = new DAL.DAL.WorkoutDAL();
             int workoutNumber = 0;
-            foreach (Workout workout in GetWorkouts())
-            {
-                workoutNumber++;
-                Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
-                Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
-                Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
-                Console.WriteLine($"   Description: {workout.ActivityDescription}");
-                Console.WriteLine("---------------------------------------------------------");
+
+            foreach (Workout workout in allAthleteWorkouts.GetAllWorkoutsByAthleteId(loggedInUserid))
+            {                
+                    workoutNumber++;
+                    Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
+                    Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
+                    Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
+                    Console.WriteLine($"   Description: {workout.ActivityDescription}");
+                    Console.WriteLine("---------------------------------------------------------");
+             
             }
 
             Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
@@ -88,14 +91,43 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
                     Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
-                    Console.WriteLine($"  Result: {exercise.ExerciseResult}");
+                    //Console.WriteLine($"  Result: {exercise.ExerciseResult}");
                 }
-                LogFeedback.CheckFeedback(currentAthlete, selectedWorkout); // You need to modify this line accordingly
+                //LogFeedback.CheckFeedback(currentAthlete, selectedWorkout); // You need to modify this line accordingly
+                Console.WriteLine("1. Log this Workout session.");
+                Console.WriteLine("2. Return to main.");
+                int option = Convert.ToInt32(Console.ReadLine());
+
+                switch (option)
+                {
+                    case 1:
+                        selectedWorkout.LogNewWorkout();
+                        break;
+                    case 2:
+                        return;
+                }
             }
             else
             {
                 Console.WriteLine("This workout has no exercises listed.");
             }
         }
+
+        void LogNewWorkout()
+        {
+            string feedbackResult = "";
+
+            foreach (Exercise exercise in this.WorkoutExercises)
+            {
+                Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
+                Console.WriteLine("What was the result for this exercise?");
+                string exerciseResult = Console.ReadLine();
+                feedbackResult += $"Exercise Name: {exercise.ExerciseName}\nResult: {exerciseResult}";                                             
+            }
+
+            LogFeedback newLogFeedback = new LogFeedback(this.Trainer.UserId, this.WorkoutParticipant.UserId, this.ActivityId, feedbackResult);
+            newLogFeedback.CreateLog();
+        }
+
     }
 }

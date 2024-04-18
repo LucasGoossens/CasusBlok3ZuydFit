@@ -270,8 +270,8 @@ namespace CasusZuydFitV0._1.Program
                 newWorkout.CreateNewWorkout();
                 int workoutIdToAddToExercise = newWorkout.ActivityId;
 
-                LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
-                newLogFeedback.CreateLog();
+                //LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
+                //newLogFeedback.CreateLog();
 
                 int addExerciseOption = 1;
                 while (addExerciseOption == 1)
