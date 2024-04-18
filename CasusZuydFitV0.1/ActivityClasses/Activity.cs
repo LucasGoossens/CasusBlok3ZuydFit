@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CasusZuydFitV0._1.RemainingClasses;
 using CasusZuydFitV0._1.UserClasses;
 using static CasusZuydFitV0._1.DAL.DAL;
 

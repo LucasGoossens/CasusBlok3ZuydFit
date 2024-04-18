@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CasusZuydFitV0._1.ActivityClasses;
 using CasusZuydFitV0._1.UserClasses;
 using static CasusZuydFitV0._1.DAL.DAL;
 
-namespace CasusZuydFitV0._1.RemainingClasses
+namespace CasusZuydFitV0._1.ActivityClasses
 {
     public class Workout : Activity
     {

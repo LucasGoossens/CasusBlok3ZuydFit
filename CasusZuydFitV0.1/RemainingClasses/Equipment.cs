@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static CasusZuydFitV0._1.DAL.DAL;
 
-namespace CasusZuydFitV0._1.ActivityClasses
+namespace CasusZuydFitV0._1.RemainingClasses
 {
     public class Equipment
     {
