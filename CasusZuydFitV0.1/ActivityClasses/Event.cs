@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CasusZuydFitV0._1.UserClasses;
+using static CasusZuydFitV0._1.DAL.DAL;
 
 
-namespace CasusZuydFitV0._1
+namespace CasusZuydFitV0._1.ActivityClasses
 {
     public class Event : Activity
     {
@@ -14,7 +16,7 @@ namespace CasusZuydFitV0._1
         public int EventPatricipantLimit { get; set; }
 
 
-        public Event(int activityId, string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, string eventLocation, int eventPatricipantLimit,List<Athlete> eventParticipants )
+        public Event(int activityId, string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, string eventLocation, int eventPatricipantLimit, List<Athlete> eventParticipants)
         : base(activityId, activityName, activityDuration, startingTime, trainer, activityDescription)
         {
             EventLocation = eventLocation;
@@ -22,9 +24,9 @@ namespace CasusZuydFitV0._1
             EventPatricipantLimit = eventPatricipantLimit;
         }
 
-   
-        
-         public Event(string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, List<Equipment> equipments, string eventLocation, int eventPatricipantLimit)
+
+
+        public Event(string activityName, int activityDuration, string startingTime, Trainer trainer, string activityDescription, List<Equipment> equipments, string eventLocation, int eventPatricipantLimit)
         {
             ActivityName = activityName;
             ActivityDurationMinutes = activityDuration;
@@ -45,17 +47,17 @@ namespace CasusZuydFitV0._1
             Console.WriteLine($"Event Starting Time: {ActivityStartingTime}");
             Console.WriteLine($"Event Description: {ActivityDescription}");
             Console.WriteLine();
-        }   
+        }
 
         static public List<Event> GetEvents()
         {
-            DAL.EventDAL eventDal = new DAL.EventDAL();
+            EventDAL eventDal = new EventDAL();
             eventDal.GetEvents();
             return eventDal.events;
         }
         public void AddEvent()
         {
-            DAL.EventDAL eventDal = new DAL.EventDAL();
+            EventDAL eventDal = new EventDAL();
             eventDal.CreateEvent(this);
         }
 

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CasusZuydFitV0._1.DAL;
+using CasusZuydFitV0._1.ActivityClasses;
+using CasusZuydFitV0._1.RemainingClasses;
+using static CasusZuydFitV0._1.DAL.DAL;
 
-namespace CasusZuydFitV0._1
+namespace CasusZuydFitV0._1.UserClasses
 {
     public class Athlete : User
     {
@@ -23,17 +25,17 @@ namespace CasusZuydFitV0._1
 
         public Athlete(string userName, string userEmail, string userPassword) : base(userName, userEmail, userPassword)
         {
-            
+
         }
-        
-        
+
+
 
 
 
         public List<Workout> GetAllWorkouts()
         {
             WorkoutDAL allWorkoutsDal = new WorkoutDAL();
-            return allWorkoutsDal.GetAllWorkoutsByAthleteId(this.UserId);
+            return allWorkoutsDal.GetAllWorkoutsByAthleteId(UserId);
         }
 
         static public List<Athlete> GetAllAthletes()
@@ -45,6 +47,6 @@ namespace CasusZuydFitV0._1
 
 
 
-    
+
     }
 }
