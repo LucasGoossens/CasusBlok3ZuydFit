@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Protocols;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
 using System.Diagnostics.Metrics;
+using System.Diagnostics.Tracing;
 using System.Runtime.InteropServices;
 using static CasusZuydFitV0._1.DAL;
 
@@ -293,55 +294,6 @@ namespace CasusZuydFitV0._1
 
             }
 
-            void DisplayAllEvents(User user)
-            {
-
-                Console.WriteLine("-----------------------");
-                Console.WriteLine("Which events do you want to see?");
-
-                Console.WriteLine("1. The events I am signed up for");
-                Console.WriteLine("2. All events");
-                string choiceString = Console.ReadLine();
-                int eventChoice;
-                try
-                {
-                    eventChoice = int.Parse(choiceString);
-                }
-                catch (FormatException)
-                {
-                    Console.WriteLine("The entered choice is not valid.");
-                    return;
-                }
-
-                Console.Clear();
-
-                switch (eventChoice)
-                {
-                    case 1:
-                        Console.WriteLine("-----------------------");
-                        Console.WriteLine("These are the events you are signed up for:");
-                        foreach (var eventItem in Event.GetEvents())
-                        {
-                            if (eventItem.EventParticipants.Exists(a => a.UserId == user.UserId))
-                            {
-                                Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
-                            }
-                        }
-                        break;
-                    case 2:
-                        Console.WriteLine("-----------------------");
-                        Console.WriteLine("These are all the events:");
-                        foreach (var eventItem in Event.GetEvents())
-                        {
-                            Console.WriteLine($"Event ID: {eventItem.ActivityId}, Name: {eventItem.ActivityName}, Location: {eventItem.EventLocation}");
-
-                        }
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice entered.");
-                        break;
-                }
-            }
 
             void DisplayAllWorkouts()
             {
@@ -707,7 +659,7 @@ namespace CasusZuydFitV0._1
                 switch (choice)
                 {
                     case "1":
-                        DisplayAllEvents(loggedInUser);
+                        Event.DisplayAllEvents(loggedInUser);
                         break;
                     case "2":
                         DisplayAllWorkouts();
