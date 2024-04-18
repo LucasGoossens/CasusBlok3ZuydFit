@@ -31,6 +31,11 @@ namespace CasusZuydFitV0._1.UserClasses
             UserPassword = userPassword;
         }
 
+        public User()
+        {
+
+        }
+
         // dit misschien weg dan aangezien t al in DAL gebeurd?
         static public List<User> GetUsers()
         {
