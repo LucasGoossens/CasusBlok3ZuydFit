@@ -58,7 +58,7 @@ namespace CasusZuydFitV0._1
             return Dal.logFeedbacks;
         }
 
-        public void CreateFeedback()
+        public void CreateLog()
         {            
             LogFeedbackDAL Dal = new LogFeedbackDAL();
             Dal.CreateLogFeedback(this);

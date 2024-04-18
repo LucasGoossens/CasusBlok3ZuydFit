@@ -101,7 +101,8 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("List of Athletes:");
                 foreach (var athlete in allUsers)
                 {
-                    if (athlete is Athlete){
+                    if (athlete is Athlete)
+                    {
                         Console.WriteLine($"Athlete ID: {athlete.UserId}, Name: {athlete.UserName}, Email: {athlete.UserEmail}");
                     }
                 }
@@ -130,7 +131,7 @@ namespace CasusZuydFitV0._1
                         Console.WriteLine("1. View all Workouts for this Athlete");
                         Console.WriteLine("2. Create new Workout for this Athlete");
                         optionChoice = Convert.ToInt32(Console.ReadLine());
-                        if(optionChoice != 1 && optionChoice != 2)
+                        if (optionChoice != 1 && optionChoice != 2)
                         {
                             Console.WriteLine("Invalid entry.");
                         }
@@ -146,7 +147,7 @@ namespace CasusZuydFitV0._1
                             break;
 
                     }
-                        
+
                 }
                 else
                 {
@@ -268,8 +269,8 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("Workout starting time:");
                 string newWorkoutStartingTime = Console.ReadLine();
                 Console.WriteLine("Workout description:");
-                string newWorkoutDescription = Console.ReadLine();                
-                               
+                string newWorkoutDescription = Console.ReadLine();
+
                 Trainer newWorkOutTrainer = (Trainer)loggedInUser;
 
                 Workout newWorkout = new Workout(newWorkoutName, newWorkoutDuration, newWorkoutStartingTime, newWorkOutTrainer, newWorkoutDescription, newWorkOutAthlete);
@@ -277,7 +278,7 @@ namespace CasusZuydFitV0._1
                 int workoutIdToAddToExercise = newWorkout.ActivityId;
 
                 LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
-                newLogFeedback.CreateFeedback();
+                newLogFeedback.CreateLog();
 
                 int addExerciseOption = 1;
                 while (addExerciseOption == 1)
@@ -356,9 +357,9 @@ namespace CasusZuydFitV0._1
             void DisplayAllWorkouts()
             {
 
-                                
+
                 Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUser.UserId);
-               
+
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("All Workouts:\n");
                 Console.WriteLine("-----------------------");
@@ -407,7 +408,7 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine("This workout has no exercises listed.");
                 }
-                
+
 
             }
 
@@ -425,7 +426,7 @@ namespace CasusZuydFitV0._1
                 foreach (Workout workout in allWorkoutsFromFoundAthlete)
                 {
                     Console.WriteLine("-----------------------");
-                    Console.WriteLine($"Workout ID: {workout.ActivityId} Workout name: {workout.ActivityName}");       
+                    Console.WriteLine($"Workout ID: {workout.ActivityId} Workout name: {workout.ActivityName}");
                 }
                 Console.WriteLine("-----------------------");
                 Console.WriteLine("Select Workout ID");
@@ -505,7 +506,7 @@ namespace CasusZuydFitV0._1
                     //    {
                     //        Console.WriteLine($"Activity ID: {activity.ActivityId}, Name: {activity.ActivityName}");
                     //    }
-                    
+
                     //Console.WriteLine("Enter the ID of the activity you want to give feedback on: ");
                     //int activityId = Convert.ToInt32(Console.ReadLine());
                     Console.Clear();
@@ -538,7 +539,7 @@ namespace CasusZuydFitV0._1
                         }
                         Console.Clear();
                         Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}" + (logFeedback != null ? $"Current Feedback: {logFeedback.FeedbackInfo}" : "."));
-                        
+
                         Console.WriteLine("Enter the feedback you want to give: ");
                         string NewFeedback = Console.ReadLine();
                         // Wat als er nog geen logbooks bestaan?
@@ -653,7 +654,7 @@ namespace CasusZuydFitV0._1
 
             bool Login()
             {
-                
+
 
                 Console.Write("Enter username: ");
                 string username = Console.ReadLine();
@@ -692,7 +693,7 @@ namespace CasusZuydFitV0._1
                     password = Console.ReadLine();
                     Console.Write("confirm password: ");
                     confirmedPassword = Console.ReadLine();
-                    if(password != confirmedPassword)
+                    if (password != confirmedPassword)
                     {
                         Console.WriteLine("Invalid password confirmation. Try again");
                     }
@@ -727,12 +728,17 @@ namespace CasusZuydFitV0._1
                         break;
                 }
             }
-            void RegisterForEvent(User user)
+            void ShowEvents()
             {
                 foreach (Event events in Event.GetEvents())
                 {
                     events.ShowEvent();
                 }
+            }
+
+
+            void RegisterForEvent(User user)
+            {
 
                 Console.WriteLine("Enter the ID of the event you want to register for: ");
                 int registerID = Int32.Parse(Console.ReadLine());
@@ -755,8 +761,7 @@ namespace CasusZuydFitV0._1
                 {
                     LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister
                         .ActivityId);
-
-                    newLogFeedback.CreateFeedback();
+                    newLogFeedback.CreateLog();
                     Console.Clear();
                     Console.WriteLine("You have been registered for the event. press enter to go back to the menu");
                     Console.ReadLine();
@@ -771,6 +776,7 @@ namespace CasusZuydFitV0._1
 
                 }
             }
+        
             void DeleteEquipment()
             {
                 try
