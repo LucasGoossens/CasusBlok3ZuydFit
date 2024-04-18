@@ -619,137 +619,199 @@ namespace CasusZuydFitV0._1.Program
 
             void CreateEvent(User user)
             {
-                Console.WriteLine("Enter event details:");
-
-                // Gather event details from the user
-                Console.Write("Event Name: ");
-                string eventName = Console.ReadLine();
-
-                Console.Write("Duration (minutes): ");
-                int duration;
-                while (!int.TryParse(Console.ReadLine(), out duration) || duration <= 0)
+                try
                 {
-                    Console.WriteLine("Duration must be a positive integer.");
-                    Console.Write("Duration (minutes): ");
-                }
+                    Console.WriteLine("Voer evenementdetails in:");
 
-                Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
-                DateTime startingTime;
-                while (!DateTime.TryParse(Console.ReadLine(), out startingTime))
+                    // Evenementdetails verzamelen van de gebruiker
+                    Console.Write("Evenementnaam: ");
+                    string eventName = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(eventName))
+                    {
+                        throw new ArgumentException("Evenementnaam mag niet leeg zijn.");
+                    }
+
+                    Console.Write("Duur (minuten): ");
+                    if (!int.TryParse(Console.ReadLine(), out int duration) || duration <= 0)
+                    {
+                        throw new ArgumentException("Duur moet een positief geheel getal zijn.");
+                    }
+
+                    Console.Write("Starttijd (JJJJ-MM-DD UU:MM): ");
+                    if (!DateTime.TryParse(Console.ReadLine(), out DateTime startingTime))
+                    {
+                        throw new ArgumentException("Ongeldige datumnotatie. Gebruik JJJJ-MM-DD UU:MM.");
+                    }
+
+                    Console.Write("Beschrijving: ");
+                    string description = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(description))
+                    {
+                        throw new ArgumentException("Beschrijving mag niet leeg zijn.");
+                    }
+
+                    Console.Write("Locatie: ");
+                    string location = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(location))
+                    {
+                        throw new ArgumentException("Locatie mag niet leeg zijn.");
+                    }
+
+                    Console.Write("Deelnemerslimiet: ");
+                    if (!int.TryParse(Console.ReadLine(), out int participantLimit) || participantLimit <= 0)
+                    {
+                        throw new ArgumentException("Deelnemerslimiet moet een positief geheel getal zijn.");
+                    }
+
+                    List<Equipment> equipments = GatherEquipments();
+
+                    // Maak Event object aan
+                    Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = user.UserId }, description, equipments, location, participantLimit);
+
+                    newEvent.AddEvent();
+                    Console.WriteLine("Evenement succesvol aangemaakt!");
+                }
+                catch (ArgumentException ex)
                 {
-                    Console.WriteLine("Invalid date format. Please use YYYY-MM-DD HH:MM.");
-                    Console.Write("Starting Time (YYYY-MM-DD HH:MM): ");
+                    Console.WriteLine("Fout: " + ex.Message);
                 }
-
-                Console.Write("Description: ");
-                string description = Console.ReadLine();
-
-                int trainerId = user.UserId;
-
-                Console.Write("Location: ");
-                string location = Console.ReadLine();
-
-                Console.Write("Participant Limit: ");
-                int participantLimit;
-                while (!int.TryParse(Console.ReadLine(), out participantLimit) || participantLimit <= 0)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Participant Limit must be a positive integer.");
-                    Console.Write("Participant Limit: ");
+                    Console.WriteLine("Er is een fout opgetreden bij het maken van het evenement: " + ex.Message);
                 }
-
-                List<Equipment> equipments = GatherEquipments();
-
-                // Create Event object
-                Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = trainerId }, description, equipments, location, participantLimit);
-
-                newEvent.AddEvent();
-                Console.WriteLine("Event created successfully!");
             }
+
 
             static List<Equipment> GatherEquipments()
             {
-                Console.WriteLine("Enter equipment details:");
-                Console.Write("Number of equipments: ");
-                int count;
-                while (!int.TryParse(Console.ReadLine(), out count) || count < 0)
+                try
                 {
-                    Console.WriteLine("Number of equipments must be a positive integer.");
-                    Console.Write("Number of equipments: ");
-                }
-
-                List<Equipment> equipments = new List<Equipment>();
-                for (int i = 0; i < count; i++)
-                {
-                    Console.Write($"Equipment {i + 1} ID: ");
-                    int equipmentId;
-                    while (!int.TryParse(Console.ReadLine(), out equipmentId) || equipmentId <= 0)
+                    Console.WriteLine("Voer apparatuurdetails in:");
+                    Console.Write("Aantal apparatuur: ");
+                    int count;
+                    while (!int.TryParse(Console.ReadLine(), out count) || count < 0)
                     {
-                        Console.WriteLine("Equipment ID must be a positive integer.");
-                        Console.Write($"Equipment {i + 1} ID: ");
+                        Console.WriteLine("Het aantal apparatuur moet een positief geheel getal zijn.");
+                        Console.Write("Aantal apparatuur: ");
                     }
 
-                    equipments.Add(new Equipment { EquipmentId = equipmentId });
+                    List<Equipment> equipments = new List<Equipment>();
+                    for (int i = 0; i < count; i++)
+                    {
+                        Console.Write($"Apparatuur {i + 1} ID: ");
+                        int equipmentId;
+                        while (!int.TryParse(Console.ReadLine(), out equipmentId) || equipmentId <= 0)
+                        {
+                            Console.WriteLine("Apparatuur ID moet een positief geheel getal zijn.");
+                            Console.Write($"Apparatuur {i + 1} ID: ");
+                        }
+
+                        equipments.Add(new Equipment { EquipmentId = equipmentId });
+                    }
+
+                    return equipments;
                 }
-
-                return equipments;
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Er is een fout opgetreden bij het verzamelen van apparatuurdetails: " + ex.Message);
+                    return new List<Equipment>();
+                }
             }
-
-
-
-
            
 
             bool Login()
             {
-
-
-                Console.Write("Enter username: ");
-                string username = Console.ReadLine();
-                Console.Write("Enter password: ");
-                string password = Console.ReadLine();
-
-                (string, string) loginInfo = (username, password);
-
-                User user = User.GetUsers().Find(user => (user.UserName, user.UserPassword) == loginInfo);
-
-                if (user != null)
+                try
                 {
-                    Console.WriteLine("Login successful!");
-                    loggedInUser = user;
-                    return true;
+                    Console.Write("Voer gebruikersnaam in: ");
+                    string username = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(username))
+                    {
+                        throw new ArgumentException("Gebruikersnaam mag niet leeg zijn.");
+                    }
+
+                    Console.Write("Voer wachtwoord in: ");
+                    string password = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(password))
+                    {
+                        throw new ArgumentException("Wachtwoord mag niet leeg zijn.");
+                    }
+
+                    (string, string) loginInfo = (username, password);
+
+                    User user = User.GetUsers().Find(user => (user.UserName, user.UserPassword) == loginInfo);
+
+                    if (user != null)
+                    {
+                        Console.WriteLine("Inloggen gelukt!");
+                        loggedInUser = user;
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Ongeldige gebruikersnaam of wachtwoord.");
+                        return false;
+                    }
                 }
-                else
+                catch (ArgumentException ex)
                 {
-                    Console.WriteLine("Invalid username or password.");
+                    Console.WriteLine("Fout: " + ex.Message);
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Er is een fout opgetreden bij het inloggen: " + ex.Message);
                     return false;
                 }
             }
 
+
             void CreateAccount()
             {
-                Console.Write("Enter new username: ");
-                string username = Console.ReadLine();
-                Console.Write("Enter new email: ");
-                string email = Console.ReadLine();
-                string password = "1";
-                string confirmedPassword = "2";
-
-                while (password != confirmedPassword)
+                try
                 {
-                    Console.Write("Enter new password: ");
-                    password = Console.ReadLine();
-                    Console.Write("confirm password: ");
-                    confirmedPassword = Console.ReadLine();
-                    if (password != confirmedPassword)
+                    Console.Write("Voer nieuwe gebruikersnaam in: ");
+                    string username = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(username))
                     {
-                        Console.WriteLine("Invalid password confirmation. Try again");
+                        throw new ArgumentException("Gebruikersnaam mag niet leeg zijn.");
                     }
+
+                    Console.Write("Voer nieuw e-mailadres in: ");
+                    string email = Console.ReadLine();
+                    if (string.IsNullOrWhiteSpace(email))
+                    {
+                        throw new ArgumentException("E-mailadres mag niet leeg zijn.");
+                    }
+
+                    string password = "1";
+                    string confirmedPassword = "2";
+
+                    while (password != confirmedPassword)
+                    {
+                        Console.Write("Voer nieuw wachtwoord in: ");
+                        password = Console.ReadLine();
+                        Console.Write("Bevestig wachtwoord: ");
+                        confirmedPassword = Console.ReadLine();
+                        if (password != confirmedPassword)
+                        {
+                            Console.WriteLine("Ongeldige wachtwoordbevestiging. Probeer opnieuw");
+                        }
+                    }
+
+                    Athlete newAthlete = new Athlete(username, email, password);
+                    newAthlete.CreateNewUser();
+
+                    Console.WriteLine("Account succesvol aangemaakt!");
                 }
-
-                Athlete newAthlete = new Athlete(username, email, password);
-                newAthlete.CreateNewUser();
-
-                Console.WriteLine("Account created successfully!");
+                catch (ArgumentException ex)
+                {
+                    Console.WriteLine("Fout: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Er is een fout opgetreden bij het maken van het account: " + ex.Message);
+                }
             }
 
 
@@ -769,7 +831,7 @@ namespace CasusZuydFitV0._1.Program
                 }
                 Console.Write("Please enter your choice: ");
 
-                string choice = Console.ReadLine();
+                    string choice = Console.ReadLine();
 
                 switch (choice)
                 {
@@ -816,124 +878,163 @@ namespace CasusZuydFitV0._1.Program
 
             void RegisterForEvent(User user)
             {
-
-                Console.WriteLine("Enter the ID of the event you want to register for: ");
-                int registerID = int.Parse(Console.ReadLine());
-                Console.Clear();
-                Event? eventToRegister = Event.GetEvents().FirstOrDefault(registerEvent => registerEvent.ActivityId == registerID);
-                if (eventToRegister == null)
+                try
                 {
-                    Console.WriteLine("The entered ID does not match any event. press enter to go back to the menu");
-                    Console.ReadLine();
+                    Console.WriteLine("Voer het ID van het evenement in waarvoor u wilt registreren: ");
+                    int registerID;
+                    while (!int.TryParse(Console.ReadLine(), out registerID))
+                    {
+                        Console.WriteLine("Ongeldig ID. Voer een geheel getal in.");
+                        Console.WriteLine("Voer het ID van het evenement in waarvoor u wilt registreren: ");
+                    }
                     Console.Clear();
+
+                    Event? eventToRegister = Event.GetEvents().FirstOrDefault(registerEvent => registerEvent.ActivityId == registerID);
+                    if (eventToRegister == null)
+                    {
+                        Console.WriteLine("Het ingevoerde ID komt niet overeen met een evenement. Druk op enter om terug te gaan naar het menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
+                    else if (eventToRegister.EventParticipants.Exists(a => a.UserId == user.UserId))
+                    {
+                        Console.WriteLine("U bent al geregistreerd voor dit evenement. Druk op enter om terug te gaan naar het menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
+                    else if (eventToRegister.EventParticipants.Count < eventToRegister.EventPatricipantLimit)
+                    {
+                        LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister.ActivityId);
+                        newLogFeedback.CreateLog();
+                        Console.Clear();
+                        Console.WriteLine("U bent geregistreerd voor het evenement. Druk op enter om terug te gaan naar het menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Het evenement is vol, u kunt niet registreren. Druk op enter om terug te gaan naar het menu");
+                        Console.ReadLine();
+                        Console.Clear();
+                    }
                 }
-
-                else if (eventToRegister.EventParticipants.Exists(a => a.UserId == user.UserId))
+                catch (Exception ex)
                 {
-                    Console.WriteLine("You are already registered for this event. press enter to go back to the menu");
-                    Console.ReadLine();
-                    Console.Clear();
-                }
-                else if (eventToRegister.EventParticipants.Count < eventToRegister.EventPatricipantLimit)
-                {
-                    LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister
-                        .ActivityId);
-                    newLogFeedback.CreateLog();
-                    Console.Clear();
-                    Console.WriteLine("You have been registered for the event. press enter to go back to the menu");
-                    Console.ReadLine();
-                    Console.Clear();
-                }
-                else
-                {
-                    Console.WriteLine("The event is full, you cannot register. press enter to go back to the menu");
-                    Console.ReadLine();
-                    Console.Clear();
-
-
+                    Console.WriteLine("Er is een fout opgetreden bij het registreren voor het evenement: " + ex.Message);
                 }
             }
+
 
             void DeleteEquipment()
             {
                 try
                 {
-                    Console.WriteLine("Enter the ID of the equipment you want to delete: ");
-                    int equipmentId = Convert.ToInt32(Console.ReadLine());
+                    Console.WriteLine("Voer het ID van de apparatuur in die u wilt verwijderen: ");
+                    int equipmentId;
+                    while (!int.TryParse(Console.ReadLine(), out equipmentId))
+                    {
+                        Console.WriteLine("Ongeldig ID. Voer een geheel getal in.");
+                        Console.WriteLine("Voer het ID van de apparatuur in die u wilt verwijderen: ");
+                    }
+
                     Equipment equipmentToDelete = Equipment.GetEquipment().FirstOrDefault(equipment => equipment.EquipmentId == equipmentId);
                     if (equipmentToDelete == null)
                     {
-                        Console.WriteLine("The entered ID does not match any equipment.");
+                        Console.WriteLine("Het ingevoerde ID komt niet overeen met een apparatuur.");
                     }
                     else
                     {
-                        Console.WriteLine($"Are you sure you want to delete {equipmentToDelete.EquipmentName}?, Make sure you inform all trainers about this.");
-                        Console.WriteLine("1. Yes");
-                        Console.WriteLine("2. No");
-                        int deleteChoice = Convert.ToInt32(Console.ReadLine());
+                        Console.WriteLine($"Weet u zeker dat u {equipmentToDelete.EquipmentName} wilt verwijderen? Zorg ervoor dat u alle trainers hierover informeert.");
+                        Console.WriteLine("1. Ja");
+                        Console.WriteLine("2. Nee");
+                        int deleteChoice;
+                        while (!int.TryParse(Console.ReadLine(), out deleteChoice) || (deleteChoice != 1 && deleteChoice != 2))
+                        {
+                            Console.WriteLine("Ongeldige keuze. Voer 1 of 2 in.");
+                            Console.WriteLine("1. Ja");
+                            Console.WriteLine("2. Nee");
+                        }
                         if (deleteChoice == 1)
                         {
                             equipmentToDelete.DeleteEquipment();
-                            Console.WriteLine("Equipment deleted successfully.");
+                            Console.WriteLine("Apparatuur succesvol verwijderd.");
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
-                    Console.WriteLine("Invalid input given.");
-
+                    Console.WriteLine("Er is een fout opgetreden bij het verwijderen van de apparatuur: " + ex.Message);
                 }
             }
 
+
             void RemoveRegistration(User user)
             {
-                Athlete athlete = (Athlete)user;
-                foreach (Activity activity in athlete.ActivityList)
+                try
                 {
-                    if (activity is Event)
+                    Athlete athlete = (Athlete)user;
+                    bool foundEvent = false;
+                    foreach (Activity activity in athlete.ActivityList)
                     {
-                        Event events = (Event)activity;
-                        Console.WriteLine($"Event ID: {events.ActivityId}");
-                        Console.WriteLine($"Event Name: {events.ActivityName}");
-                        Console.WriteLine($"Event Location: {events.EventLocation}");
-                        Console.WriteLine($"Event Duration: {events.ActivityDurationMinutes}");
-                        Console.WriteLine($"Event Starting Time: {events.ActivityStartingTime}");
-                        Console.WriteLine($"Event Description: {events.ActivityDescription}");
-                        Console.WriteLine();
+                        if (activity is Event)
+                        {
+                            Event events = (Event)activity;
+                            Console.WriteLine($"Evenement ID: {events.ActivityId}");
+                            Console.WriteLine($"Evenement Naam: {events.ActivityName}");
+                            Console.WriteLine($"Evenement Locatie: {events.EventLocation}");
+                            Console.WriteLine($"Evenement Duur: {events.ActivityDurationMinutes}");
+                            Console.WriteLine($"Evenement Starttijd: {events.ActivityStartingTime}");
+                            Console.WriteLine($"Evenement Beschrijving: {events.ActivityDescription}");
+                            Console.WriteLine();
+                            foundEvent = true;
+                        }
                     }
-                }
 
-                Console.WriteLine("Enter the ID of the event you want to unregister for: ");
-                int unregisterID = int.Parse(Console.ReadLine());
-                Console.Clear();
-                Event? eventToUnregister = Event.GetEvents().FirstOrDefault(unregisterEvent => unregisterEvent.ActivityId == unregisterID);
-                if (eventToUnregister == null)
-                {
-                    Console.WriteLine("The entered ID does not match any event. press enter to go back to the menu");
-                    Console.ReadLine();
-                    Console.Clear();
-                }
-                else
-                {
-                    LogFeedback logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToUnregister.ActivityId && feedback.FeedbackAthleteId == user.UserId);
-                    if (logFeedback == null)
+                    if (!foundEvent)
                     {
-                        Console.WriteLine("You are not registered for this event. press enter to go back to the menu");
+                        Console.WriteLine("U bent niet geregistreerd voor een evenement.");
+                        return;
+                    }
+
+                    Console.WriteLine("Voer het ID van het evenement in waarvoor u zich wilt afmelden: ");
+                    int unregisterID;
+                    while (!int.TryParse(Console.ReadLine(), out unregisterID))
+                    {
+                        Console.WriteLine("Ongeldig ID. Voer een geheel getal in.");
+                        Console.WriteLine("Voer het ID van het evenement in waarvoor u zich wilt afmelden: ");
+                    }
+                    Console.Clear();
+
+                    Event? eventToUnregister = Event.GetEvents().FirstOrDefault(unregisterEvent => unregisterEvent.ActivityId == unregisterID);
+                    if (eventToUnregister == null)
+                    {
+                        Console.WriteLine("Het ingevoerde ID komt niet overeen met een evenement. Druk op enter om terug te gaan naar het menu");
                         Console.ReadLine();
                         Console.Clear();
                     }
                     else
                     {
-                        logFeedback.DeleteFeedback();
-                        Console.WriteLine("You have been unregistered for the event. press enter to go back to the menu");
-                        Console.ReadLine();
-                        Console.Clear();
+                        LogFeedback logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToUnregister.ActivityId && feedback.FeedbackAthleteId == user.UserId);
+                        if (logFeedback == null)
+                        {
+                            Console.WriteLine("U bent niet geregistreerd voor dit evenement. Druk op enter om terug te gaan naar het menu");
+                            Console.ReadLine();
+                            Console.Clear();
+                        }
+                        else
+                        {
+                            logFeedback.DeleteFeedback();
+                            Console.WriteLine("U bent afgemeld voor het evenement. Druk op enter om terug te gaan naar het menu");
+                            Console.ReadLine();
+                            Console.Clear();
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Er is een fout opgetreden bij het afmelden voor het evenement: " + ex.Message);
+                }
             }
-
-
-
         }
     }
 }
