@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CasusZuydFitV0._1.ActivityClasses;
 
-namespace CasusZuydFitV0._1
+namespace CasusZuydFitV0._1.UserClasses
 {
     public class Trainer : User
     {
@@ -21,7 +22,7 @@ namespace CasusZuydFitV0._1
             ActivityList = activitylist;
         }
 
-        public Trainer() 
+        public Trainer()
         {
 
         }

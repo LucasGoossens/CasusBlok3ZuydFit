@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CasusZuydFitV0._1.ActivityClasses;
+using CasusZuydFitV0._1.UserClasses;
+using static CasusZuydFitV0._1.DAL.DAL;
 
-namespace CasusZuydFitV0._1
+namespace CasusZuydFitV0._1.RemainingClasses
 {
     public class Workout : Activity
     {
@@ -12,7 +15,7 @@ namespace CasusZuydFitV0._1
         public Athlete WorkoutParticipant { get; set; }
         public List<Exercise> WorkoutExercises = new List<Exercise>();
 
-    
+
 
 
         public Workout(string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, Athlete exerciseParticipant)
@@ -24,9 +27,9 @@ namespace CasusZuydFitV0._1
         public Workout(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription)
         : base(activityId, activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription)
         {
-        // hmm   
+            // hmm   
         }
-        
+
         public Workout(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, Athlete activityAthlete)
         : base(activityId, activityName, activityDurationMinutes, activityStartingTime, trainer, activityDescription)
         {
@@ -35,15 +38,15 @@ namespace CasusZuydFitV0._1
 
         public static List<Workout> GetWorkouts()
         {
-            DAL.WorkoutDAL workoutdal = new DAL.WorkoutDAL();
+            WorkoutDAL workoutdal = new WorkoutDAL();
             workoutdal.GetWorkouts();
             return workoutdal.workouts;
         }
 
         public void CreateNewWorkout()
         {
-            DAL.WorkoutDAL workoutdal = new DAL.WorkoutDAL();
-            this.ActivityId = workoutdal.CreateNewWorkout(this);
+            WorkoutDAL workoutdal = new WorkoutDAL();
+            ActivityId = workoutdal.CreateNewWorkout(this);
         }
         //public void AddExercise(Exercise exercise)
         //{

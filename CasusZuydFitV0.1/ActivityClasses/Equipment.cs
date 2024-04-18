@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CasusZuydFitV0._1.DAL;
+using static CasusZuydFitV0._1.DAL.DAL;
 
-namespace CasusZuydFitV0._1
+namespace CasusZuydFitV0._1.ActivityClasses
 {
     public class Equipment
     {
@@ -48,6 +48,6 @@ namespace CasusZuydFitV0._1
             Dal.DeleteEquipment(this);
         }
 
-        
+
     }
 }

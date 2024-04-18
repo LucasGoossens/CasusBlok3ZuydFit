@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static CasusZuydFitV0._1.DAL;
+using static CasusZuydFitV0._1.DAL.DAL;
 
-namespace CasusZuydFitV0._1
+namespace CasusZuydFitV0._1.RemainingClasses
 {
     public class LogFeedback
     {
@@ -24,10 +24,10 @@ namespace CasusZuydFitV0._1
             FeedbackInfo = feedbackInfo;
         }
         public LogFeedback(int trainerId, int athleteId, int activityId)
-        {            
+        {
             FeedbackTrainerId = trainerId;
             FeedbackAthleteId = athleteId;
-            FeedbackActivityId = activityId;            
+            FeedbackActivityId = activityId;
         }
 
         //public void AddTrainer(Trainer trainer)
@@ -59,7 +59,7 @@ namespace CasusZuydFitV0._1
         }
 
         public void CreateLog()
-        {            
+        {
             LogFeedbackDAL Dal = new LogFeedbackDAL();
             Dal.CreateLogFeedback(this);
         }

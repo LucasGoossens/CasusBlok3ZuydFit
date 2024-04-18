@@ -1,19 +1,22 @@
 using System.Data.SqlClient;
-namespace CasusZuydFitV0._1
+using CasusZuydFitV0._1.ActivityClasses;
+using CasusZuydFitV0._1.RemainingClasses;
+using CasusZuydFitV0._1.UserClasses;
+namespace CasusZuydFitV0._1.DAL
 {
     public class DAL
     {
         //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
+        private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
         public class UserDAL
         {
             public List<User> users = new List<User>();
-            
+
             public User GetUser(string username, string password)
             {
                 return users.FirstOrDefault(u => u.UserName.Equals(username, StringComparison.OrdinalIgnoreCase) && u.UserPassword == password);
             }
-            
+
             public void GetUsers()
             {
                 users.Clear();
@@ -21,7 +24,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 {
                     ActivityDAL activityDAL = new ActivityDAL();
                     activityDAL.GetActivities();
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "Select * from [User]";
@@ -80,7 +83,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
-            
+
 
             // nu gebruiken we UserDAL om alle soorten Users aan te maken in SQL,
             // mogelijk dit dan opsplitsen zodat alle subclass-specific dingen apart worden uitgevoerd bij het aanmaken
@@ -88,7 +91,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
 
@@ -125,7 +128,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "DELETE FROM [User] WHERE UserId = @UserId;";
@@ -146,7 +149,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "UPDATE [User] SET UserName = @UserName, UserEmail = @UserEmail, UserPassword = @UserPassword WHERE UserId = @UserId;";
@@ -192,7 +195,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
 
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "Select * from [Activity]";
@@ -250,11 +253,11 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                                             if (athlete != null)
                                             {
                                                 Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
-                                                
+
                                                 foreach (Exercise exercise in getExerciseDal.Exercises)
                                                 {
                                                     if (exercise.WorkoutId == activityId)
-                                                    {                                                        
+                                                    {
                                                         workoutToAdd.WorkoutExercises.Add(exercise);
                                                     }
                                                 }
@@ -263,7 +266,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
 
                                             }
                                         }
-                                        
+
                                     }
                                 }
                             }
@@ -303,7 +306,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 athletes.Clear();
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "Select * from [User] Where UserType = 1";
@@ -332,7 +335,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 }
             }
 
-      
+
         }
 
         public class EquipmentDAL
@@ -343,7 +346,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 equipments.Clear();
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "Select * from Equipment";
@@ -376,7 +379,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "INSERT INTO [Equipment](EquipmentName, EquipmentDescription, EquipmentAvailability) VALUES(@EquipmentName, @EquipmentDescription, @EquipmentAvailability); SELECT SCOPE_IDENTITY();";
@@ -405,7 +408,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "UPDATE [Equipment] SET EquipmentName = @EquipmentName, EquipmentDescription = @EquipmentDescription, EquipmentAvailability = @EquipmentAvailability WHERE EquipmentId = @EquipmentId;";
@@ -430,7 +433,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "Delete [Equipment] WHERE EquipmentId = @EquipmentId;";
@@ -471,7 +474,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                     athleteDAL.GetAthlets();
 
                     // Establish a database connection
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
 
@@ -492,9 +495,9 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                                     string activityStartingTime = reader.GetString(3);
                                     string activityDescription = reader.GetString(4);
                                     int activityTrainerId = reader.GetInt32(5);
-                                    
+
                                     // Retrieve the trainer associated with the event
-                                    Trainer activityTrainer = (Trainer)trainerDAL.trainers.Find(trainer => trainer.UserId == activityTrainerId);
+                                    Trainer activityTrainer = trainerDAL.trainers.Find(trainer => trainer.UserId == activityTrainerId);
 
                                     string eventLocation = reader.GetString(7);
                                     int eventParticipantsLimit = reader.GetInt32(8);
@@ -564,7 +567,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 try
                 {
                     // Establish a database connection
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
 
@@ -588,7 +591,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                             // Execute the query and retrieve the ID of the inserted event
                             int newEventId = Convert.ToInt32(command.ExecuteScalar());
 
-                           
+
 
                             // Insert equipment associated with the event into the ActivityEquipment table
                             foreach (Equipment equipment in newEvent.Equipments)
@@ -622,7 +625,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 try
                 {
                     // Establish a database connection
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
 
@@ -646,7 +649,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                             // Execute the update query
                             command.ExecuteNonQuery();
 
-                          
+
                         }
                     }
                 }
@@ -664,7 +667,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 try
                 {
                     // Establish a database connection
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
 
@@ -701,7 +704,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 Exercises.Clear();
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "SELECT * FROM [Exercise];";
@@ -737,7 +740,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                 List<Exercise> Exercises = new List<Exercise>();
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = $"SELECT * FROM [Exercise] WHERE workoutId = {workoutId}";
@@ -775,7 +778,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "INSERT INTO [Exercise](ExerciseName, ExerciseDescription, ExerciseResult, WorkoutId) VALUES(@ExerciseName, @ExerciseDescription, @ExerciseResult, @WorkoutId);";
@@ -801,7 +804,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "UPDATE [Exercise] SET ExerciseName = @ExerciseName, ExerciseDescription = @ExerciseDescription, ExerciseResult = @ExerciseResult WHERE ExerciseId = @ExerciseId;";
@@ -830,7 +833,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "DELETE FROM [Exercise] WHERE ExerciseId = @ExerciseId;";
@@ -881,14 +884,14 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
 
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "Select * from [Activity] where Type = 'workout'";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             using (SqlDataReader reader = command.ExecuteReader())
-                            {                               
+                            {
                                 while (reader.Read())
                                 {
                                     int activityId = reader.GetInt32(0);
@@ -917,13 +920,13 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                                             foreach (Exercise exercise in getExerciseDal.Exercises)
                                             {
                                                 if (exercise.WorkoutId == activityId)
-                                                {                                                 
+                                                {
                                                     workoutToAdd.WorkoutExercises.Add(exercise);
                                                 }
                                             }
                                         }
                                     }
-                                    
+
 
                                 }
                             }
@@ -962,7 +965,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
 
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "INSERT INTO [Activity](ActivityName, ActivityDuration, ActivityStartingTime, ActivityDescription, TrainerId, Type) VALUES(@ActivityName, @ActivityDuration, @ActivityStartingTime, @ActivityDescription, @TrainerId, @Type); SELECT SCOPE_IDENTITY();";
@@ -989,7 +992,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                         }
                     }
                 }
-                 catch (SqlException sqlEx)
+                catch (SqlException sqlEx)
                 {
                     // Log SQL exceptions
                     Console.WriteLine($"SQL Exception occurred: {sqlEx.Message}");
@@ -1009,8 +1012,8 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
 
                 List<Workout> WorkoutsToReturn = new List<Workout>();
 
-                string query = $"SELECT Activity.ActivityId, ActivityName, ActivityDuration, ActivityStartingTime, ActivityDescription, Activity.TrainerId FROM LogFeedback INNER JOIN Activity ON LogFeedback.ActivityId = Activity.ActivityId WHERE Activity.Type = 'workout' AND LogFeedback.AthleteId = {athleteId}" ;
-                using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                string query = $"SELECT Activity.ActivityId, ActivityName, ActivityDuration, ActivityStartingTime, ActivityDescription, Activity.TrainerId FROM LogFeedback INNER JOIN Activity ON LogFeedback.ActivityId = Activity.ActivityId WHERE Activity.Type = 'workout' AND LogFeedback.AthleteId = {athleteId}";
+                using (SqlConnection connection = new SqlConnection(dbConString))
                 {
                     connection.Open();
                     using (SqlCommand athleteCommand = new SqlCommand(query, connection))
@@ -1053,7 +1056,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                     userDal.GetUsers();
                     ActivityDAL activityDal = new ActivityDAL();
                     activityDal.GetActivities();
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "Select * from [LogFeedback]";
@@ -1068,8 +1071,8 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                                     int trainerId = reader.GetInt32(1);
                                     int athleteId = reader.GetInt32(2);
                                     int activityId = reader.GetInt32(3);
-                                    string feedbackInfo = reader.GetString(4);                                                                     
-                                    
+                                    string feedbackInfo = reader.GetString(4);
+
                                     LogFeedback feedback = new LogFeedback(logFeedbackId, trainerId, athleteId, activityId, feedbackInfo);
                                     logFeedbacks.Add(feedback);
                                 }
@@ -1088,7 +1091,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId, FeedbackInfo) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo);";
@@ -1115,7 +1118,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "UPDATE [LogFeedback] SET TrainerId = @TrainerId, AthleteId = @AthleteId, ActivityId = @ActivityId, FeedbackInfo = @FeedbackInfo WHERE FeedbackId = @LogFeedbackId;";
@@ -1141,7 +1144,7 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
             {
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "DELETE FROM [LogFeedback] WHERE FeedbackId = @LogFeedbackId;";
@@ -1161,15 +1164,15 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
         }
 
         public class TrainerDAL
-{
-        public List<Trainer> trainers = new List<Trainer>();
+        {
+            public List<Trainer> trainers = new List<Trainer>();
 
-        public void GetTrainers()
+            public void GetTrainers()
             {
                 trainers.Clear();
                 try
                 {
-                    using (SqlConnection connection = new SqlConnection(DAL.dbConString))
+                    using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
                         string query = "SELECT * FROM [User] WHERE UserType = 2";
