@@ -63,7 +63,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
             eventDal.CreateEvent(this);
         }
 
-        public static void DisplayAllEvents(User user)
+        public static void DisplayAllEventsUser(User user)
         {
             Console.WriteLine("-----------------------");
             Console.WriteLine("Which events do you want to see?");
@@ -83,7 +83,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
             }
 
             Console.Clear();
-
+            
             switch (eventChoice)
             {
                 case 1:
@@ -108,6 +108,20 @@ namespace CasusZuydFitV0._1.ActivityClasses
                 default:
                     Console.WriteLine("Invalid choice entered.");
                     break;
+            }
+        }
+
+        public static void ShowEventsFromTrainer(User trainer)
+        {
+            Console.WriteLine("-----------------------");
+            Console.WriteLine("These are the events you are hosting:");
+            foreach (var eventItem in GetEvents())
+            {
+                if (eventItem.Trainer.UserId == trainer.UserId)
+                {
+                    Console.WriteLine($"Number of Event Participants: {eventItem.EventParticipants.Count}");
+                    eventItem.ShowEvent();
+                }
             }
         }
 
