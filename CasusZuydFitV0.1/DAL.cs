@@ -1161,10 +1161,10 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
         }
 
         public class TrainerDAL
-        {
-            public List<Trainer> trainers = new List<Trainer>();
-            public void GetTrainers()
-            //Trainer wordt opgehaald maar lijsten worden nog niet gevuld
+{
+        public List<Trainer> trainers = new List<Trainer>();
+
+        public void GetTrainers()
             {
                 trainers.Clear();
                 try
@@ -1172,32 +1172,38 @@ private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog
                     using (SqlConnection connection = new SqlConnection(DAL.dbConString))
                     {
                         connection.Open();
-                        string query = "Select * from [User] Where UserType = 2";
+                        string query = "SELECT * FROM [User] WHERE UserType = 2";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
                                 {
-                                    // Users ophalen uit database
-                                    int userId = reader.GetInt32(0);
-                                    string userName = reader.GetString(1);
-                                    string userEmail = reader.GetString(2);
-                                    string userPassword = reader.GetString(3);
+                                    int userId = reader.IsDBNull(0) ? 0 : reader.GetInt32(0);
+                                    string userName = reader.IsDBNull(1) ? "Unknown" : reader.GetString(1);
+                                    string userEmail = reader.IsDBNull(2) ? "No Email" : reader.GetString(2);
+                                    string userPassword = reader.IsDBNull(3) ? "No Password" : reader.GetString(3);
 
-                                    Trainer user = new Trainer(userId, userName, userEmail, userPassword, new List<Activity>());
-                                    trainers.Add(user);
+                                    Trainer trainer = new Trainer(userId, userName, userEmail, userPassword, new List<Activity>());
+                                    trainers.Add(trainer);
                                 }
                             }
                         }
                     }
                 }
+                catch (SqlException sqlEx)
+                {
+                    // Log SQL errors for further analysis.
+                    Console.WriteLine($"Er is een probleem met de Database. Error: {sqlEx.Message}");
+                }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                    // General error handling
+                    Console.WriteLine($"Er is een onverwacht probleem met het ophalen van gegevens uit de Database. Error: {ex.Message}");
                 }
-            }       
+            }
         }
+
     }
 }
 
