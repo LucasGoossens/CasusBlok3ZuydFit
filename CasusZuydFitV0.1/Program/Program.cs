@@ -99,65 +99,75 @@ namespace CasusZuydFitV0._1.Program
                 Console.Clear();
 
                 List<User> allUsers = User.GetUsers();
-                Console.WriteLine("Total Users: ");
+                Console.WriteLine("Totaal aantal gebruikers: ");
                 Console.WriteLine(allUsers.Count());
 
-                Console.WriteLine("List of Athletes:");
+                Console.WriteLine("Lijst met atleten:");
                 foreach (var athlete in allUsers)
                 {
                     if (athlete is Athlete)
                     {
-                        Console.WriteLine($"Athlete ID: {athlete.UserId}, Name: {athlete.UserName}, Email: {athlete.UserEmail}");
+                        Console.WriteLine($"Atleet ID: {athlete.UserId}, Naam: {athlete.UserName}, E-mail: {athlete.UserEmail}");
                     }
                 }
 
-                Console.WriteLine("Enter the name or ID of the athlete to search for:");
+                Console.WriteLine("Voer de naam of ID van de atleet in om te zoeken:");
                 string searchedAthlete = Console.ReadLine();
 
                 Athlete foundAthlete = null;
-                foreach (var athlete in allUsers)
+                try
                 {
-                    if (athlete.UserName.Equals(searchedAthlete, StringComparison.OrdinalIgnoreCase) ||
-                        athlete.UserId.ToString() == searchedAthlete)
+                    foreach (var athlete in allUsers)
                     {
-                        foundAthlete = (Athlete)athlete;
-                        break;
-                    }
-                }
-
-                if (foundAthlete != null)
-                {
-                    Console.WriteLine("Athlete found:");
-                    Console.WriteLine($"Athlete ID: {foundAthlete.UserId}, Name: {foundAthlete.UserName}, Email: {foundAthlete.UserEmail}");
-                    int optionChoice;
-                    do
-                    {
-                        Console.WriteLine("1. View all Workouts for this Athlete");
-                        Console.WriteLine("2. Create new Workout for this Athlete");
-                        optionChoice = Convert.ToInt32(Console.ReadLine());
-                        if (optionChoice != 1 && optionChoice != 2)
+                        if (athlete.UserName.Equals(searchedAthlete, StringComparison.OrdinalIgnoreCase) ||
+                            athlete.UserId.ToString() == searchedAthlete)
                         {
-                            Console.WriteLine("Invalid entry.");
+                            foundAthlete = (Athlete)athlete;
+                            break;
                         }
-                    } while (optionChoice != 1 && optionChoice != 2);
-
-                    switch (optionChoice)
-                    {
-                        case 1:
-                            DisplayFoundAthleteWorkouts(foundAthlete);
-                            break;
-                        case 2:
-                            CreateNewWorkout(foundAthlete);
-                            break;
-
                     }
 
+                    if (foundAthlete != null)
+                    {
+                        Console.WriteLine("Atleet gevonden:");
+                        Console.WriteLine($"Atleet ID: {foundAthlete.UserId}, Naam: {foundAthlete.UserName}, E-mail: {foundAthlete.UserEmail}");
+                        int optionChoice;
+                        do
+                        {
+                            Console.WriteLine("1. Bekijk alle trainingen voor deze atleet");
+                            Console.WriteLine("2. Maak een nieuwe training voor deze atleet");
+                            optionChoice = Convert.ToInt32(Console.ReadLine());
+                            if (optionChoice != 1 && optionChoice != 2)
+                            {
+                                Console.WriteLine("Ongeldige invoer.");
+                            }
+                        } while (optionChoice != 1 && optionChoice != 2);
+
+                        switch (optionChoice)
+                        {
+                            case 1:
+                                DisplayFoundAthleteWorkouts(foundAthlete);
+                                break;
+                            case 2:
+                                CreateNewWorkout(foundAthlete);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Atleet niet gevonden.");
+                    }
                 }
-                else
+                catch (ArgumentNullException)
                 {
-                    Console.WriteLine("Athlete not found.");
+                    Console.WriteLine("Fout: De invoer kan niet leeg zijn.");
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Fout: Ongeldige invoer. Voer alstublieft een geldig nummer in.");
                 }
             }
+
 
 
             User FindUser(string searchTerm)
