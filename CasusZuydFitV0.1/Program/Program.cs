@@ -766,55 +766,6 @@ namespace CasusZuydFitV0._1.Program
             }
 
 
-            void CreateAccount()
-            {
-                try
-                {
-                    Console.Write("Voer nieuwe gebruikersnaam in: ");
-                    string username = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(username))
-                    {
-                        throw new ArgumentException("Gebruikersnaam mag niet leeg zijn.");
-                    }
-
-                    Console.Write("Voer nieuw e-mailadres in: ");
-                    string email = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(email))
-                    {
-                        throw new ArgumentException("E-mailadres mag niet leeg zijn.");
-                    }
-
-                    string password = "1";
-                    string confirmedPassword = "2";
-
-                    while (password != confirmedPassword)
-                    {
-                        Console.Write("Voer nieuw wachtwoord in: ");
-                        password = Console.ReadLine();
-                        Console.Write("Bevestig wachtwoord: ");
-                        confirmedPassword = Console.ReadLine();
-                        if (password != confirmedPassword)
-                        {
-                            Console.WriteLine("Ongeldige wachtwoordbevestiging. Probeer opnieuw");
-                        }
-                    }
-
-                    Athlete newAthlete = new Athlete(username, email, password);
-                    newAthlete.CreateNewUser();
-
-                    Console.WriteLine("Account succesvol aangemaakt!");
-                }
-                catch (ArgumentException ex)
-                {
-                    Console.WriteLine("Fout: " + ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("Er is een fout opgetreden bij het maken van het account: " + ex.Message);
-                }
-            }
-
-
             void DisplayAllActivities(User user)
             {
                 Console.WriteLine("What Activities do you want to see?");
@@ -924,7 +875,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
-
+            // not implemented in flow besause of time there is no Create equipment method yet. 
             void DeleteEquipment()
             {
                 try
