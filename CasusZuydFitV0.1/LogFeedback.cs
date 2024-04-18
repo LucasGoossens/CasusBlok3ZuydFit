@@ -75,5 +75,18 @@ namespace CasusZuydFitV0._1
             LogFeedbackDAL Dal = new LogFeedbackDAL();
             Dal.DeleteLogFeedback(this);
         }
+
+          public static void CheckFeedback(User user, Activity activity)
+            {
+                LogFeedback? logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activity.ActivityId && feedback.FeedbackAthleteId == user.UserId);
+                if (logFeedback.FeedbackInfo == "")
+                { Console.WriteLine("No feedback given yet."); }
+                else if (logFeedback != null)
+                {
+                    Console.WriteLine($"Feedback for {activity.ActivityName}: {logFeedback.FeedbackInfo}");
+                }
+                else { Console.WriteLine("Something went wrong, Please contact the Servicedesk"); }
+
+            }
     }
 }

@@ -40,8 +40,12 @@ namespace CasusZuydFitV0._1
             this.ActivityId = workoutdal.CreateNewWorkout(this);
         }
 
-        public static void DisplayAllWorkouts()
+        public static void DisplayAllWorkouts(int loggedInUserid)
         {
+
+            Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUserid);
+
+
             Console.WriteLine("-----------------------");
             Console.WriteLine("All Workouts:\n");
             Console.WriteLine("-----------------------");
@@ -81,7 +85,7 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
                     Console.WriteLine($"  Result: {exercise.ExerciseResult}");
                 }
-                //CheckFeedback(currentAthlete, selectedWorkout); // You need to modify this line accordingly
+                LogFeedback.CheckFeedback(currentAthlete, selectedWorkout); // You need to modify this line accordingly
             }
             else
             {

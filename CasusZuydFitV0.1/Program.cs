@@ -639,18 +639,7 @@ namespace CasusZuydFitV0._1
 
 
 
-            void CheckFeedback(User user, Activity activity)
-            {
-                LogFeedback? logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activity.ActivityId && feedback.FeedbackAthleteId == user.UserId);
-                if (logFeedback.FeedbackInfo == "")
-                { Console.WriteLine("No feedback given yet."); }
-                else if (logFeedback != null)
-                {
-                    Console.WriteLine($"Feedback for {activity.ActivityName}: {logFeedback.FeedbackInfo}");
-                }
-                else { Console.WriteLine("Something went wrong, Please contact the Servicedesk"); }
-
-            }
+          
 
             bool Login()
             {
@@ -721,7 +710,7 @@ namespace CasusZuydFitV0._1
                         DisplayAllEvents(loggedInUser);
                         break;
                     case "2":
-                        Workout.DisplayAllWorkouts();
+                        Workout.DisplayAllWorkouts(loggedInUser.UserId);
                         break;
                     default:
                         Console.WriteLine("Invalid choice, please enter 1 or 2.");
