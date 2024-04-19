@@ -78,10 +78,6 @@ namespace CasusZuydFitV0._1.RemainingClasses
 
         //}
 
-        public void ShowFeedback()
-        {
-
-        }
 
         public static List<LogFeedback> GetFeedback()
         {

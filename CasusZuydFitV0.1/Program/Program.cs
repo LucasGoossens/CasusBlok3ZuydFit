@@ -28,6 +28,7 @@ namespace CasusZuydFitV0._1.Program
                 Console.Write(">");
 
                 string option = Console.ReadLine();
+                Console.Clear();
                 switch (option)
                 {
                     case "1":
@@ -64,6 +65,7 @@ namespace CasusZuydFitV0._1.Program
                         ManageProfile(loggedInUser);
                         break;
                     case "2":
+                        Console.Clear();
                         DisplayAllActivities(loggedInUser);
                         break;
                     case "3":
@@ -121,6 +123,7 @@ namespace CasusZuydFitV0._1.Program
 
                 Console.WriteLine("Enter the name or ID of the athlete to search:");
                 string searchedAthlete = Console.ReadLine();
+                Console.Clear();
 
                 Athlete foundAthlete = null;
                 try
@@ -311,6 +314,7 @@ namespace CasusZuydFitV0._1.Program
 
                     Console.WriteLine("Description of the workout:");
                     string newWorkoutDescription = Console.ReadLine();
+                    Console.Clear();
 
                     Trainer newWorkOutTrainer = (Trainer)loggedInUser;
 
@@ -792,6 +796,7 @@ namespace CasusZuydFitV0._1.Program
 
                     if (user != null)
                     {
+                        Console.Clear();
                         Console.WriteLine("Login successful!");
                         loggedInUser = user;
                         return true;
@@ -835,6 +840,7 @@ namespace CasusZuydFitV0._1.Program
 
                     Console.Write("Enter your choice: ");
                     string choice = Console.ReadLine();
+                    Console.Clear();
 
                     switch (choice)
                     {
