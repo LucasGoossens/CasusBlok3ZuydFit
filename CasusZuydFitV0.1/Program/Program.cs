@@ -640,24 +640,28 @@ namespace CasusZuydFitV0._1.Program
                     else if (activityToGiveFeedbackOn.Trainer.UserId == loggedInUser.UserId)
                     {
 
-                        Event eventToGiveFeedback = activityToGiveFeedbackOn as Event;
                         Console.WriteLine("All users that are signed up for this event: ");
-                        foreach (Athlete athlete in eventToGiveFeedback.EventParticipants)
+                        foreach (Athlete athlete in activityToAddFeedback.EventParticipants)
                         {
                             Console.WriteLine($"User ID: {athlete.UserId}, Name: {athlete.UserName}");
                         }
                         Console.WriteLine("Pick a UserID for the user you want to give feedback on");
                         int pickedUserId = Convert.ToInt32(Console.ReadLine());
-                        User? userToGiveFeedbackOn = User.GetUsers().FirstOrDefault(user => user.UserId == pickedUserId);
-                        logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == eventToGiveFeedback.ActivityId && feedback.FeedbackAthleteId == pickedUserId);
-
-
                         Console.Clear();
-                        Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}" + (logFeedback != null ? $" Current Feedback: {logFeedback.FeedbackInfo}" : "."));
+                        User? userToGiveFeedbackOn = User.GetUsers().FirstOrDefault(user => user.UserId == pickedUserId);
+                        logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activityToAddFeedback.ActivityId && feedback.FeedbackAthleteId == pickedUserId);
+
+
+                        
+                        Console.WriteLine($"Activity Name: {activityToGiveFeedbackOn.ActivityName}, Athlete: {userToGiveFeedbackOn.UserName}" + (logFeedback != null ? $", Current Feedback: {logFeedback.FeedbackInfo}" : "."));
 
                         Console.WriteLine("Enter the feedback you want to give: ");
                         string NewFeedback = Console.ReadLine();
                         logFeedback.UpdateFeedback(NewFeedback);
+                        Console.WriteLine("Feedback updated. press enter to go back to the main menu");
+                        Console.ReadLine();
+                        Console.Clear();
+
 
                     }
                     else
@@ -724,7 +728,9 @@ namespace CasusZuydFitV0._1.Program
                     Event newEvent = new Event(eventName, duration, startingTime.ToString("MM/dd/yyyy HH:mm:ss"), new Trainer { UserId = user.UserId }, description, equipments, location, participantLimit);
 
                     newEvent.AddEvent();
+                    Console.Clear();
                     Console.WriteLine("Event successfully created!");
+
                 }
                 catch (ArgumentException ex)
                 {
@@ -741,7 +747,7 @@ namespace CasusZuydFitV0._1.Program
                 try
                 {
                     Console.WriteLine("Enter equipment details:");
-                    Console.Write("Number of equipments: ");
+                    Console.Write("Number of equipments (Equipments not yet realized in application, enter 0): ");
                     int count;
                     while (!int.TryParse(Console.ReadLine(), out count) || count < 0)
                     {
@@ -855,6 +861,7 @@ namespace CasusZuydFitV0._1.Program
                                 Console.WriteLine("Enter the ID of the event you want to give feedback on: ");
                                 Console.WriteLine("If you don't want to give feedback, enter 0.");
                                 int IdEventToreceivefeedback = Convert.ToInt32(Console.ReadLine());
+                                Console.Clear();
                                 if (IdEventToreceivefeedback != 0)
                                 {
                                     Event eventToAddFeedback = Event.GetEvents().Find(eventItem => eventItem.ActivityId == IdEventToreceivefeedback);
@@ -917,9 +924,9 @@ namespace CasusZuydFitV0._1.Program
                         Console.WriteLine("Invalid ID. Enter a whole number.");
                         Console.WriteLine("Enter the ID of the event you want to register for: ");
                     }
-                    Console.Clear();
 
                     Event? eventToRegister = Event.GetEvents().FirstOrDefault(registerEvent => registerEvent.ActivityId == registerID);
+                    Console.Clear();
                     if (eventToRegister == null)
                     {
                         Console.WriteLine("The entered ID does not match any event. Press enter to return to the menu");
