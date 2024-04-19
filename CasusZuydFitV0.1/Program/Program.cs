@@ -518,8 +518,6 @@ namespace CasusZuydFitV0._1.Program
                             Console.Clear();
                             user.UpdateUser(newUserName, newUserEmail, newUserPassword);
                             Console.WriteLine("Profile updated.");
-                            Console.ReadLine();
-                            Environment.Exit(0);
                             break;
                         case 2:
                             Console.WriteLine("Are you sure you want to delete your profile?");
@@ -871,6 +869,7 @@ namespace CasusZuydFitV0._1.Program
                         case "4":
                             if (user is Athlete)
                             {
+                                Console.Clear();
                                 RemoveRegistration(user);
                             }
                             else
@@ -925,9 +924,11 @@ namespace CasusZuydFitV0._1.Program
                     }
                     else if (eventToRegister.EventParticipants.Count < eventToRegister.EventPatricipantLimit)
                     {
-                        LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister.ActivityId);
+                        string emptyString = "";
+                        LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister.ActivityId, emptyString);
                         newLogFeedback.CreateLog();
-                        Console.Clear();
+                        Athlete athlete = (Athlete)user;
+                        athlete.addActivity(eventToRegister);
                         Console.WriteLine("You are registered for the event. Press enter to return to the menu");
                         Console.ReadLine();
                         Console.Clear();
@@ -1045,6 +1046,8 @@ namespace CasusZuydFitV0._1.Program
                         {
                             logFeedback.DeleteFeedback();
                             Console.WriteLine("You are unregistered from the event. Press enter to return to the menu");
+                            
+                            athlete.removeActivity(unregisterID);
                             Console.ReadLine();
                             Console.Clear();
                         }
