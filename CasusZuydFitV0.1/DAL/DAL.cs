@@ -8,7 +8,7 @@ namespace CasusZuydFitV0._1.DAL
     public class DAL
     {
         //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
+        private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
         public class UserDAL
         {
             public List<User> users = new List<User>();
@@ -396,10 +396,10 @@ namespace CasusZuydFitV0._1.DAL
                         dbCommand.Parameters.AddWithValue("@EquipmentDescription", equipment.EquipmentDescription);
                         dbCommand.Parameters.AddWithValue("@EquipmentAvailability", equipment.EquipmentAvailability);
 
-                        // ExecuteScalar is used to retrieve the single value from the query
+ 
                         int insertedEquipmentId = Convert.ToInt32(dbCommand.ExecuteScalar());
 
-                        // Now you can use the insertedEquipmentId as needed
+
                         Console.WriteLine($"New EquipmentId: {insertedEquipmentId}");
                     }
                 }
@@ -1115,7 +1115,6 @@ namespace CasusZuydFitV0._1.DAL
                         string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId) VALUES(@TrainerId, @AthleteId, @ActivityId);";
 
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
-                        Console.WriteLine(feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
                         dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
@@ -1141,7 +1140,6 @@ namespace CasusZuydFitV0._1.DAL
                         string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId, FeedbackInfo, ActivityDate) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo, @ActivityDate);";
 
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
-                        Console.WriteLine(feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
                         dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);

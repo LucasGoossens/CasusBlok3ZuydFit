@@ -51,7 +51,7 @@ namespace CasusZuydFitV0._1
         public static void DisplayAllWorkouts(int loggedInUserid)
         {
             Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUserid);
-
+            Console.Clear();
             Console.WriteLine("-----------------------");
             Console.WriteLine("All Workouts:\n");
             Console.WriteLine("-----------------------");
@@ -78,7 +78,7 @@ namespace CasusZuydFitV0._1
 
             selectedNumber--;
             Workout selectedWorkout = GetWorkouts()[selectedNumber];
-
+            Console.Clear();
             Console.WriteLine($"\nSelected Workout: {selectedWorkout.ActivityName}");
             Console.WriteLine($"Duration (minutes): {selectedWorkout.ActivityDurationMinutes}");
             Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
@@ -98,6 +98,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("1. Log this Workout session.");
                 Console.WriteLine("2. Return to main.");
                 int option = Convert.ToInt32(Console.ReadLine());
+                Console.Clear();
 
                 switch (option)
                 {
@@ -148,8 +149,8 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("What was the result for this exercise?");
                 string exerciseResult = Console.ReadLine();
                 feedbackResult += $"\nExercise Name: {exercise.ExerciseName}\nResult: {exerciseResult}";
+                Console.Clear();
             }
-            
             LogFeedback newLogFeedback = new LogFeedback(this.Trainer.UserId, this.WorkoutParticipant.UserId, this.ActivityId, feedbackResult, workoutDate);
             newLogFeedback.CreateLog();
         }
