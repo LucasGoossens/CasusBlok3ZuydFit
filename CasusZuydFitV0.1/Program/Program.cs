@@ -589,14 +589,18 @@ namespace CasusZuydFitV0._1.Program
 
                         for (int i = 0; i < workoutLogFeedback.Count(); i++)
                         {
-                            Console.WriteLine(workoutLogFeedback[i].FeedbackDate);
+                            Console.WriteLine($"{i}: " + workoutLogFeedback[i].ActivityDate);
                         }
                         Console.WriteLine("4");
                         try
                         {
                             int workoutDateOption = Convert.ToInt32(Console.ReadLine());
                             Console.WriteLine("5");
-                            //workoutLogFeedback[i].UpdateFeedback();
+                            Console.WriteLine("Workout date: " + workoutLogFeedback[workoutDateOption]);
+                            Console.WriteLine("Results: " + workoutLogFeedback[workoutDateOption].FeedbackInfo);
+                            Console.WriteLine("Enter feedback on this workout: ");
+                            string FeedbackUpdate = Console.ReadLine();
+                            workoutLogFeedback[workoutDateOption].UpdateFeedback(FeedbackUpdate);
                             // update log eerst fixen, maar goed op weg
                         }
                         catch

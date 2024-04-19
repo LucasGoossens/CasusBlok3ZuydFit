@@ -92,7 +92,7 @@ namespace CasusZuydFitV0._1
                 {
                     Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
                     Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
-                    //Console.WriteLine($"  Result: {exercise.ExerciseResult}");
+                 
                 }
                 //LogFeedback.CheckFeedback(currentAthlete, selectedWorkout); // You need to modify this line accordingly
                 Console.WriteLine("1. Log this Workout session.");
@@ -150,7 +150,7 @@ namespace CasusZuydFitV0._1
                 feedbackResult += $"\nExercise Name: {exercise.ExerciseName}\nResult: {exerciseResult}";
             }
             
-            LogFeedback newLogFeedback = new LogFeedback(this.Trainer.UserId, this.WorkoutParticipant.UserId, this.ActivityId, feedbackResult);
+            LogFeedback newLogFeedback = new LogFeedback(this.Trainer.UserId, this.WorkoutParticipant.UserId, this.ActivityId, feedbackResult, workoutDate);
             newLogFeedback.CreateLog();
         }
 

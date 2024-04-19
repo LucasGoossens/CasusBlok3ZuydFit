@@ -2,12 +2,13 @@ using System.Data.SqlClient;
 using CasusZuydFitV0._1.ActivityClasses;
 using CasusZuydFitV0._1.RemainingClasses;
 using CasusZuydFitV0._1.UserClasses;
+using static CasusZuydFitV0._1.DAL.DAL;
 namespace CasusZuydFitV0._1.DAL
 {
     public class DAL
     {
         //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
-        private static readonly string dbConString = "Data Source=FLOYDSCHOOL; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
+        private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
         public class UserDAL
         {
             public List<User> users = new List<User>();
@@ -1137,14 +1138,16 @@ namespace CasusZuydFitV0._1.DAL
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
-                        string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId, FeedbackInfo) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo);";
+                        string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId, FeedbackInfo, ActivityDate) VALUES(@TrainerId, @AthleteId, @ActivityId, @FeedbackInfo, @ActivityDate);";
 
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
                         Console.WriteLine(feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
                         dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
-                        dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo); // hier een soort string van maken die te printen is
+                        dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo);
+                        dbCommand.Parameters.AddWithValue("@ActivityDate", feedback.ActivityDate);
+                            // hier een soort string van maken die te printen is
                         // hier niet feedbackDate vgm
                         dbCommand.ExecuteNonQuery();
                     }
@@ -1163,15 +1166,17 @@ namespace CasusZuydFitV0._1.DAL
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
-                        string query = "UPDATE [LogFeedback] SET TrainerId = @TrainerId, AthleteId = @AthleteId, ActivityId = @ActivityId, FeedbackInfo = @FeedbackInfo WHERE FeedbackId = @LogFeedbackId;";
+                        // controleer of het in database van iedereen "FeedbackId" heet en niet "LogFeedbackId"
+                        string query = "UPDATE [LogFeedback] SET TrainerId = @TrainerId, AthleteId = @AthleteId, ActivityId = @ActivityId, FeedbackInfo = @FeedbackInfo WHERE FeedbackId = @FeedbackId;";
 
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
-
+                        // volgens mij hoeft hier niet alle parameters opnieuw geupdate worden, wordt door beide functionaliteiten deze method gebruiken
+                        // alleen FeedbackInfo geupdate. 
                         dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
                         dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
                         dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
                         dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo);
-                        dbCommand.Parameters.AddWithValue("@LogFeedbackId", feedback.FeedbackId);
+                        dbCommand.Parameters.AddWithValue("@FeedbackId", feedback.FeedbackId);
 
                         dbCommand.ExecuteNonQuery();
                     }
