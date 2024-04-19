@@ -929,7 +929,7 @@ namespace CasusZuydFitV0._1.Program
                     else if (eventToRegister.EventParticipants.Count < eventToRegister.EventPatricipantLimit)
                     {
                         string emptyString = "";
-                        LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister.ActivityId, emptyString);
+                        LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister.ActivityId, emptyString, emptyString);
                         newLogFeedback.CreateLog();
                         Athlete athlete = (Athlete)user;
                         athlete.addActivity(eventToRegister);
