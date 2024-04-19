@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,27 +17,49 @@ namespace CasusZuydFitV0._1.RemainingClasses
         public int FeedbackAthleteId { get; set; }
         public int FeedbackActivityId { get; set; }
         public string? FeedbackInfo { get; set; }
+        public string FeedbackDate { get; set; }
 
-        public LogFeedback(int feedbackId, int trainerId, int athleteId, int activityId, string feedbackInfo)
+        public LogFeedback(int feedbackId, int trainerId, int athleteId, int activityId, string feedbackInfo, string feedbackDate)
         {
             FeedbackId = feedbackId;
             FeedbackTrainerId = trainerId;
             FeedbackAthleteId = athleteId;
             FeedbackActivityId = activityId;
             FeedbackInfo = feedbackInfo;
+            FeedbackDate = feedbackDate;
         }
-        public LogFeedback(int trainerId, int athleteId, int activityId, string feedbackInfo)
+        public LogFeedback(int trainerId, int athleteId, int activityId, string feedbackInfo, string feedbackDate)
         {            
             FeedbackTrainerId = trainerId;
             FeedbackAthleteId = athleteId;
             FeedbackActivityId = activityId;
             FeedbackInfo = feedbackInfo;
+            FeedbackDate = feedbackDate;
         }
-        public LogFeedback(int trainerId, int athleteId, int activityId)
+        public LogFeedback(int trainerId, int athleteId, int activityId, string feedbackInfoOrDate)
         {
             FeedbackTrainerId = trainerId;
             FeedbackAthleteId = athleteId;
             FeedbackActivityId = activityId;
+            
+            // De constructor kan of feedbackInfo of feedbackDate aannemen en controleert hier welke van de twee gebruikt wordt
+            if (DateTime.TryParseExact(feedbackInfoOrDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+            {            
+                FeedbackDate = feedbackInfoOrDate;
+            }
+            else
+            {
+                
+                FeedbackInfo = feedbackInfoOrDate;
+            }
+        }
+
+
+        public LogFeedback(int trainerId, int athleteId, int activityId)
+        {
+            FeedbackTrainerId = trainerId;
+            FeedbackAthleteId = athleteId;
+            FeedbackActivityId = activityId;            
         }
 
         //public void AddTrainer(Trainer trainer)
@@ -71,6 +94,11 @@ namespace CasusZuydFitV0._1.RemainingClasses
         {
             LogFeedbackDAL Dal = new LogFeedbackDAL();
             Dal.CreateLogFeedback(this);
+        }
+        public void CreateInitialLog()        
+        {
+            LogFeedbackDAL Dal = new LogFeedbackDAL();
+            Dal.CreateInitialLogFeedback(this);
         }
 
         public void UpdateFeedback(string newFeedback)

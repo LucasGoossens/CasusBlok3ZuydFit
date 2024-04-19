@@ -1074,14 +1074,19 @@ namespace CasusZuydFitV0._1.DAL
                             {
                                 while (reader.Read())
                                 {
+                                    if (reader.IsDBNull(5))
+                                    {
+                                        continue;
+                                    }
                                     // Users ophalen uit database
                                     int logFeedbackId = reader.GetInt32(0);
                                     int trainerId = reader.GetInt32(1);
                                     int athleteId = reader.GetInt32(2);
                                     int activityId = reader.GetInt32(3);
                                     string feedbackInfo = reader.GetString(4);
+                                    string feedbackDate = reader.GetString(5); // deze is null bij alle initialLogs die aangemaakt worden bij het eerst aanmaken van een workout
 
-                                    LogFeedback feedback = new LogFeedback(logFeedbackId, trainerId, athleteId, activityId, feedbackInfo);
+                                    LogFeedback feedback = new LogFeedback(logFeedbackId, trainerId, athleteId, activityId, feedbackInfo, feedbackDate);
                                     logFeedbacks.Add(feedback);
                                 }
                             }
@@ -1090,7 +1095,37 @@ namespace CasusZuydFitV0._1.DAL
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
+                    Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.StackTrace}");
+                }
+            }
+
+            /// <summary> CreateInitialLogFeedback 
+            /// Deze is omdat LogFeedback in de database gebruikt wordt als link tussen User en Activity,
+            /// bij het aanmaken van een nieuwe Workout "template" wordt geen datum meegegeven en geen FeedbackInfo
+            /// </summary>
+
+            public void CreateInitialLogFeedback(LogFeedback feedback)
+            {
+                try
+                {
+                    using (SqlConnection connection = new SqlConnection(dbConString))
+                    {
+                        connection.Open();
+                        string query = "INSERT INTO [LogFeedback](TrainerId, AthleteId, ActivityId) VALUES(@TrainerId, @AthleteId, @ActivityId);";
+
+                        using SqlCommand dbCommand = new SqlCommand(query, connection);
+                        Console.WriteLine(feedback.FeedbackTrainerId);
+                        dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
+                        dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
+                        dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
+                        
+                        
+                        dbCommand.ExecuteNonQuery();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Er is een fout opgedreden met het aanmaken van logbook in de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
 
@@ -1110,7 +1145,7 @@ namespace CasusZuydFitV0._1.DAL
                         dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
                         dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
                         dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo); // hier een soort string van maken die te printen is
-
+                        // hier niet feedbackDate vgm
                         dbCommand.ExecuteNonQuery();
                     }
                 }

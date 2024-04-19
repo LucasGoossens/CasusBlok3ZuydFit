@@ -6,6 +6,7 @@ using CasusZuydFitV0._1.UserClasses;
 using CasusZuydFitV0._1.DAL;
 using CasusZuydFitV0._1.RemainingClasses;
 using System.Threading.Channels;
+using System.Globalization;
 
 
 namespace CasusZuydFitV0._1
@@ -115,20 +116,31 @@ namespace CasusZuydFitV0._1
 
         void LogNewWorkout()
         {
-            string feedbackResult = "";
+            string feedbackResult = "";         
             string workoutDate;
+            bool isValidDate = false;
+
             do
             {
-                Console.WriteLine("Enter Workout date (DD/MM/YYYY)");
+                Console.WriteLine("Enter Workout date (YYYY/MM/DD)");
                 workoutDate = Console.ReadLine();
+
                 if (workoutDate.Length != 10)
                 {
-                    Console.WriteLine("Enter a valid date.");
+                    Console.WriteLine("Enter a valid date in the format YYYY/MM/DD.");
+                    continue;
+                }
+                // Controleert of geldige DateTime formaat is ingevoerd
+                if (!DateTime.TryParseExact(workoutDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
+                {
+                    Console.WriteLine("Enter a valid date in the format YYYY/MM/DD.");
+                }
+                else
+                {                 
+                    isValidDate = true;
                 }
             }
-            while (workoutDate.Length != 10);
-
-            feedbackResult += "Workout Date: " + workoutDate;
+            while (!isValidDate);                       
 
             foreach (Exercise exercise in this.WorkoutExercises)
             {
@@ -137,7 +149,7 @@ namespace CasusZuydFitV0._1
                 string exerciseResult = Console.ReadLine();
                 feedbackResult += $"\nExercise Name: {exercise.ExerciseName}\nResult: {exerciseResult}";
             }
-
+            
             LogFeedback newLogFeedback = new LogFeedback(this.Trainer.UserId, this.WorkoutParticipant.UserId, this.ActivityId, feedbackResult);
             newLogFeedback.CreateLog();
         }

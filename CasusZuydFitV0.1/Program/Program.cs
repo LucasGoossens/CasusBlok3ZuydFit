@@ -318,8 +318,8 @@ namespace CasusZuydFitV0._1.Program
                     newWorkout.CreateNewWorkout();
                     int workoutIdToAddToExercise = newWorkout.ActivityId;
 
-                    //LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
-                    //newLogFeedback.CreateLog();
+                    LogFeedback newLogFeedback = new LogFeedback(newWorkOutTrainer.UserId, newWorkOutAthlete.UserId, newWorkout.ActivityId);
+                    newLogFeedback.CreateInitialLog();
 
                     int addExerciseOption = 1;
                     while (addExerciseOption == 1)
@@ -554,11 +554,12 @@ namespace CasusZuydFitV0._1.Program
 
             void TrainerGivesFeedbackOnWorkout(User user, Workout activityToAddFeedback, int idReceiver)
             {
-                List<LogFeedback> workoutLogFeedback = null;
+                List<LogFeedback> workoutLogFeedback = new List<LogFeedback>();
                 try
                 {
                     Console.Clear();
                     Activity activityToGiveFeedbackOn = activityToAddFeedback;
+                    Console.WriteLine("1");
                     if (activityToGiveFeedbackOn == null)
                     {
                         Console.WriteLine("A non-existing workout was given");
@@ -567,25 +568,42 @@ namespace CasusZuydFitV0._1.Program
                     else if (activityToGiveFeedbackOn.Trainer.UserId == loggedInUser.UserId)
                     {
                         Workout WorkoutToGiveFeedbackOn = activityToGiveFeedbackOn as Workout;
+                        Console.WriteLine("2");
                         //List<LogFeedback> logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == WorkoutToGiveFeedbackOn.ActivityId && feedback.FeedbackAthleteId == idReceiver);
-                        workoutLogFeedback = (List<LogFeedback>?)LogFeedback.GetFeedback().Where(log => log.FeedbackActivityId == activityToGiveFeedbackOn.ActivityId);
+                        //workoutLogFeedback = (List<LogFeedback>?)LogFeedback.GetFeedback().Where(log => log.FeedbackActivityId == activityToGiveFeedbackOn.ActivityId);
 
+                        List<LogFeedback> workoutLogFeedbackToFilter = LogFeedback.GetFeedback();
+
+                        foreach(LogFeedback log in workoutLogFeedbackToFilter)
+                        {
+                            if (log.FeedbackActivityId == activityToGiveFeedbackOn.ActivityId)
+                            {
+                                workoutLogFeedback.Add(log as LogFeedback);
+                            }
+                        }
+                        Console.WriteLine("3");
+                        if(workoutLogFeedback.Count < 1)
+                        {
+                            Console.WriteLine("This Athlete has not logged this workout yet.");
+                            return;
+                        }
                         Console.WriteLine("Choose workout date to give feedback on.");
 
                         for (int i = 0; i < workoutLogFeedback.Count(); i++)
                         {
-                            Console.WriteLine(workoutLogFeedback[i].FeedbackInfo[..9]);
+                            Console.WriteLine(workoutLogFeedback[i].FeedbackDate);
                         }
-
+                        Console.WriteLine("4");
                         try
                         {
                             int workoutDateOption = Convert.ToInt32(Console.ReadLine());
+                            Console.WriteLine("5");
                             //workoutLogFeedback[i].UpdateFeedback();
                             // update log eerst fixen, maar goed op weg
                         }
                         catch
                         {
-                            Console.WriteLine("Invalid input given.");
+                            Console.WriteLine("Invalid input given. 1");
                         }
 
                     }
@@ -597,7 +615,7 @@ namespace CasusZuydFitV0._1.Program
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Invalid input given.");
+                    Console.WriteLine("Invalid input given. 2");
                 }
             }
 
