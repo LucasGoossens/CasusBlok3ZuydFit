@@ -17,7 +17,7 @@ namespace CasusZuydFitV0._1.RemainingClasses
         public int FeedbackAthleteId { get; set; }
         public int FeedbackActivityId { get; set; }
         public string? FeedbackInfo { get; set; }
-        public string FeedbackDate { get; set; }
+        public string ActivityDate{ get; set; }
 
         public LogFeedback(int feedbackId, int trainerId, int athleteId, int activityId, string feedbackInfo, string feedbackDate)
         {
@@ -26,7 +26,7 @@ namespace CasusZuydFitV0._1.RemainingClasses
             FeedbackAthleteId = athleteId;
             FeedbackActivityId = activityId;
             FeedbackInfo = feedbackInfo;
-            FeedbackDate = feedbackDate;
+            ActivityDate= feedbackDate;
         }
         public LogFeedback(int trainerId, int athleteId, int activityId, string feedbackInfo, string feedbackDate)
         {            
@@ -34,7 +34,7 @@ namespace CasusZuydFitV0._1.RemainingClasses
             FeedbackAthleteId = athleteId;
             FeedbackActivityId = activityId;
             FeedbackInfo = feedbackInfo;
-            FeedbackDate = feedbackDate;
+            ActivityDate= feedbackDate;
         }
         public LogFeedback(int trainerId, int athleteId, int activityId, string feedbackInfoOrDate)
         {
@@ -45,7 +45,7 @@ namespace CasusZuydFitV0._1.RemainingClasses
             // De constructor kan of feedbackInfo of feedbackDate aannemen en controleert hier welke van de twee gebruikt wordt
             if (DateTime.TryParseExact(feedbackInfoOrDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
             {            
-                FeedbackDate = feedbackInfoOrDate;
+                ActivityDate= feedbackInfoOrDate;
             }
             else
             {
