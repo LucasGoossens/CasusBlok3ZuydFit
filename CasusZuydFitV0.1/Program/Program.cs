@@ -140,6 +140,7 @@ namespace CasusZuydFitV0._1.Program
 
                     if (foundAthlete != null)
                     {
+                        Console.Clear();
                         Console.WriteLine("Athlete found:");
                         Console.WriteLine($"Athlete ID: {foundAthlete.UserId}, Name: {foundAthlete.UserName}, Email: {foundAthlete.UserEmail}");
                         int optionChoice;
@@ -333,6 +334,7 @@ namespace CasusZuydFitV0._1.Program
                         Console.WriteLine("2. Save Workout");
 
                         addExerciseOption = Convert.ToInt32(Console.ReadLine());
+                        Console.Clear();
 
                         switch (addExerciseOption)
                         {
@@ -361,68 +363,6 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
-            void DisplayAllWorkouts() // uhhh
-                                      // 
-            {
-                try
-                {
-                    Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUser.UserId);
-
-                    Console.WriteLine("-----------------------");
-                    Console.WriteLine("All Workouts:\n");
-                    Console.WriteLine("-----------------------");
-                    int workoutNumber = 0;
-                    foreach (Workout workout in Workout.GetWorkouts())
-                    {
-                        workoutNumber++;
-                        if (currentAthlete.ActivityList.Contains(workout))
-                        {
-                            Console.WriteLine($"{workoutNumber}. Workout Name: {workout.ActivityName}");
-                            Console.WriteLine($"   Duration (minutes): {workout.ActivityDurationMinutes}");
-                            Console.WriteLine($"   Trainer: {workout.Trainer.UserName}");
-                            Console.WriteLine($"   Description: {workout.ActivityDescription}");
-                            Console.WriteLine("---------------------------------------------------------");
-                        }
-                    }
-
-                    Console.WriteLine("\nEnter the number of the workout to view details and exercises:");
-                    if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > Workout.GetWorkouts().Count)
-                    {
-                        Console.WriteLine("Invalid selection. Restart and enter a valid workout number.");
-                        return;
-                    }
-
-                    selectedNumber--;
-                    Workout selectedWorkout = Workout.GetWorkouts()[selectedNumber];
-
-                    Console.WriteLine($"\nSelected Workout: {selectedWorkout.ActivityName}");
-                    Console.WriteLine($"Duration (minutes): {selectedWorkout.ActivityDurationMinutes}");
-                    Console.WriteLine($"Starting Time: {selectedWorkout.ActivityStartingTime}");
-                    Console.WriteLine($"Trainer: {selectedWorkout.Trainer.UserName}");
-                    Console.WriteLine($"Description: {selectedWorkout.ActivityDescription}");
-
-                    Console.WriteLine("\nExercises:");
-                    if (selectedWorkout.WorkoutExercises != null && selectedWorkout.WorkoutExercises.Count > 0)
-                    {
-                        foreach (Exercise exercise in selectedWorkout.WorkoutExercises)
-                        {
-                            Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
-                            Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
-                            Console.WriteLine($"  Result: {exercise.ExerciseResult}");
-                        }
-                        LogFeedback.CheckFeedback(currentAthlete, selectedWorkout);
-                    }
-                    else
-                    {
-                        Console.WriteLine("This workout has no listed exercises.");
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("An error occurred while displaying workouts: " + ex.Message);
-                }
-            }
-
             void DisplayFoundAthleteWorkouts(Athlete foundAthlete)
             {
                 try
@@ -434,7 +374,7 @@ namespace CasusZuydFitV0._1.Program
                         Console.WriteLine("No workouts registered.");
                         return;
                     }
-
+                    Console.Clear();
                     Console.WriteLine("Workouts of " + foundAthlete.UserName + ":");
                     foreach (Workout workout in allWorkoutsFromFoundAthlete)
                     {
@@ -561,7 +501,7 @@ namespace CasusZuydFitV0._1.Program
                 {
                     Console.Clear();
                     Activity activityToGiveFeedbackOn = activityToAddFeedback;
-                    Console.WriteLine("1");
+                    //1
                     if (activityToGiveFeedbackOn == null)
                     {
                         Console.WriteLine("A non-existing workout was given");
@@ -570,7 +510,7 @@ namespace CasusZuydFitV0._1.Program
                     else if (activityToGiveFeedbackOn.Trainer.UserId == loggedInUser.UserId)
                     {
                         Workout WorkoutToGiveFeedbackOn = activityToGiveFeedbackOn as Workout;
-                        Console.WriteLine("2");
+                        //2
                         //List<LogFeedback> logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == WorkoutToGiveFeedbackOn.ActivityId && feedback.FeedbackAthleteId == idReceiver);
                         //workoutLogFeedback = (List<LogFeedback>?)LogFeedback.GetFeedback().Where(log => log.FeedbackActivityId == activityToGiveFeedbackOn.ActivityId);
 
@@ -583,7 +523,7 @@ namespace CasusZuydFitV0._1.Program
                                 workoutLogFeedback.Add(log as LogFeedback);
                             }
                         }
-                        Console.WriteLine("3");
+                        //3
                         if(workoutLogFeedback.Count < 1)
                         {
                             Console.WriteLine("This Athlete has not logged this workout yet.");
@@ -595,15 +535,16 @@ namespace CasusZuydFitV0._1.Program
                         {
                             Console.WriteLine($"{i}: " + workoutLogFeedback[i].ActivityDate);
                         }
-                        Console.WriteLine("4");
+                        //4
                         try
                         {
                             int workoutDateOption = Convert.ToInt32(Console.ReadLine());
-                            Console.WriteLine("5");
+                            //5
                             Console.WriteLine("Workout date: " + workoutLogFeedback[workoutDateOption]);
                             Console.WriteLine("Results: " + workoutLogFeedback[workoutDateOption].FeedbackInfo);
                             Console.WriteLine("Enter feedback on this workout: ");
                             string FeedbackUpdate = Console.ReadLine();
+                            Console.Clear();
                             workoutLogFeedback[workoutDateOption].UpdateFeedback(FeedbackUpdate);
                             // update log eerst fixen, maar goed op weg
                         }
@@ -657,6 +598,7 @@ namespace CasusZuydFitV0._1.Program
 
                         Console.WriteLine("Enter the feedback you want to give: ");
                         string NewFeedback = Console.ReadLine();
+                        Console.Clear();
                         logFeedback.UpdateFeedback(NewFeedback);
                         Console.WriteLine("Feedback updated. press enter to go back to the main menu");
                         Console.ReadLine();
