@@ -1167,14 +1167,14 @@ namespace CasusZuydFitV0._1.DAL
                     {
                         connection.Open();
                         // controleer of het in database van iedereen "FeedbackId" heet en niet "LogFeedbackId"
-                        string query = "UPDATE [LogFeedback] SET TrainerId = @TrainerId, AthleteId = @AthleteId, ActivityId = @ActivityId, FeedbackInfo = @FeedbackInfo WHERE FeedbackId = @FeedbackId;";
+                        string query = "UPDATE [LogFeedback] SET FeedbackInfo = FeedbackInfo + @FeedbackInfo WHERE FeedbackId = @FeedbackId;";
 
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
                         // volgens mij hoeft hier niet alle parameters opnieuw geupdate worden, wordt door beide functionaliteiten deze method gebruiken
                         // alleen FeedbackInfo geupdate. 
-                        dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
-                        dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
-                        dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
+                        //dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
+                        //dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
+                        //dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
                         dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo);
                         dbCommand.Parameters.AddWithValue("@FeedbackId", feedback.FeedbackId);
 
