@@ -546,7 +546,7 @@ namespace CasusZuydFitV0._1.Program
                             string FeedbackUpdate = $"\n\nFEEDBACK FROM: {activityToGiveFeedbackOn.Trainer.UserName}" + Console.ReadLine();
                             Console.Clear();
                             workoutLogFeedback[workoutDateOption].UpdateFeedback(FeedbackUpdate);
-                            // update log eerst fixen, maar goed op weg
+                            
                         }
                         catch
                         {
@@ -800,14 +800,29 @@ namespace CasusZuydFitV0._1.Program
                             else
                             {
                                 Event.ShowEventsFromTrainer(loggedInUser);
-                                Console.WriteLine("Enter the ID of the event you want to give feedback on: ");
-                                Console.WriteLine("If you don't want to give feedback, enter 0.");
+                                Console.WriteLine("Enter Event ID to view details: ");
+                                Console.WriteLine("To return enter 0."); // controleer dit
                                 int IdEventToreceivefeedback = Convert.ToInt32(Console.ReadLine());
                                 Console.Clear();
                                 if (IdEventToreceivefeedback != 0)
                                 {
+                                    Console.WriteLine("1. Edit event.");
+                                    Console.WriteLine("2. Give feedback. ");
+                                    string editOption = Console.ReadLine();
                                     Event eventToAddFeedback = Event.GetEvents().Find(eventItem => eventItem.ActivityId == IdEventToreceivefeedback);
-                                    TrainerGivesFeedbackOnEvent(loggedInUser, eventToAddFeedback);
+                                    if (editOption == "1")
+                                    {
+                                        eventToAddFeedback.EditEvent();
+                                    }
+                                    else if (editOption == "2")
+                                    {                                        
+                                        TrainerGivesFeedbackOnEvent(loggedInUser, eventToAddFeedback);
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Invalid option.");
+                                        return;
+                                    }
                                 }
                             }
                             break;
