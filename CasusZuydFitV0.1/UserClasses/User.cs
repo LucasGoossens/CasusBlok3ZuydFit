@@ -36,7 +36,7 @@ namespace CasusZuydFitV0._1.UserClasses
 
         }
 
-        // dit misschien weg dan aangezien t al in DAL gebeurd?
+
         static public List<User> GetUsers()
         {
             UserDAL Dal = new UserDAL();

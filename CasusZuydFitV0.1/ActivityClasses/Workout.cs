@@ -161,51 +161,51 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine("Invalid input given. ");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Console.WriteLine("An error occurred while gathering workout session details: " + ex.Message);
 
             }
         }
         void LogNewWorkout()
+        {
+            string feedbackResult = "";
+            string workoutDate;
+            bool isValidDate = false;
+
+            do
             {
-                string feedbackResult = "";
-                string workoutDate;
-                bool isValidDate = false;
+                Console.WriteLine("Enter Workout date (YYYY/MM/DD)");
+                workoutDate = Console.ReadLine();
 
-                do
+                if (workoutDate.Length != 10)
                 {
-                    Console.WriteLine("Enter Workout date (YYYY/MM/DD)");
-                    workoutDate = Console.ReadLine();
-
-                    if (workoutDate.Length != 10)
-                    {
-                        Console.WriteLine("Enter a valid date in the format YYYY/MM/DD.");
-                        continue;
-                    }
-                    // Controleert of geldige DateTime formaat is ingevoerd
-                    if (!DateTime.TryParseExact(workoutDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
-                    {
-                        Console.WriteLine("Enter a valid date in the format YYYY/MM/DD.");
-                    }
-                    else
-                    {
-                        isValidDate = true;
-                    }
+                    Console.WriteLine("Enter a valid date in the format YYYY/MM/DD.");
+                    continue;
                 }
-                while (!isValidDate);
-
-                foreach (Exercise exercise in this.WorkoutExercises)
+                // Controleert of geldige DateTime formaat is ingevoerd
+                if (!DateTime.TryParseExact(workoutDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
                 {
-                    Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
-                    Console.WriteLine("What was the result for this exercise?");
-                    string exerciseResult = Console.ReadLine();
-                    feedbackResult += $"\nExercise Name: {exercise.ExerciseName}\nResult: {exerciseResult}";
-                    Console.Clear();
+                    Console.WriteLine("Enter a valid date in the format YYYY/MM/DD.");
                 }
-                LogFeedback newLogFeedback = new LogFeedback(this.Trainer.UserId, this.WorkoutParticipant.UserId, this.ActivityId, feedbackResult, workoutDate);
-                newLogFeedback.CreateLog();
+                else
+                {
+                    isValidDate = true;
+                }
             }
+            while (!isValidDate);
 
+            foreach (Exercise exercise in this.WorkoutExercises)
+            {
+                Console.WriteLine($"- Exercise Name: {exercise.ExerciseName}");
+                Console.WriteLine("What was the result for this exercise?");
+                string exerciseResult = Console.ReadLine();
+                feedbackResult += $"\nExercise Name: {exercise.ExerciseName}\nResult: {exerciseResult}";
+                Console.Clear();
+            }
+            LogFeedback newLogFeedback = new LogFeedback(this.Trainer.UserId, this.WorkoutParticipant.UserId, this.ActivityId, feedbackResult, workoutDate);
+            newLogFeedback.CreateLog();
         }
+
     }
+}

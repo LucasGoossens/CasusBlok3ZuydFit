@@ -39,11 +39,11 @@ namespace CasusZuydFitV0._1.UserClasses
             return allAthletesDal.athletes;
         }
 
-        public void addActivity(Activity activity)
+        public void AddActivity(Activity activity)
         {
             ActivityList.Add(activity);
         }
-        public void removeActivity(int id)
+        public void RemoveActivity(int id)
         {
             Activity activityToRemove = ActivityList.FirstOrDefault(activity => activity.ActivityId == id);
             if (activityToRemove != null)

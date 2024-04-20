@@ -17,7 +17,7 @@ namespace CasusZuydFitV0._1.RemainingClasses
         public int FeedbackAthleteId { get; set; }
         public int FeedbackActivityId { get; set; }
         public string? FeedbackInfo { get; set; }
-        public string ActivityDate{ get; set; }
+        public string ActivityDate { get; set; }
 
         public LogFeedback(int feedbackId, int trainerId, int athleteId, int activityId, string feedbackInfo, string feedbackDate)
         {
@@ -26,30 +26,30 @@ namespace CasusZuydFitV0._1.RemainingClasses
             FeedbackAthleteId = athleteId;
             FeedbackActivityId = activityId;
             FeedbackInfo = feedbackInfo;
-            ActivityDate= feedbackDate;
+            ActivityDate = feedbackDate;
         }
         public LogFeedback(int trainerId, int athleteId, int activityId, string feedbackInfo, string feedbackDate)
-        {            
+        {
             FeedbackTrainerId = trainerId;
             FeedbackAthleteId = athleteId;
             FeedbackActivityId = activityId;
             FeedbackInfo = feedbackInfo;
-            ActivityDate= feedbackDate;
+            ActivityDate = feedbackDate;
         }
         public LogFeedback(int trainerId, int athleteId, int activityId, string feedbackInfoOrDate)
         {
             FeedbackTrainerId = trainerId;
             FeedbackAthleteId = athleteId;
             FeedbackActivityId = activityId;
-            
+
             // De constructor kan of feedbackInfo of feedbackDate aannemen en controleert hier welke van de twee gebruikt wordt
             if (DateTime.TryParseExact(feedbackInfoOrDate, "yyyy/MM/dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out _))
-            {            
-                ActivityDate= feedbackInfoOrDate;
+            {
+                ActivityDate = feedbackInfoOrDate;
             }
             else
             {
-                
+
                 FeedbackInfo = feedbackInfoOrDate;
             }
         }
@@ -59,7 +59,7 @@ namespace CasusZuydFitV0._1.RemainingClasses
         {
             FeedbackTrainerId = trainerId;
             FeedbackAthleteId = athleteId;
-            FeedbackActivityId = activityId;            
+            FeedbackActivityId = activityId;
         }
 
         public static List<LogFeedback> GetFeedback()
@@ -74,7 +74,7 @@ namespace CasusZuydFitV0._1.RemainingClasses
             LogFeedbackDAL Dal = new LogFeedbackDAL();
             Dal.CreateLogFeedback(this);
         }
-        public void CreateInitialLog()        
+        public void CreateInitialLog()
         {
             LogFeedbackDAL Dal = new LogFeedbackDAL();
             Dal.CreateInitialLogFeedback(this);
@@ -92,17 +92,17 @@ namespace CasusZuydFitV0._1.RemainingClasses
             Dal.DeleteLogFeedback(this);
         }
 
-         public static void CheckFeedback(User user, Activity activity)
+        public static void CheckFeedback(User user, Activity activity)
+        {
+            LogFeedback? logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activity.ActivityId && feedback.FeedbackAthleteId == user.UserId);
+            if (logFeedback.FeedbackInfo == "")
+            { Console.WriteLine("No feedback given yet."); }
+            else if (logFeedback != null)
             {
-                LogFeedback? logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activity.ActivityId && feedback.FeedbackAthleteId == user.UserId);
-                if (logFeedback.FeedbackInfo == "")
-                { Console.WriteLine("No feedback given yet."); }
-                else if (logFeedback != null)
-                {
-                    Console.WriteLine($"Feedback for {activity.ActivityName}: {logFeedback.FeedbackInfo}");
-                }
-                else { Console.WriteLine("Something went wrong, Please contact the Servicedesk"); }
-
+                Console.WriteLine($"Feedback for {activity.ActivityName}: {logFeedback.FeedbackInfo}");
             }
+            else { Console.WriteLine("Something went wrong, Please contact the Servicedesk"); }
+
+        }
     }
 }

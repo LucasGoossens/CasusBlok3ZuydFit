@@ -868,7 +868,7 @@ namespace CasusZuydFitV0._1.Program
                         LogFeedback newLogFeedback = new LogFeedback(eventToRegister.Trainer.UserId, user.UserId, eventToRegister.ActivityId, emptyString, emptyString);
                         newLogFeedback.CreateLog();
                         Athlete athlete = (Athlete)user;
-                        athlete.addActivity(eventToRegister);
+                        athlete.AddActivity(eventToRegister);
                         Console.WriteLine("You are registered for the event. Press enter to return to the menu");
                         Console.ReadLine();
                         Console.Clear();
@@ -987,7 +987,7 @@ namespace CasusZuydFitV0._1.Program
                             logFeedback.DeleteFeedback();
                             Console.WriteLine("You are unregistered from the event. Press enter to return to the menu");
                             
-                            athlete.removeActivity(unregisterID);
+                            athlete.RemoveActivity(unregisterID);
                             Console.ReadLine();
                             Console.Clear();
                         }
