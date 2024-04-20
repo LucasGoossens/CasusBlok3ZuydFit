@@ -55,6 +55,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
 
         public void EditEvent()
         {
+            Console.WriteLine("-----------------------");
             Console.WriteLine($"Event ID: {ActivityId}");
             Console.WriteLine($"1. Event Name: {ActivityName}");
             Console.WriteLine($"2. Event Location: {EventLocation}");
@@ -63,12 +64,27 @@ namespace CasusZuydFitV0._1.ActivityClasses
             Console.WriteLine($"5. Event Description: {ActivityDescription}");
             Console.WriteLine($"6. Event Participant Limit: {EventParticipants.Count}/{EventPatricipantLimit}");
             Console.WriteLine("-----------------------");
+            Console.WriteLine("0. Delete this event.");
 
             Console.WriteLine("Choose property to edit.");
             int propertyToEdit = Convert.ToInt32(Console.ReadLine());
 
             switch (propertyToEdit)
             {
+                case 0:
+                    Console.WriteLine("Are you sure you want to delete this event? (Press 0 to delete or any other key to cancel).");
+                    if (Console.ReadLine() == "0")
+                    {
+                        EventDAL eventDal = new EventDAL();
+                        eventDal.DeleteEvent(this.ActivityId);
+                        Console.WriteLine("Event deleted.");                        
+                        return;
+                    }
+                    else
+                    {
+                        this.EditEvent();
+                        return;
+                    }                    
                 case 1:
                     Console.WriteLine("Enter new Event Name:");
                     ActivityName = Console.ReadLine();
