@@ -53,14 +53,6 @@ namespace CasusZuydFitV0._1.ActivityClasses
             return new Exercise(exerciseName, "exerciseresult", exerciseDescription, workoutId);
         }
 
-
-        static public List<Exercise> GetExercises()
-        {
-            ExerciseDAL dal = new ExerciseDAL();
-            dal.GetExercises();
-            return dal.Exercises;
-        }
-
         public void CreateExercise()
         {
             ExerciseDAL exerciseDAL = new ExerciseDAL();
