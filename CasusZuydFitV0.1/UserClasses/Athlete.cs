@@ -26,11 +26,6 @@ namespace CasusZuydFitV0._1.UserClasses
         {
 
         }
-
-
-
-
-
         public List<Workout> GetAllWorkouts()
         {
             WorkoutDAL allWorkoutsDal = new WorkoutDAL();

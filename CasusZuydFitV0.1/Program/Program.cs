@@ -21,7 +21,8 @@ namespace CasusZuydFitV0._1.Program
             bool loggedIn = false;
             while (!loggedIn)
             {
-                Console.WriteLine("ZuydFit");
+                Console.WriteLine("        ZUYDFIT        ");
+                Console.WriteLine("=======================");
                 Console.WriteLine("Select an Option:");
                 Console.WriteLine("1. Login");
                 Console.WriteLine("2. Create an Account");
@@ -54,7 +55,7 @@ namespace CasusZuydFitV0._1.Program
                 Console.WriteLine("2. View All Activities");
                 if (loggedInUser is Trainer)  // Check if the user is a Trainer
                 {
-                    Console.WriteLine("3. View All Athletes (Trainers only!)");
+                    Console.WriteLine("3. View All Athletes (Trainers only)");
                 }
                 Console.WriteLine("Enter your option (or 'exit' to close): ");
 
@@ -85,39 +86,24 @@ namespace CasusZuydFitV0._1.Program
                         Console.WriteLine("Invalid option.");
                         break;
                 }
-            }
-
-            void DisplayAllUsers()
-            {
-                Console.Clear();
-
-                List<User> allUsers = User.GetUsers();
-                Console.WriteLine("Total Users: ");
-                Console.WriteLine(allUsers.Count());
-
-
-                Console.WriteLine("List of Users:");
-                foreach (var user in allUsers)
-                {
-                    Console.WriteLine($"User ID: {user.UserId}, Name: {user.UserName}, Email: {user.UserEmail}");
-                }
-
-            }
+            }          
 
             void DisplayAllAthletes()
             {
                 Console.Clear();
+                                
+                List<Athlete> allAthletes = Athlete.GetAllAthletes();
+                Console.WriteLine($"Total number of Athletes: {allAthletes.Count()}");
+                Console.WriteLine("-----------------------");                
 
-                List<User> allUsers = User.GetUsers();
-                Console.WriteLine("Total number of users: ");
-                Console.WriteLine(allUsers.Count());
-
-                Console.WriteLine("List of athletes:");
-                foreach (var athlete in allUsers)
+                Console.WriteLine("List of Athletes:");
+                Console.WriteLine("-----------------------");
+                foreach (var athlete in allAthletes)
                 {
                     if (athlete is Athlete)
                     {
                         Console.WriteLine($"Athlete ID: {athlete.UserId}, Name: {athlete.UserName}, Email: {athlete.UserEmail}");
+                        Console.WriteLine("-----------------------");
                     }
                 }
 
@@ -128,7 +114,7 @@ namespace CasusZuydFitV0._1.Program
                 Athlete foundAthlete = null;
                 try
                 {
-                    foreach (var athlete in allUsers)
+                    foreach (var athlete in allAthletes)
                     {
                         if (athlete.UserName.Equals(searchedAthlete, StringComparison.OrdinalIgnoreCase) ||
                             athlete.UserId.ToString() == searchedAthlete)
@@ -143,6 +129,7 @@ namespace CasusZuydFitV0._1.Program
                         Console.Clear();
                         Console.WriteLine("Athlete found:");
                         Console.WriteLine($"Athlete ID: {foundAthlete.UserId}, Name: {foundAthlete.UserName}, Email: {foundAthlete.UserEmail}");
+                        Console.WriteLine("-----------------------");
                         int optionChoice;
                         do
                         {
@@ -180,13 +167,6 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
-            User FindUser(string searchTerm)
-            {
-                int.TryParse(searchTerm, out int id);
-                var user = User.GetUsers().FirstOrDefault(u => u.UserName.Equals(searchTerm, StringComparison.OrdinalIgnoreCase) || u.UserId == id);
-                return user;
-            }
-
             void CreateNewUser()
             {
                 Console.Clear();
@@ -211,8 +191,6 @@ namespace CasusZuydFitV0._1.Program
 
                 int UserType = 0;
 
-                // Eventually, there will be different screens for creating different types of users,
-                // this is for testing purposes
                 do
                 {
                     Console.WriteLine("Enter the user type:");
@@ -264,21 +242,7 @@ namespace CasusZuydFitV0._1.Program
 
                 Console.WriteLine("New user " + UserName + " created successfully.");
             }
-
-            void DisplayAllExercises()
-            {
-                Console.Clear();
-
-                Console.WriteLine("Total Exercises: ");
-                Console.WriteLine(Exercise.GetExercises().Count());
-
-
-                Console.WriteLine("List of Exercises:");
-                foreach (var exercise in Exercise.GetExercises())
-                {
-                    Console.WriteLine($"Exercise ID: {exercise.ExerciseId}, Name: {exercise.ExerciseName}, Description: {exercise.ExerciseDescription}");
-                }
-            }
+         
 
             void CreateNewWorkout(Athlete newWorkOutAthlete)
             {
@@ -399,7 +363,7 @@ namespace CasusZuydFitV0._1.Program
                     }
 
                     TrainerGivesFeedbackOnWorkout(foundAthlete, workoutToAddFeedback, selectedWorkoutId);
-                    // Or continue with creating the menu
+                    
                 }
                 catch (Exception ex)
                 {
@@ -501,7 +465,7 @@ namespace CasusZuydFitV0._1.Program
                 {
                     Console.Clear();
                     Activity activityToGiveFeedbackOn = activityToAddFeedback;
-                    //1
+                    
                     if (activityToGiveFeedbackOn == null)
                     {
                         Console.WriteLine("A non-existing workout was given");
@@ -509,10 +473,7 @@ namespace CasusZuydFitV0._1.Program
                     }
                     else if (activityToGiveFeedbackOn.Trainer.UserId == loggedInUser.UserId)
                     {
-                        Workout WorkoutToGiveFeedbackOn = activityToGiveFeedbackOn as Workout;
-                        //2
-                        //List<LogFeedback> logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == WorkoutToGiveFeedbackOn.ActivityId && feedback.FeedbackAthleteId == idReceiver);
-                        //workoutLogFeedback = (List<LogFeedback>?)LogFeedback.GetFeedback().Where(log => log.FeedbackActivityId == activityToGiveFeedbackOn.ActivityId);
+                        Workout WorkoutToGiveFeedbackOn = activityToGiveFeedbackOn as Workout;                     
 
                         List<LogFeedback> workoutLogFeedbackToFilter = LogFeedback.GetFeedback();
 
@@ -523,7 +484,7 @@ namespace CasusZuydFitV0._1.Program
                                 workoutLogFeedback.Add(log as LogFeedback);
                             }
                         }
-                        //3
+                        
                         if(workoutLogFeedback.Count < 1)
                         {
                             Console.WriteLine("This Athlete has not logged this workout yet.");
@@ -535,15 +496,14 @@ namespace CasusZuydFitV0._1.Program
                         {
                             Console.WriteLine($"{i}: " + workoutLogFeedback[i].ActivityDate);
                         }
-                        //4
+                        
                         try
                         {
-                            int workoutDateOption = Convert.ToInt32(Console.ReadLine());
-                            //5
+                            int workoutDateOption = Convert.ToInt32(Console.ReadLine());                           
                             Console.WriteLine("Workout date: " + workoutLogFeedback[workoutDateOption].ActivityDate);
                             Console.WriteLine("Results: " + workoutLogFeedback[workoutDateOption].FeedbackInfo);
                             Console.WriteLine("Enter feedback on this workout: ");
-                            string FeedbackUpdate = $"\n\nFEEDBACK FROM: {activityToGiveFeedbackOn.Trainer.UserName}" + Console.ReadLine();
+                            string FeedbackUpdate = $"\n\nFeedback from {activityToGiveFeedbackOn.Trainer.UserName}: " + Console.ReadLine();
                             Console.Clear();
                             workoutLogFeedback[workoutDateOption].UpdateFeedback(FeedbackUpdate);
                             
@@ -663,7 +623,7 @@ namespace CasusZuydFitV0._1.Program
                     {
                         throw new ArgumentException("Participant limit must be a positive integer.");
                     }
-
+                    // Methods gerelateerd aan Equipments zijn functioneel, maar niet geimplementeerd.
                     List<Equipment> equipments = GatherEquipments();
 
                     // Create Event object
@@ -683,7 +643,7 @@ namespace CasusZuydFitV0._1.Program
                     Console.WriteLine("An error occurred while creating the event: " + ex.Message);
                 }
             }
-
+            // Methods gerelateerd aan Equipments zijn functioneel, maar niet geimplementeerd.
             static List<Equipment> GatherEquipments()
             {
                 try
@@ -774,8 +734,7 @@ namespace CasusZuydFitV0._1.Program
                 {
                     Console.WriteLine("Which activities would you like to see?");
                     Console.WriteLine("1: Events (Group Activity)");
-                    Console.WriteLine("2: Workouts (Individual Activity)");
-
+                    Console.WriteLine("2: Workouts (Individual Activity)");                    
                     if (user is Trainer)
                     {
                         Console.WriteLine("3: Create New Event");
@@ -801,7 +760,7 @@ namespace CasusZuydFitV0._1.Program
                             {
                                 Event.ShowEventsFromTrainer(loggedInUser);
                                 Console.WriteLine("Enter Event ID to view details: ");
-                                Console.WriteLine("To return enter 0."); // controleer dit
+                                Console.WriteLine("To return enter 0."); 
                                 int IdEventToreceivefeedback = Convert.ToInt32(Console.ReadLine());
                                 Console.Clear();
                                 if (IdEventToreceivefeedback != 0)
@@ -827,6 +786,12 @@ namespace CasusZuydFitV0._1.Program
                             }
                             break;
                         case "2":
+                            
+                            if (user is Trainer)
+                            {
+                                Console.WriteLine("Workouts can be found in the View All Athletes menu.");
+                                break;
+                            }
                             Workout.DisplayAllWorkouts(loggedInUser.UserId);
                             break;
                         case "3":
@@ -867,6 +832,7 @@ namespace CasusZuydFitV0._1.Program
                 foreach (Event events in Event.GetEvents())
                 {
                     events.ShowEvent();
+                    Console.WriteLine("-----------------------");
                 }
             }
 
@@ -920,7 +886,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
-            // not implemented in flow besause of time there is no Create equipment method yet. 
+            // Methods gerelateerd aan Equipments zijn functioneel, maar niet geimplementeerd.
             void DeleteEquipment()
             {
                 try

@@ -72,6 +72,7 @@ namespace CasusZuydFitV0._1
             Console.WriteLine("\nEnter the number of the workout to view its details and exercises:");
             if (!int.TryParse(Console.ReadLine(), out int selectedNumber) || selectedNumber < 1 || selectedNumber > GetWorkouts().Count)
             {
+                Console.Clear();
                 Console.WriteLine("Invalid selection. Please restart and enter a valid workout number.");
                 return;
             }
@@ -94,6 +95,7 @@ namespace CasusZuydFitV0._1
                     Console.WriteLine($"  Description: {exercise.ExerciseDescription}");
 
                 }
+                Console.WriteLine("-----------------------");
                 Console.WriteLine("1. Log this Workout session.");
                 Console.WriteLine("2. View logged Workouts");
                 Console.WriteLine("3. Return to main.");
