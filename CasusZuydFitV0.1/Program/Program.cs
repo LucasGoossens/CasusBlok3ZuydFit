@@ -540,10 +540,10 @@ namespace CasusZuydFitV0._1.Program
                         {
                             int workoutDateOption = Convert.ToInt32(Console.ReadLine());
                             //5
-                            Console.WriteLine("Workout date: " + workoutLogFeedback[workoutDateOption]);
+                            Console.WriteLine("Workout date: " + workoutLogFeedback[workoutDateOption].ActivityDate);
                             Console.WriteLine("Results: " + workoutLogFeedback[workoutDateOption].FeedbackInfo);
                             Console.WriteLine("Enter feedback on this workout: ");
-                            string FeedbackUpdate = Console.ReadLine();
+                            string FeedbackUpdate = $"\n\nFEEDBACK FROM: {activityToGiveFeedbackOn.Trainer.UserName}" + Console.ReadLine();
                             Console.Clear();
                             workoutLogFeedback[workoutDateOption].UpdateFeedback(FeedbackUpdate);
                             // update log eerst fixen, maar goed op weg
