@@ -49,8 +49,100 @@ namespace CasusZuydFitV0._1.ActivityClasses
             Console.WriteLine($"Event Duration: {ActivityDurationMinutes}");
             Console.WriteLine($"Event Starting Time: {ActivityStartingTime}");
             Console.WriteLine($"Event Description: {ActivityDescription}");
-            Console.WriteLine($"Event places taken: {EventParticipants.Count}/{EventPatricipantLimit}");
+            Console.WriteLine($"Event Participant Limit: {EventParticipants.Count}/{EventPatricipantLimit}");
             Console.WriteLine();
+        }
+
+        public void EditEvent()
+        {
+            Console.WriteLine($"Event ID: {ActivityId}");
+            Console.WriteLine($"1. Event Name: {ActivityName}");
+            Console.WriteLine($"2. Event Location: {EventLocation}");
+            Console.WriteLine($"3. Event Duration: {ActivityDurationMinutes}");
+            Console.WriteLine($"4. Event Starting Time: {ActivityStartingTime}");
+            Console.WriteLine($"5. Event Description: {ActivityDescription}");
+            Console.WriteLine($"6. Event Participant Limit: {EventParticipants.Count}/{EventPatricipantLimit}");
+            Console.WriteLine("-----------------------");
+
+            Console.WriteLine("Choose property to edit.");
+            int propertyToEdit = Convert.ToInt32(Console.ReadLine());
+
+            switch (propertyToEdit)
+            {
+                case 1:
+                    Console.WriteLine("Enter new Event Name:");
+                    ActivityName = Console.ReadLine();
+                    break;
+                case 2:
+                    Console.WriteLine("Enter new Event Location:");
+                    EventLocation = Console.ReadLine();
+                    break;
+                case 3:
+                    Console.WriteLine("Enter new Event Duration:");
+                    ActivityDurationMinutes = Convert.ToInt32(Console.ReadLine());
+                    break;
+                case 4:
+                    Console.Write("Enter new Event Starting Time:(YYYY-MM-DD HH:MM): ");
+                    if (!DateTime.TryParse(Console.ReadLine(), out DateTime startingTime))
+                    {
+                        Console.WriteLine("Invalid date format. Use YYYY-MM-DD HH:MM.");
+                        this.EditEvent();
+                        return;
+                    }                    
+                    ActivityStartingTime = Console.ReadLine();
+                    break;
+                case 5:
+                    Console.WriteLine("Enter new Event Description:");
+                    ActivityDescription = Console.ReadLine();
+                    break;
+                case 6:
+                    Console.WriteLine("Enter Participant Limit:");
+                    try
+                    {
+                        EventPatricipantLimit = Convert.ToInt32(Console.ReadLine());
+                        if(EventPatricipantLimit < EventParticipants.Count)
+                        {
+                            Console.WriteLine("Can't make the participant limit lower than the amount of currently registered participants. Remove participants from event first.");
+                            this.EditEvent();
+                            return;
+                        }
+                    }
+                    catch
+                    {
+                        Console.WriteLine("Invalid entry.");
+                        this.EditEvent();
+                        return;
+                    }
+                    break;
+                default:
+                    Console.Clear();
+                    Console.WriteLine("Invalid option.");                    
+                    this.EditEvent();
+                    return;
+            }
+            while (true)
+            {
+                Console.WriteLine("Press 1 to continue edit or any other key to exit.");
+                string continueEditOption = Console.ReadLine();
+
+                if (continueEditOption == "1")
+                {
+                    Console.Clear();
+                    this.EditEvent();
+                }
+                else
+                {
+                    this.UpdateEvent();
+                    break; 
+                }
+            }
+        }
+
+        public void UpdateEvent()
+        {
+            EventDAL eventDal = new EventDAL();
+            eventDal.UpdateEvent(this);
+
         }
 
         static public List<Event> GetEvents()
@@ -85,7 +177,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
             }
 
             Console.Clear();
-            
+
             switch (eventChoice)
             {
                 case 1:

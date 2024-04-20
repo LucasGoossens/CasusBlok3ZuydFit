@@ -636,21 +636,20 @@ namespace CasusZuydFitV0._1.DAL
                         connection.Open();
 
                         // Update event data in the Activity table
-                        string updateQuery = "UPDATE [Activity] SET Name = @Name, Duration = @Duration, StartingTime = @StartingTime, " +
-                                            "Description = @Description, TrainerId = @TrainerId, Location = @Location, " +
-                                            "ParticipantsLimit = @ParticipantsLimit WHERE ActivityId = @ActivityId;";
+                        string updateQuery = "UPDATE [Activity] SET ActivityName = @ActivityName, ActivityDuration = @ActivityDuration, ActivityStartingTime = @ActivityStartingTime, " +
+                                            "ActivityDescription = @ActivityDescription, EventLocation = @EventLocation, " +
+                                            "EventParticipantLimit = @EventParticipantLimit WHERE ActivityId = @ActivityId;";
 
                         using (SqlCommand command = new SqlCommand(updateQuery, connection))
                         {
                             // Add parameters to the query
-                            command.Parameters.AddWithValue("@Name", updatedEvent.ActivityName);
-                            command.Parameters.AddWithValue("@Duration", updatedEvent.ActivityDurationMinutes);
-                            command.Parameters.AddWithValue("@StartingTime", updatedEvent.ActivityStartingTime);
-                            command.Parameters.AddWithValue("@Description", updatedEvent.ActivityDescription);
-                            command.Parameters.AddWithValue("@TrainerId", updatedEvent.Trainer.UserId);
-                            command.Parameters.AddWithValue("@Location", updatedEvent.EventLocation);
-                            command.Parameters.AddWithValue("@ParticipantsLimit", updatedEvent.EventPatricipantLimit);
                             command.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
+                            command.Parameters.AddWithValue("@ActivityName", updatedEvent.ActivityName);
+                            command.Parameters.AddWithValue("@ActivityDuration", updatedEvent.ActivityDurationMinutes);
+                            command.Parameters.AddWithValue("@ActivityStartingTime", updatedEvent.ActivityStartingTime);
+                            command.Parameters.AddWithValue("@ActivityDescription", updatedEvent.ActivityDescription);
+                            command.Parameters.AddWithValue("@EventLocation", updatedEvent.EventLocation);
+                            command.Parameters.AddWithValue("@EventParticipantLimit", updatedEvent.EventPatricipantLimit);                            
 
                             // Execute the update query
                             command.ExecuteNonQuery();
