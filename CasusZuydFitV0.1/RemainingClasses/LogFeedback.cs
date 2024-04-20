@@ -62,23 +62,6 @@ namespace CasusZuydFitV0._1.RemainingClasses
             FeedbackActivityId = activityId;            
         }
 
-        //public void AddTrainer(Trainer trainer)
-        //{
-        //    Trainer = trainer;
-        //}
-
-        //public void AddRecipient(Athlete user) // dit klopt niet in class diagram
-        //{
-        //    Athlete = user;
-        //}
-
-        //public void AddActivity(Activity activity)
-        //{
-        //    Activity = activity;
-
-        //}
-
-
         public static List<LogFeedback> GetFeedback()
         {
             LogFeedbackDAL Dal = new LogFeedbackDAL();

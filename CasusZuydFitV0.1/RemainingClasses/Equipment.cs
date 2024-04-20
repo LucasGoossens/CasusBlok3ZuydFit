@@ -7,6 +7,7 @@ using static CasusZuydFitV0._1.DAL.DAL;
 
 namespace CasusZuydFitV0._1.RemainingClasses
 {
+    // Methods gerelateerd aan Equipments zijn (gedeeltelijk) functioneel, maar niet geimplementeerd.
     public class Equipment
     {
         public int EquipmentId { get; set; }

@@ -252,10 +252,10 @@ namespace CasusZuydFitV0._1.DAL
                                             int athleteId = Convert.ToInt32(executeScalarResult);
                                             Athlete athlete = getAthleteDal.athletes.Find(a => a.UserId == athleteId);
                                             if (athlete != null && !activities.Any(activity => activity.ActivityId == activityId)) 
-                                                // controleer of activity nog niet bestaat
+                                                // controleert of activity nog niet bestaat
                                                 // " !activities.Any(activity => activity.ActivityId == activityId)" 
                                                 // dit moet waarschijnlijk overal waar activities/workouts opgehaald worden dmv LogFeedback query,
-                                                // dit voorkomt dat je activities dubbel ophaalt. Kun je vgm ook in SQL een query maken dat alleen unieke teruggeeft maar FUCK HET
+                                                // dit voorkomt dat je activities dubbel ophaalt.
 
                                             {
                                                 Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);

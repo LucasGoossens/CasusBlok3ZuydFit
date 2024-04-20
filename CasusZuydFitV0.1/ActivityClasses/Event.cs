@@ -44,12 +44,12 @@ namespace CasusZuydFitV0._1.ActivityClasses
         public void ShowEvent()
         {
             Console.WriteLine($"Event ID: {ActivityId}");
-            Console.WriteLine($"Event Name: {ActivityName}");
-            Console.WriteLine($"Event Location: {EventLocation}");
-            Console.WriteLine($"Event Duration: {ActivityDurationMinutes}");
-            Console.WriteLine($"Event Starting Time: {ActivityStartingTime}");
-            Console.WriteLine($"Event Description: {ActivityDescription}");
-            Console.WriteLine($"Event Participant Limit: {EventParticipants.Count}/{EventPatricipantLimit}");
+            Console.WriteLine($"Name: {ActivityName}");
+            Console.WriteLine($"Location: {EventLocation}");
+            Console.WriteLine($"Duration: {ActivityDurationMinutes}");
+            Console.WriteLine($"Starting Time: {ActivityStartingTime}");
+            Console.WriteLine($"Description: {ActivityDescription}");
+            Console.WriteLine($"Participant Limit: {EventParticipants.Count}/{EventPatricipantLimit}");
             Console.WriteLine();
         }
 
@@ -57,12 +57,12 @@ namespace CasusZuydFitV0._1.ActivityClasses
         {
             Console.WriteLine("-----------------------");
             Console.WriteLine($"Event ID: {ActivityId}");
-            Console.WriteLine($"1. Event Name: {ActivityName}");
-            Console.WriteLine($"2. Event Location: {EventLocation}");
-            Console.WriteLine($"3. Event Duration: {ActivityDurationMinutes}");
-            Console.WriteLine($"4. Event Starting Time: {ActivityStartingTime}");
-            Console.WriteLine($"5. Event Description: {ActivityDescription}");
-            Console.WriteLine($"6. Event Participant Limit: {EventParticipants.Count}/{EventPatricipantLimit}");
+            Console.WriteLine($"1. Name: {ActivityName}");
+            Console.WriteLine($"2. Location: {EventLocation}");
+            Console.WriteLine($"3. Duration: {ActivityDurationMinutes}");
+            Console.WriteLine($"4. Starting Time: {ActivityStartingTime}");
+            Console.WriteLine($"5. Description: {ActivityDescription}");
+            Console.WriteLine($"6. Participant Limit: {EventParticipants.Count}/{EventPatricipantLimit}");
             Console.WriteLine("-----------------------");
             Console.WriteLine("0. Delete this event.");
 
@@ -226,6 +226,11 @@ namespace CasusZuydFitV0._1.ActivityClasses
         {
             Console.WriteLine("-----------------------");
             Console.WriteLine("These are the events you are hosting:");
+            if(GetEvents().Count < 1)
+            {
+                Console.WriteLine("You are currently not hosting any events.");
+                return;
+            }
             foreach (var eventItem in GetEvents())
             {
                 if (eventItem.Trainer.UserId == trainer.UserId)
