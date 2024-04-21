@@ -20,6 +20,7 @@ namespace CasusZuydFitV0._1.UserClasses
             ActivityList = activitylist;
         }
 
+        // Event heeft een trainer object nodig, dus deze constructor is nodig
         public Trainer()
         {
         }

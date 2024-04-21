@@ -221,7 +221,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
                     break;
             }
         }
-        // trainwe krijgt zijn eigen events te zien
+        // trainer krijgt zijn eigen events te zien
         public static void ShowEventsFromTrainer(User trainer)
         {
             Console.WriteLine("-----------------------");
