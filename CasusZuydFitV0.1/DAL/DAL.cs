@@ -8,6 +8,7 @@ namespace CasusZuydFitV0._1.DAL
     public class DAL
     {
         //bij de dbConstring dient bij data source de naam van de server te worden ingevuld. De rest van de eigenschappen blijven hetzelfde.
+        // 'MultipleActiveResultSets=True' zorgt ervoor dat er meerdere resultaten tegelijkertijd kunnen worden opgehaald en moet worden toegevoegd aan de connection string.
         private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
         // Dal voor User klasse
         public class UserDAL
