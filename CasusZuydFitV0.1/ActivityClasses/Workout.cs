@@ -45,9 +45,10 @@ namespace CasusZuydFitV0._1
         public void CreateNewWorkout()
         {
             DAL.DAL.WorkoutDAL workoutdal = new DAL.DAL.WorkoutDAL();
-            this.ActivityId = workoutdal.CreateNewWorkout(this);
+            ActivityId = workoutdal.CreateNewWorkout(this);
         }
 
+        // alle workouts van een athlete worden weergegeven of een workout kan worden gelogd
         public static void DisplayAllWorkouts(int loggedInUserid)
         {
             Athlete currentAthlete = Athlete.GetAllAthletes().Find(athlete => athlete.UserId == loggedInUserid);
@@ -119,7 +120,7 @@ namespace CasusZuydFitV0._1
                 Console.WriteLine("This workout has no exercises listed.");
             }
         }
-
+        // alle workouts van een sessie worden weergegeven
         void ViewAllWorkoutSessions()
         {
             List<LogFeedback> workoutLogFeedback = new List<LogFeedback>();
@@ -167,6 +168,7 @@ namespace CasusZuydFitV0._1
 
             }
         }
+        // nieuwe workout wordt gelogd
         void LogNewWorkout()
         {
             string feedbackResult = "";

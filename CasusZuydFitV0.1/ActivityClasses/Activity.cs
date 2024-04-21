@@ -24,27 +24,6 @@ namespace CasusZuydFitV0._1.ActivityClasses
 
         }
 
-        public Activity(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, List<Equipment> equipments)
-        {
-            ActivityId = activityId;
-            ActivityName = activityName;
-            ActivityDurationMinutes = activityDurationMinutes;
-            ActivityStartingTime = activityStartingTime;
-            Trainer = trainer;
-            ActivityDescription = activityDescription;
-            Equipments = equipments;
-        }
-
-        public Activity(string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription, List<Equipment> equipments)
-        {
-            ActivityName = activityName;
-            ActivityDurationMinutes = activityDurationMinutes;
-            ActivityStartingTime = activityStartingTime;
-            Trainer = trainer;
-            ActivityDescription = activityDescription;
-            Equipments = equipments;
-        }
-
         public Activity(int activityId, string activityName, int activityDurationMinutes, string activityStartingTime, Trainer trainer, string activityDescription)
         {
             ActivityId = activityId;

@@ -22,7 +22,6 @@ namespace CasusZuydFitV0._1.UserClasses
 
         public Trainer()
         {
-
         }
     }
 }
