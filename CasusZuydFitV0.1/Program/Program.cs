@@ -16,7 +16,7 @@ namespace CasusZuydFitV0._1.Program
     {
         static void Main(string[] args)
         {
-
+            // inlogsysteem
             User loggedInUser = new Athlete("NOUSERLOGGEDIN", "NOUSERLOGGEDIN", "NOUSERLOGGEDIN");
             bool loggedIn = false;
             while (!loggedIn)
@@ -43,17 +43,18 @@ namespace CasusZuydFitV0._1.Program
                         break;
                 }
             }
-
+            // einde inlogsysteem
 
             bool running = true;
             while (running)
             {
+                // hoofdmenu
                 Console.WriteLine("        ZUYDFIT        ");
                 Console.WriteLine("=======================");
                 Console.WriteLine("Main Menu");
                 Console.WriteLine("1. View Profile");
                 Console.WriteLine("2. View All Activities");
-                if (loggedInUser is Trainer)  // Check if the user is a Trainer
+                if (loggedInUser is Trainer)  // check type user
                 {
                     Console.WriteLine("3. View All Athletes (Trainers only)");
                 }
@@ -72,7 +73,7 @@ namespace CasusZuydFitV0._1.Program
                     case "3":
                         if (loggedInUser is Trainer)
                         {
-                            DisplayAllAthletes();  // Only call this method if the user is a Trainer
+                            DisplayAllAthletes();  // alleen voor trainers
                         }
                         else
                         {
@@ -87,7 +88,7 @@ namespace CasusZuydFitV0._1.Program
                         break;
                 }
             }          
-
+            // atleten worden weergegeven
             void DisplayAllAthletes()
             {
                 Console.Clear();
@@ -166,7 +167,7 @@ namespace CasusZuydFitV0._1.Program
                     Console.WriteLine("Error: Invalid input. Please enter a valid number.");
                 }
             }
-
+            // user aanmaken inlogsysteem
             void CreateNewUser()
             {
                 Console.Clear();
@@ -201,7 +202,7 @@ namespace CasusZuydFitV0._1.Program
 
                     if (UserType == 2)
                     {
-                        // Hardcoded password validation for creating a trainer
+                        // Hardcoded password validation for creating a trainer (123)
                         string ValidationPassword = "123";
                         string InputValidationPassword = "1";
 
@@ -243,7 +244,7 @@ namespace CasusZuydFitV0._1.Program
                 Console.WriteLine("New user " + UserName + " created successfully.");
             }
          
-
+            // nieuwe workout aanmaken voor een atleet
             void CreateNewWorkout(Athlete newWorkOutAthlete)
             {
                 Console.Clear();
@@ -327,6 +328,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
+            // alle workouts van een atleet worden weergegeven
             void DisplayFoundAthleteWorkouts(Athlete foundAthlete)
             {
                 try
@@ -371,6 +373,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
+            // acount van de gebruiker beheren
             void ManageProfile(User user)
             {
                 try
@@ -458,6 +461,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
+            // feedback geven op een workout door een trainer op een atleet
             void TrainerGivesFeedbackOnWorkout(User user, Workout activityToAddFeedback, int idReceiver)
             {
                 List<LogFeedback> workoutLogFeedback = new List<LogFeedback>();
@@ -526,6 +530,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
+            //  feedback geven op een event door een trainer op een atleet
             void TrainerGivesFeedbackOnEvent(User user, Event activityToAddFeedback)
             {
                 LogFeedback logFeedback = null;
@@ -578,6 +583,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
+            // event aanmaken voor een trainer
             void CreateEvent(User user)
             {
                 try
@@ -679,7 +685,7 @@ namespace CasusZuydFitV0._1.Program
                     return new List<Equipment>();
                 }
             }
-
+            // login systeem functie
             bool Login()
             {
                 try
@@ -727,7 +733,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
-
+            // alle activity mogelijkheden weergeven
             void DisplayAllActivities(User user)
             {
                 try
@@ -827,6 +833,7 @@ namespace CasusZuydFitV0._1.Program
                 }
             }
 
+            // alle events weergeven
             void ShowEvents()
             {
                 foreach (Event events in Event.GetEvents())
@@ -835,7 +842,7 @@ namespace CasusZuydFitV0._1.Program
                     Console.WriteLine("-----------------------");
                 }
             }
-
+            // athleet registreren voor een event
             void RegisterForEvent(User user)
             {
                 try
@@ -928,7 +935,7 @@ namespace CasusZuydFitV0._1.Program
                     Console.WriteLine("An error occurred while deleting the equipment: " + ex.Message);
                 }
             }
-
+            // athleet verwijderen van een event
             void RemoveRegistration(User user)
             {
                 try
