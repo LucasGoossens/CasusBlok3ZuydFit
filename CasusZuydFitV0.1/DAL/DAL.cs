@@ -7,16 +7,20 @@ namespace CasusZuydFitV0._1.DAL
 {
     public class DAL
     {
-        //private static readonly string dbConString = "Server=tcp:gabriellunesu.database.windows.net,1433;Initial Catalog=ZuydFitFinal;Persist Security Info=False;User ID=gabriellunesu;Password=3KmaCBt5nU4qZ4s%xG5@;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        //bij de dbConstring dient bij data source de naam van de server te worden ingevuld. De rest van de eigenschappen blijven hetzelfde.
         private static readonly string dbConString = "Data Source=LUCAS; Initial Catalog=ZuydFitFinal; Integrated Security=True; MultipleActiveResultSets=True";
+        // Dal voor User klasse
         public class UserDAL
         {
+            //lege lijst met users
             public List<User> users = new List<User>();
 
+            // methode om user een specefieke op te halen uit de lijst
             public User GetUser(string username, string password)
             {
                 return users.FirstOrDefault(u => u.UserName.Equals(username, StringComparison.OrdinalIgnoreCase) && u.UserPassword == password);
             }
+            // De methode GetUser haalt alle gebruiker op en plaatst ze in de lijst users
 
             public void GetUsers()
             {
@@ -28,6 +32,7 @@ namespace CasusZuydFitV0._1.DAL
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
+                        // op dit moment worden alle users opgehaald uit de database
                         string query = "Select * from [User]";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
@@ -55,7 +60,7 @@ namespace CasusZuydFitV0._1.DAL
                                 }
                             }
                         }
-                        // users bestaan maar lijsten zijn nog leeg
+                        // activiteitenlijsten van users worden gevuld
                         query = "Select AthleteId, ActivityId from LogFeedback";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
@@ -86,8 +91,7 @@ namespace CasusZuydFitV0._1.DAL
             }
 
 
-            // nu gebruiken we UserDAL om alle soorten Users aan te maken in SQL,
-            // mogelijk dit dan opsplitsen zodat alle subclass-specific dingen apart worden uitgevoerd bij het aanmaken
+            // Een nieuwe user wordt in de database geplaatst
             public void CreateNewUser(User user)
             {
                 try
@@ -125,6 +129,7 @@ namespace CasusZuydFitV0._1.DAL
                 }
 
             }
+            // Een user wordt verwijderd uit de database
             public void DeleteUser(User user)
             {
                 try
@@ -146,6 +151,7 @@ namespace CasusZuydFitV0._1.DAL
                     Console.WriteLine($"Er is een fout opgedreden met het verwijderen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
+            // gegevens van een user worden bijgewerkt in de database
             public void UpdateUser(User user)
             {
                 try
@@ -173,24 +179,27 @@ namespace CasusZuydFitV0._1.DAL
             }
 
         }
-
+        // dal voor de activity klasse
         public class ActivityDAL
         {
+            // lege lijst met activiteiten
             public List<Activity> activities = new List<Activity>();
+            // lijst met activiteiten wordt gevuld
             public void GetActivities()
 
             {
                 activities.Clear();
 
+                // trainers worden opgehaald
                 TrainerDAL getTrainerDal = new TrainerDAL();
                 getTrainerDal.GetTrainers();
-
+                // atleten worden opgehaald
                 AthleteDAL getAthleteDal = new AthleteDAL();
                 getAthleteDal.GetAthlets();
-
+                // equipment wordt opgehaald, met huidige implementatie niet nodig
                 EquipmentDAL getEquipmentDal = new EquipmentDAL();
                 getEquipmentDal.GetEquipment();
-
+                // exercises worden opgehaald
                 ExerciseDAL getExerciseDal = new ExerciseDAL();
                 getExerciseDal.GetExercises();
 
@@ -199,11 +208,13 @@ namespace CasusZuydFitV0._1.DAL
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
+                        // alle activiteiten worden opgehaald.
                         string query = "Select * from [Activity]";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
+                                // standaard activiteiten worden opgehaald
                                 while (reader.Read())
                                 {
                                     int activityId = reader.GetInt32(0);
@@ -213,15 +224,16 @@ namespace CasusZuydFitV0._1.DAL
                                     string activityDescription = reader.GetString(4);
 
                                     int activityTrainerId = reader.GetInt32(5);
+                                    // trainer wordt gekoppeld aan activiteit
                                     Trainer activityTrainer = getTrainerDal.trainers.Find(trainer => trainer.UserId == activityTrainerId);
 
                                     string activityType = reader.GetString(6);
 
-                                    if (activityType == "event")
+                                    if (activityType == "event") // activiteit is een event
                                     {
                                         string eventLocation = reader.GetString(7);
                                         int eventParticipantsLimit = reader.GetInt32(8);
-
+                                        // lijst met atleten van het event wordt gevuld
                                         List<Athlete> eventAthletes = new List<Athlete>();
                                         string activityQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
                                         using (SqlCommand athleteCommand = new SqlCommand(activityQuery, connection))
@@ -243,8 +255,9 @@ namespace CasusZuydFitV0._1.DAL
                                         }
 
                                     }
-                                    else if (activityType == "workout")
+                                    else if (activityType == "workout") // activiteit is een workout
                                     {
+                                        // atleet van de workout wordt gekoppeld
                                         string athleteQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
                                         using (SqlCommand athleteCommand = new SqlCommand(athleteQuery, connection))
                                         {
@@ -259,7 +272,7 @@ namespace CasusZuydFitV0._1.DAL
 
                                             {
                                                 Workout workoutToAdd = new Workout(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, athlete);
-
+                                                // exercises worden gekoppeld aan de workout
                                                 foreach (Exercise exercise in getExerciseDal.Exercises)
                                                 {
                                                     if (exercise.WorkoutId == activityId)
@@ -277,6 +290,7 @@ namespace CasusZuydFitV0._1.DAL
                                 }
                             }
                         }
+                        // equipment wordt opgehaald en gekoppeld aan de juiste activities, met huidige implementatie niet nodig
                         string activityEquipmentQuery = "Select * from [ActivityEquipment]";
                         using (SqlCommand activityEquipmentCommand = new SqlCommand(activityEquipmentQuery, connection))
                         {
@@ -302,12 +316,13 @@ namespace CasusZuydFitV0._1.DAL
             }
 
         }
-
+        // da; voor de atleet klasse
         public class AthleteDAL
         {
+            // lege lijst met atleten
             public List<Athlete> athletes = new List<Athlete>();
             public void GetAthlets()
-            //User wordt opgehaald maar lijsten worden nog niet gevuld
+            //Atleten worden opgehaald maar lijsten worden nog niet gevuld
             {
                 athletes.Clear();
                 try
@@ -343,10 +358,12 @@ namespace CasusZuydFitV0._1.DAL
 
 
         }
-
+        // klasse voor equipment
         public class EquipmentDAL
         {
+            // lege lijst met equipment
             public List<Equipment> equipments = new List<Equipment>();
+            // equipment wordt opgehaald
             public void GetEquipment()
             {
                 equipments.Clear();
@@ -381,6 +398,7 @@ namespace CasusZuydFitV0._1.DAL
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de klanten uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
+            // equipment wordt toegevoegd aan de database (nog niet geimplementeerd in program)
             public void CreateEquipment(Equipment equipment)
             {
                 try
@@ -399,7 +417,7 @@ namespace CasusZuydFitV0._1.DAL
  
                         int insertedEquipmentId = Convert.ToInt32(dbCommand.ExecuteScalar());
 
-
+                        // nieuwe equipmentId wordt geprint
                         Console.WriteLine($"New EquipmentId: {insertedEquipmentId}");
                     }
                 }
@@ -409,7 +427,7 @@ namespace CasusZuydFitV0._1.DAL
                 }
             }
 
-
+            // equipment wordt bijgewerkt in de database (nog niet geimplementeerd in program)
             public void UpdateEquipment(Equipment equipment)
             {
                 try
@@ -434,7 +452,7 @@ namespace CasusZuydFitV0._1.DAL
                     Console.WriteLine($"Er is een fout opgedreden met het ophalen van de informatie uit de database. Neem contact op met de Klantenservice + {ex.Message}");
                 }
             }
-
+            // equipment wordt verwijderd uit de database (nog niet geimplementeerd in flow van program)
             public void DeleteEquipment(Equipment equipment)
             {
                 try
@@ -458,10 +476,12 @@ namespace CasusZuydFitV0._1.DAL
             }
         }
 
+        // klasse voor event
         public class EventDAL
         {
+            // lege lijst met events
             public List<Event> events = new List<Event>(); // the type event is TYPE = 'event' in DB!
-
+            // events worden opgehaald uit de database
             public void GetEvents()
             {
                 // Clear existing events
@@ -469,32 +489,29 @@ namespace CasusZuydFitV0._1.DAL
 
                 try
                 {
-                    // Initialize Data Access Layer instances
+                    // trainers worden opgehaald
                     TrainerDAL trainerDAL = new TrainerDAL();
                     trainerDAL.GetTrainers();
-
+                    // equipment wordt opgehaald (niet nodig met huidige implementatie)
                     EquipmentDAL equipmentDAL = new EquipmentDAL();
                     equipmentDAL.GetEquipment();
-
+                    // atleten worden opgehaald
                     AthleteDAL athleteDAL = new AthleteDAL();
                     athleteDAL.GetAthlets();
 
-                    // Establish a database connection
+
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
 
-                        // Select events from the database
+                        // events worden opgehaald uit de database
                         string query = "SELECT * FROM [Activity] WHERE Type = 'event';";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
-                            // Execute the query
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
-                                // Iterate through the result set
                                 while (reader.Read())
                                 {
-                                    // Retrieve event data from the reader
                                     int activityId = reader.GetInt32(0);
                                     string activityName = reader.GetString(1);
                                     int activityDuration = reader.GetInt32(2);
@@ -502,35 +519,32 @@ namespace CasusZuydFitV0._1.DAL
                                     string activityDescription = reader.GetString(4);
                                     int activityTrainerId = reader.GetInt32(5);
 
-                                    // Retrieve the trainer associated with the event
+
                                     Trainer activityTrainer = trainerDAL.trainers.Find(trainer => trainer.UserId == activityTrainerId);
 
                                     string eventLocation = reader.GetString(7);
                                     int eventParticipantsLimit = reader.GetInt32(8);
 
-                                    // Create a list to store event athletes
                                     List<Athlete> eventAthletes = new List<Athlete>();
-
-                                    // Query to select athletes associated with the event
+                                    // adding athletes to the event
                                     string activityQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
                                     using (SqlCommand athleteCommand = new SqlCommand(activityQuery, connection))
                                     {
                                         using (SqlDataReader athleteReader = athleteCommand.ExecuteReader())
                                         {
-                                            // Iterate through the result set
+
                                             while (athleteReader.Read())
                                             {
                                                 int athleteId = athleteReader.GetInt32(0);
-                                                // Retrieve the athlete associated with the ID
+
                                                 Athlete athlete = athleteDAL.athletes.Find(a => a.UserId == athleteId);
-                                                // Add the athlete to the event's list of athletes
                                                 if (athlete != null)
                                                 {
                                                     eventAthletes.Add(athlete);
                                                 }
                                             }
                                         }
-                                        // Create an Event object and add it to the events collection
+
                                         Event eventToAdd = new Event(activityId, activityName, activityDuration, activityStartingTime, activityTrainer, activityDescription, eventLocation, eventParticipantsLimit, eventAthletes);
                                         events.Add(eventToAdd);
                                     }
@@ -538,22 +552,18 @@ namespace CasusZuydFitV0._1.DAL
                             }
                         }
 
-                        // Query to retrieve associated equipment for events
+                        // equipment wordt opgehaald en gekoppeld aan de juiste events, met huidige implementatie niet nodig
                         string activityEquipmentQuery = "Select * from [ActivityEquipment]";
                         using (SqlCommand activityEquipmentCommand = new SqlCommand(activityEquipmentQuery, connection))
                         {
                             using (SqlDataReader reader = activityEquipmentCommand.ExecuteReader())
                             {
-                                // Iterate through the result set
                                 while (reader.Read())
                                 {
                                     int activityId = reader.GetInt32(1);
                                     int equipmentId = reader.GetInt32(2);
-                                    // Find the event associated with the ID
                                     Event eventToEdit = events.Find(a => a.ActivityId == activityId);
-                                    // Retrieve the equipment associated with the ID
                                     Equipment equipment = equipmentDAL.equipments.Find(e => e.EquipmentId == equipmentId);
-                                    // Add the equipment to the event's list of equipment
                                     eventToEdit.Equipments.Add(equipment);
                                 }
                             }
@@ -562,29 +572,27 @@ namespace CasusZuydFitV0._1.DAL
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     Console.WriteLine($"An error occurred while retrieving events from the database. Please contact customer service: {ex.Message}");
                 }
             }
 
-            // create event
+            // event wordt toegevoegd aan de database
             public void CreateEvent(Event newEvent)
             {
                 try
                 {
-                    // Establish a database connection
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
 
-                        // Insert event data into the Activity table
+                        // event wordt toegevoegd aan de Activity tabel in de database
                         string insertQuery = "INSERT INTO [Activity] (ActivityName, ActivityDuration, ActivityStartingTime, ActivityDescription, TrainerId, EventLocation, EventParticipantLimit, Type) " +
                                             "VALUES (@Name, @Duration, @StartingTime, @Description, @TrainerId, @Location, @ParticipantsLimit, @Type); " +
-                                            "SELECT SCOPE_IDENTITY();"; // Retrieve the ID of the inserted event
+                                            "SELECT SCOPE_IDENTITY();";
 
                         using (SqlCommand command = new SqlCommand(insertQuery, connection))
                         {
-                            // Add parameters to the query
+
                             command.Parameters.AddWithValue("@Name", newEvent.ActivityName);
                             command.Parameters.AddWithValue("@Duration", newEvent.ActivityDurationMinutes);
                             command.Parameters.AddWithValue("@StartingTime", newEvent.ActivityStartingTime);
@@ -592,14 +600,13 @@ namespace CasusZuydFitV0._1.DAL
                             command.Parameters.AddWithValue("@TrainerId", newEvent.Trainer.UserId);
                             command.Parameters.AddWithValue("@Location", newEvent.EventLocation);
                             command.Parameters.AddWithValue("@ParticipantsLimit", newEvent.EventPatricipantLimit);
-                            command.Parameters.AddWithValue("@Type", "event"); // Assuming events are of type 'event'
+                            command.Parameters.AddWithValue("@Type", "event");
 
-                            // Execute the query and retrieve the ID of the inserted event
                             int newEventId = Convert.ToInt32(command.ExecuteScalar());
 
 
 
-                            // Insert equipment associated with the event into the ActivityEquipment table
+                            // equipment wordt toegevoegd aan het event
                             foreach (Equipment equipment in newEvent.Equipments)
                             {
                                 string insertEquipmentQuery = "INSERT INTO ActivityEquipment (ActivityId, EquipmentId) " +
@@ -607,11 +614,10 @@ namespace CasusZuydFitV0._1.DAL
 
                                 using (SqlCommand equipmentCommand = new SqlCommand(insertEquipmentQuery, connection))
                                 {
-                                    // Add parameters to the query
+
                                     equipmentCommand.Parameters.AddWithValue("@ActivityId", newEventId);
                                     equipmentCommand.Parameters.AddWithValue("@EquipmentId", equipment.EquipmentId);
 
-                                    // Execute the query to associate the equipment with the event
                                     equipmentCommand.ExecuteNonQuery();
                                 }
                             }
@@ -620,29 +626,25 @@ namespace CasusZuydFitV0._1.DAL
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     Console.WriteLine($"An error occurred while creating the event in the database. Please contact customer service: {ex.Message}");
                 }
             }
 
-            // update event
+            // event wordt bijgewerkt in de database
             public void UpdateEvent(Event updatedEvent)
             {
                 try
                 {
-                    // Establish a database connection
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
 
-                        // Update event data in the Activity table
                         string updateQuery = "UPDATE [Activity] SET ActivityName = @ActivityName, ActivityDuration = @ActivityDuration, ActivityStartingTime = @ActivityStartingTime, " +
                                             "ActivityDescription = @ActivityDescription, EventLocation = @EventLocation, " +
                                             "EventParticipantLimit = @EventParticipantLimit WHERE ActivityId = @ActivityId;";
 
                         using (SqlCommand command = new SqlCommand(updateQuery, connection))
                         {
-                            // Add parameters to the query
                             command.Parameters.AddWithValue("@ActivityId", updatedEvent.ActivityId);
                             command.Parameters.AddWithValue("@ActivityName", updatedEvent.ActivityName);
                             command.Parameters.AddWithValue("@ActivityDuration", updatedEvent.ActivityDurationMinutes);
@@ -651,7 +653,7 @@ namespace CasusZuydFitV0._1.DAL
                             command.Parameters.AddWithValue("@EventLocation", updatedEvent.EventLocation);
                             command.Parameters.AddWithValue("@EventParticipantLimit", updatedEvent.EventPatricipantLimit);                            
 
-                            // Execute the update query
+
                             command.ExecuteNonQuery();
 
 
@@ -660,38 +662,32 @@ namespace CasusZuydFitV0._1.DAL
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     Console.WriteLine($"An error occurred while updating the event in the database. Please contact customer service: {ex.Message}");
                 }
             }
 
 
-            // delete event
+            // event wordt verwijderd uit de database
             public void DeleteEvent(int eventId)
             {
                 try
                 {
-                    // Establish a database connection
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
 
-                        // Delete event from the Activity table
                         string deleteQuery = "DELETE FROM [Activity] WHERE ActivityId = @ActivityId;";
 
                         using (SqlCommand command = new SqlCommand(deleteQuery, connection))
                         {
-                            // Add parameter to the query
                             command.Parameters.AddWithValue("@ActivityId", eventId);
 
-                            // Execute the delete query
                             command.ExecuteNonQuery();
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
                     Console.WriteLine($"An error occurred while deleting the event from the database. Please contact customer service: {ex.Message}");
                 }
             }
@@ -699,9 +695,10 @@ namespace CasusZuydFitV0._1.DAL
 
         }
 
-
+        // exercise klasse
         public class ExerciseDAL
         {
+            // lege lijst met exercises
             public List<Exercise> Exercises = new List<Exercise>();
 
             public void GetExercises()
@@ -712,6 +709,7 @@ namespace CasusZuydFitV0._1.DAL
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
+                        // alle exercises worden opgehaald uit database
                         string query = "SELECT * FROM [Exercise];";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
@@ -740,6 +738,7 @@ namespace CasusZuydFitV0._1.DAL
                 }
             }
 
+            // specifieke exercises worden opgehaald uit de database door middel van workoutId
             public List<Exercise> GetAllExercisesInWorkoutWithId(int workoutId)
             {
                 List<Exercise> Exercises = new List<Exercise>();
@@ -778,7 +777,7 @@ namespace CasusZuydFitV0._1.DAL
 
             }
 
-            //The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Exercise_Activity". The conflict occurred in database "ZuydFitFinal", table "dbo.Activity", column 'ActivityId'.
+            //nieuwe exercise wordt toegevoegd aan de database
             public void CreateNewExercise(Exercise exercise)
             {
                 try
@@ -804,7 +803,7 @@ namespace CasusZuydFitV0._1.DAL
                     Console.WriteLine($"An error occurred while creating a new exercise in the database. Please contact Customer Service: {ex.Message}");
                 }
             }
-
+            // exercise wordt bijgewerkt in de database, nog niet geimplementeerd in program en klasse
             public void UpdateExercise(Exercise exercise)
             {
                 try
@@ -833,7 +832,7 @@ namespace CasusZuydFitV0._1.DAL
                     Console.WriteLine($"An error occurred while updating the exercise in the database. Please contact customer service. Error: {ex.Message}");
                 }
             }
-
+            // exercise wordt verwijderd uit de database, nog niet geimplementeerd in program en klasse
             public void DeleteExercise(int exerciseId)
             {
                 try
@@ -849,7 +848,7 @@ namespace CasusZuydFitV0._1.DAL
                             dbCommand.Parameters.AddWithValue("@ExerciseId", exerciseId);
 
                             dbCommand.ExecuteNonQuery();
-                        };
+                        }
 
 
                     }
@@ -860,30 +859,26 @@ namespace CasusZuydFitV0._1.DAL
                 }
             }
 
-            public void AddWorkoutIdToExercise(Workout workout)
-            {
-
-            }
-
         }
-
+        // dal voor workout klasse
         public class WorkoutDAL
         {
+            // lege lijst met workouts
             public List<Workout> workouts = new List<Workout>();
-
+            // workouts worden opgehaald uit de database
             public void GetWorkouts()
             {
                 workouts.Clear();
-
+                // trainers worden opgehaald
                 TrainerDAL getTrainerDal = new TrainerDAL();
                 getTrainerDal.GetTrainers();
-
+                // atleten worden opgehaald
                 AthleteDAL getAthleteDal = new AthleteDAL();
                 getAthleteDal.GetAthlets();
-
+                // equipment wordt opgehaald, met huidige implementatie niet nodig
                 EquipmentDAL getEquipmentDal = new EquipmentDAL();
                 getEquipmentDal.GetEquipment();
-
+                // exercises worden opgehaald
                 ExerciseDAL getExerciseDal = new ExerciseDAL();
                 getExerciseDal.GetExercises();
 
@@ -892,6 +887,7 @@ namespace CasusZuydFitV0._1.DAL
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
+                        // workouts worden opgehaald
                         string query = "Select * from [Activity] where Type = 'workout'";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
@@ -909,7 +905,7 @@ namespace CasusZuydFitV0._1.DAL
                                     Trainer activityTrainer = getTrainerDal.trainers.Find(trainer => trainer.UserId == activityTrainerId);
 
 
-                                    // hier klopt t niet
+                                    // atleet van de workout wordt gekoppeld
 
                                     string athleteQuery = $"Select AthleteId from LogFeedback where ActivityId = {activityId}";
                                     using (SqlCommand athleteCommand = new SqlCommand(athleteQuery, connection))
@@ -936,6 +932,7 @@ namespace CasusZuydFitV0._1.DAL
                                 }
                             }
                         }
+                        // equipment wordt opgehaald en gekoppeld aan de juiste workouts, met huidige implementatie niet nodig
                         string activityEquipmentQuery = "Select * from [ActivityEquipment]";
                         using (SqlCommand activityEquipmentCommand = new SqlCommand(activityEquipmentQuery, connection))
                         {
@@ -963,7 +960,7 @@ namespace CasusZuydFitV0._1.DAL
             }
 
 
-
+            // workout wordt toegevoegd aan de database
             public int CreateNewWorkout(Workout workout)
             {
                 int insertedId = -1;
@@ -1009,7 +1006,8 @@ namespace CasusZuydFitV0._1.DAL
 
                 return insertedId;
             }
-
+            
+            // workout van specifieke atleet wordt opgehaald uit de database
             public List<Workout> GetAllWorkoutsByAthleteId(int athleteId)
             {
                 TrainerDAL allTrainers = new TrainerDAL();
@@ -1050,7 +1048,7 @@ namespace CasusZuydFitV0._1.DAL
         }
 
 
-
+        // klasse voor logfeedback
         public class LogFeedbackDAL
         {
             public List<LogFeedback> logFeedbacks = new List<LogFeedback>();
@@ -1060,13 +1058,16 @@ namespace CasusZuydFitV0._1.DAL
                 logFeedbacks.Clear();
                 try
                 {
+                    // users worden opgehaald
                     UserDAL userDal = new UserDAL();
                     userDal.GetUsers();
+                    // activities worden opgehaald
                     ActivityDAL activityDal = new ActivityDAL();
                     activityDal.GetActivities();
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
+                        // alle logfeedback wordt opgehaald
                         string query = "Select * from [LogFeedback]";
                         using (SqlCommand command = new SqlCommand(query, connection))
                         {
@@ -1104,6 +1105,7 @@ namespace CasusZuydFitV0._1.DAL
             /// bij het aanmaken van een nieuwe Workout "template" wordt geen datum meegegeven en geen FeedbackInfo
             /// </summary>
 
+            // logfeedback wordt aangemaakt in de database voor workout "template"
             public void CreateInitialLogFeedback(LogFeedback feedback)
             {
                 try
@@ -1128,7 +1130,7 @@ namespace CasusZuydFitV0._1.DAL
                 }
             }
 
-
+            // logfeedback wordt aangemaakt in de database
             public void CreateLogFeedback(LogFeedback feedback)
             {
                 try
@@ -1155,7 +1157,7 @@ namespace CasusZuydFitV0._1.DAL
                 }
             }
 
-
+            // logfeedback wordt bijgewerkt in de database
             public void UpdateLogFeedback(LogFeedback feedback)
             {
                 try
@@ -1183,7 +1185,7 @@ namespace CasusZuydFitV0._1.DAL
                     Console.WriteLine($"Er is een fout opgetreden bij het bijwerken van de feedback in de database. Neem contact op met de klantenservice. Foutmelding: {ex.Message}");
                 }
             }
-
+            // logfeedback wordt verwijderd uit de database
             public void DeleteLogFeedback(LogFeedback feedback)
             {
                 try
@@ -1206,11 +1208,12 @@ namespace CasusZuydFitV0._1.DAL
             }
 
         }
-
+        // klasse voor trainer
         public class TrainerDAL
         {
+            // lege lijst met trainers
             public List<Trainer> trainers = new List<Trainer>();
-
+            // trainers worden opgehaald uit de database zonder gevulde lijst
             public void GetTrainers()
             {
                 trainers.Clear();
