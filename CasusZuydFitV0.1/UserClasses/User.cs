@@ -30,7 +30,7 @@ namespace CasusZuydFitV0._1.UserClasses
             UserEmail = userEmail;
             UserPassword = userPassword;
         }
-
+        // deze heeft geen references, maar moet bestaan zodat Trainer class een lege constructor inherit
         public User()
         {
         }

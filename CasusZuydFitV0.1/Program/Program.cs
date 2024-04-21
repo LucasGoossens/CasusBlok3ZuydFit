@@ -17,6 +17,7 @@ namespace CasusZuydFitV0._1.Program
         static void Main(string[] args)
         {
             // inlogsysteem
+            // ingelogde user bij het opstarten een lege user die vervangen wordt door de ingelogde user
             User loggedInUser = new Athlete("NOUSERLOGGEDIN", "NOUSERLOGGEDIN", "NOUSERLOGGEDIN");
             bool loggedIn = false;
             while (!loggedIn)
@@ -203,6 +204,7 @@ namespace CasusZuydFitV0._1.Program
                     if (UserType == 2)
                     {
                         // Hardcoded password validation for creating a trainer (123)
+                        // om een trainer aan te maken moet de validation password ingevuld worden bij het aanmaken van een nieuw account                        
                         string ValidationPassword = "123";
                         string InputValidationPassword = "1";
 
@@ -480,7 +482,7 @@ namespace CasusZuydFitV0._1.Program
                         Workout WorkoutToGiveFeedbackOn = activityToGiveFeedbackOn as Workout;                     
 
                         List<LogFeedback> workoutLogFeedbackToFilter = LogFeedback.GetFeedback();
-
+                        // haalt eerst alle logbooks op en filtert deze op basis van de workout die feedback moet krijgen
                         foreach(LogFeedback log in workoutLogFeedbackToFilter)
                         {
                             if (log.FeedbackActivityId == activityToGiveFeedbackOn.ActivityId)
@@ -555,6 +557,7 @@ namespace CasusZuydFitV0._1.Program
                         int pickedUserId = Convert.ToInt32(Console.ReadLine());
                         Console.Clear();
                         User? userToGiveFeedbackOn = User.GetUsers().FirstOrDefault(user => user.UserId == pickedUserId);
+                        // LogFeedback dient ook als link tussen de activities en de atleet, dus deze wordt opgehaald om de feedback te updaten.
                         logFeedback = LogFeedback.GetFeedback().FirstOrDefault(feedback => feedback.FeedbackActivityId == activityToAddFeedback.ActivityId && feedback.FeedbackAthleteId == pickedUserId);
 
 

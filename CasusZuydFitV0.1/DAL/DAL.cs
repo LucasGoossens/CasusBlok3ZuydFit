@@ -316,13 +316,12 @@ namespace CasusZuydFitV0._1.DAL
             }
 
         }
-        // da; voor de atleet klasse
+        // DAL voor de atleet klasse
         public class AthleteDAL
         {
             // lege lijst met atleten
             public List<Athlete> athletes = new List<Athlete>();
-            public void GetAthlets()
-            //Atleten worden opgehaald maar lijsten worden nog niet gevuld
+            public void GetAthlets()            
             {
                 athletes.Clear();
                 try
@@ -1146,8 +1145,7 @@ namespace CasusZuydFitV0._1.DAL
                         dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
                         dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo);
                         dbCommand.Parameters.AddWithValue("@ActivityDate", feedback.ActivityDate);
-                            // hier een soort string van maken die te printen is
-                        // hier niet feedbackDate vgm
+                        
                         dbCommand.ExecuteNonQuery();
                     }
                 }
@@ -1165,15 +1163,11 @@ namespace CasusZuydFitV0._1.DAL
                     using (SqlConnection connection = new SqlConnection(dbConString))
                     {
                         connection.Open();
-                        // controleer of het in database van iedereen "FeedbackId" heet en niet "LogFeedbackId"
+                        // hier wordt de gegeven feedback achter aan de resultaten geplakt.
                         string query = "UPDATE [LogFeedback] SET FeedbackInfo = FeedbackInfo + @FeedbackInfo WHERE FeedbackId = @FeedbackId;";
 
                         using SqlCommand dbCommand = new SqlCommand(query, connection);
-                        // volgens mij hoeft hier niet alle parameters opnieuw geupdate worden, wordt door beide functionaliteiten deze method gebruiken
-                        // alleen FeedbackInfo geupdate. 
-                        //dbCommand.Parameters.AddWithValue("@TrainerId", feedback.FeedbackTrainerId);
-                        //dbCommand.Parameters.AddWithValue("@AthleteId", feedback.FeedbackAthleteId);
-                        //dbCommand.Parameters.AddWithValue("@ActivityId", feedback.FeedbackActivityId);
+                 
                         dbCommand.Parameters.AddWithValue("@FeedbackInfo", feedback.FeedbackInfo);
                         dbCommand.Parameters.AddWithValue("@FeedbackId", feedback.FeedbackId);
 
