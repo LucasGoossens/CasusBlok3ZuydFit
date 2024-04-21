@@ -52,7 +52,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
             Console.WriteLine($"Participant Limit: {EventParticipants.Count}/{EventPatricipantLimit}");
             Console.WriteLine();
         }
-
+        // trainer kan zijn eigen events aanpassen of verwijderen
         public void EditEvent()
         {
             Console.WriteLine("-----------------------");
@@ -172,7 +172,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
             EventDAL eventDal = new EventDAL();
             eventDal.CreateEvent(this);
         }
-
+        // user kan kiezen of hij alle events wil zien of alleen de events waar hij voor is ingeschreven
         public static void DisplayAllEventsUser(User user)
         {
             Console.WriteLine("-----------------------");
@@ -221,7 +221,7 @@ namespace CasusZuydFitV0._1.ActivityClasses
                     break;
             }
         }
-
+        // trainwe krijgt zijn eigen events te zien
         public static void ShowEventsFromTrainer(User trainer)
         {
             Console.WriteLine("-----------------------");

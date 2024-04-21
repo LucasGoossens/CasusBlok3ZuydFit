@@ -33,7 +33,6 @@ namespace CasusZuydFitV0._1.UserClasses
 
         public User()
         {
-
         }
 
 
